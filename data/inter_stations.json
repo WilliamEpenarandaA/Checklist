@@ -1,0 +1,634 @@
+[
+    {
+        "IDENTIFICADOR": "ACON",
+        "nombre": "Acoyapa",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"           
+    },
+
+    {
+        "IDENTIFICADOR": "ACOT",
+        "nombre": "",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "inactiva",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real" 
+    },
+    {
+        "IDENTIFICADOR": "ALCE",
+        "nombre": "Alcedo, Galapagos",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real" 
+    },
+    {
+        "IDENTIFICADOR": "ANWB",
+        "nombre": "North Barbuda Island",
+        "pais" : "Antigua y Barbuda",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real" 
+    },
+    {
+        "IDENTIFICADOR": "AOTA",
+        "nombre": "Otavalo",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real" 
+    },
+    {
+        "IDENTIFICADOR": "APQN",
+        "nombre": "Volcan Apoyeque",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "inactiva",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"        
+    },
+    {
+        "IDENTIFICADOR": "ATUL",
+        "nombre": "Tulcain",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"         
+    },
+    {
+        "IDENTIFICADOR": "AUA1",
+        "nombre": "Aruba",
+        "pais" : "Holanda",
+        "CODIGO RED": "PR",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "inactiva",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"         
+    },
+    {
+        "IDENTIFICADOR": "AZU",
+        "nombre": "Azuero",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "inactiva",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real" 
+    },
+    {
+        "IDENTIFICADOR": "BBGH",
+        "nombre": "Gun Hill",
+        "pais" : "Antigua y Barbuda",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "BCIP",
+        "nombre": "Isla Barro Colorado",
+        "pais" : "Panama",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "BLUN",
+        "nombre": "Bluefields",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "10",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "BOAV",
+        "nombre": "Boa Vista",
+        "pais" : "Brasil",
+        "CODIGO RED": "BR",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "BONI",
+        "nombre": "La Bonita",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "BRU2",
+        "nombre": "",
+        "pais" : "Panama",
+        "CODIGO RED": "PA",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CACAO",
+        "nombre": "El Cacao",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "inactiva",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CARN",
+        "nombre": "Rivas",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CASC",
+        "nombre": "Dorado de Cascales",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CNGN",
+        "nombre": "Cerro Negro",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "COHC",
+        "nombre": "Conchacay",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CRIN",
+        "nombre": "San Cristobal",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CUSE",
+        "nombre": "Cuicocha Este",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "CZSB",
+        "nombre": "Cruzeiro do Sul",
+        "pais" : "Brasil",
+        "CODIGO RED": "BR",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "DABV",
+        "nombre": "Dabajuro",
+        "pais" : "Venezuela",
+        "CODIGO RED": "",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "retirada",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "ELOV",
+        "nombre": "Elorza",
+        "pais" : "Venezuela",
+        "CODIGO RED": "",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "retirada",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "ESPN",
+        "nombre": "La Esperanza",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "FLF1",
+        "nombre": "Flavio Alfaro-Manabi",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "GMAL",
+        "nombre": "Guarumal",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "GRGR",
+        "nombre": "Grenville",
+        "pais" : "Grenada",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "GRTK",
+        "nombre": "Grand Turk",
+        "pais" : "Turks and Caicos Islands",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "GTBY",
+        "nombre": "Guantanamo Bay",
+        "pais" : "Cuba",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "HERN",
+        "nombre": "Volcan Telica",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "JTS",
+        "nombre": "Las Juntas de Abangares",
+        "pais" : "Costa Rica",
+        "CODIGO RED": "II",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "LITA",
+        "nombre": "",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "LPAZ",
+        "nombre": "La Paz",
+        "pais" : "Bolivia",
+        "CODIGO RED": "GT",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"   
+    },
+    {
+        "IDENTIFICADOR": "MATN",
+        "nombre": "Matapalga",
+        "pais" : "Nicaragua",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "MCRA",
+        "nombre": "Macarai",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "MGAN",
+        "nombre": "Managua",
+        "pais" : "MGAN",
+        "CODIGO RED": "NU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "MTDJ",
+        "nombre": "Mount Denham",
+        "pais" : "Jamaica",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "NNA",
+        "nombre": "Nana",
+        "pais" : "Peru",
+        "CODIGO RED": "II",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "OTAV",
+        "nombre": "Otavalo",
+        "pais" : "Ecuador",
+        "CODIGO RED": "IU",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PAC1",
+        "nombre": "Pacto",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PAYG",
+        "nombre": "Puerto Ayora",
+        "pais" : "Ecuador",
+        "CODIGO RED": "IU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PIAT",
+        "nombre": "Ana Tenorio",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PNME",
+        "nombre": "Penonome",
+        "pais" : "Panama",
+        "CODIGO RED": "",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PPLP",
+        "nombre": "Puerto Lopez",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PTGL",
+        "nombre": "Punta Galera",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "PTP",
+        "nombre": "Ponta Puerca",
+        "pais" : "Puerto Rico",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "RVRD",
+        "nombre": "Rio Verde",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "SAML",
+        "nombre": "Samuel",
+        "pais" : "Brazil",
+        "CODIGO RED": "IU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"  
+    },
+    {
+        "IDENTIFICADOR": "SDDR",
+        "nombre": "Presa de Sabaneta",
+        "pais" : "Republica Dominicana",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "SDV",
+        "nombre": "Santo Domingo",
+        "pais" : "Venezuela",
+        "CODIGO RED": "IU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "SGC2",
+        "nombre": "Sao Gabriel da Cachoeira",
+        "pais" : "Brasil",
+        "CODIGO RED": "BR",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "SJG",
+        "nombre": "San Juan",
+        "pais" : "Puerto Rico",
+        "CODIGO RED": "IU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "SNLR",
+        "nombre": "San Lorenzo",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "SOCV",
+        "nombre": "Socops",
+        "pais" : "Venezuela",
+        "CODIGO RED": "",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "TBTG",
+        "nombre": "Tabatinga",
+        "pais" : "Brasil",
+        "CODIGO RED": "BR",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "TEIG",
+        "nombre": "Tepich",
+        "pais" : "Mexico",
+        "CODIGO RED": "IU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "TGUH",
+        "nombre": "Tegucigalpa",
+        "pais" : "Honduras",
+        "CODIGO RED": "CU",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "TOTI",
+        "nombre": "Torti",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "TULM",
+        "nombre": "Tulcain-Chalpatan",
+        "pais" : "Ecuador",
+        "CODIGO RED": "EC",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "UPA",
+        "nombre": "Universidad de Panama",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "UPD2",
+        "nombre": "Meteti",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    }
+
+]

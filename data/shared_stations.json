@@ -1,0 +1,182 @@
+[
+    {
+     "IDENTIFICADOR": "GCUF",
+     "nombre": "Cufiño(Galeras)",
+     "CODIGO RED": "OP",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"    
+    },
+    {
+     "IDENTIFICADOR": "LMES",
+     "nombre": "Mesa de Los Santos",
+     "CODIGO RED": "OS",
+     "CODIGO CANAL": "10",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"           
+    },
+    {
+     "IDENTIFICADOR": "VNAZ",
+     "nombre": "Vivero Nazareth",
+     "CODIGO RED": "OS",
+     "CODIGO CANAL": "10",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "PBLA",
+     "nombre": "Peñas Blancas",
+     "CODIGO RED": "UQ",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "RIBER",
+     "nombre": "Ribera",
+     "CODIGO RED": "UQ",
+     "CODIGO CANAL": "20",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "PIRM",
+     "nombre": "Piraña(Nevado del Ruiz)",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+    "IDENTIFICADOR": "TAPM",
+     "nombre": "Tapias(Machin)",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "MARO",
+     "nombre": "Maravillas(Nevado del Huila)",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "CONO",
+     "nombre": "Condor(Purace)",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "inactiva",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "BELO",
+     "nombre": "Belalcazar",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "SOTO",
+     "nombre": "Sotará",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+     {
+     "IDENTIFICADOR": "BODP",
+     "nombre": "BORDONCILLO",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "DRL04",
+     "nombre": "LA LOMA 04 PATIO GEOLOGIA",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "10",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "CPAS3",
+     "nombre": "Pasto",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "10",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "CYOPA",
+     "nombre": "Yopal",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "10",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "SJUM",
+     "nombre": "",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "ANIM",
+     "nombre": "Animas",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "ELAM",
+     "nombre": "",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "NIDM",
+     "nombre": "Nido",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "AGAM",
+     "nombre": "",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
+    }
+]

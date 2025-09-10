@@ -55,7 +55,7 @@ where:
 > [!NOTE]
 > For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in a csv file, we can execute the following command:
 > ```bash
-> python3 <path_to_dir>/Real-time_main.py +s +o
+> python3 <path_to_dir>/main.py +s +o
 > ```
 
 ## Contributing

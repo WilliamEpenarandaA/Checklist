@@ -9,7 +9,7 @@ from network import Network
 from pathlib import Path
 from datetime import datetime
 from colorama import init, Fore, Style
-from tqdm import tqdm  
+from tqdm import tqdm
 
 ## Initialize colorama, avoiding manually reset the text color each time
 init(autoreset=True)
@@ -24,16 +24,17 @@ def read_args():
     parser.add_argument(prefix + "u", prefix + "update", help="Update station information with Siigeo database", action='store_true', required=False)
     parser.add_argument(prefix + "s", prefix + "stat", help="Print statistics performance of National and International stations", action='store_true', required=False)
     parser.add_argument(prefix + "sn", prefix + "stat_nat", help="Print statistics performance of National stations", action='store_true', required=False)
+    parser.add_argument(prefix + prefix + "offline", help="Show only offline stations", action='store_true', required=False)
+    parser.add_argument(prefix + prefix + "recovering", help="Show only recovering stations", action='store_true', required=False)
+    parser.add_argument(prefix + prefix + "online", help="Show only online stations", action='store_true', required=False)
     args_parser = parser.parse_args()
     vars_args = vars(args_parser)
     return vars_args
 
 if __name__ == "__main__":
     params = read_args()
-
-    ## Define Initial parameters
     current_time = datetime.now()
-    print(f"Current time (UTC timezone): {current_time}")
+    print(f"Current time (Local time): {current_time}")
     path = str(Path(__file__).absolute().parent.parent)
     data_path = str(Path(path, "data"))
     server = '100.232'
@@ -112,6 +113,7 @@ if __name__ == "__main__":
     accel_nat_data = network.order_accel_stations(accel_nat_data)
     inter_data = network.order_inter_stations(inter_data)
 
+    ## Apply arguments in the execution of the routine 
     if params['p']:
        cols = ['network_code', 'id', 'channel_code', 'channel', 'last_connection', 'delay_readable', 'status']
        seismo_nat_data = seismo_nat_data[cols]
@@ -124,35 +126,70 @@ if __name__ == "__main__":
         accel_nat_data = accel_nat_data[cols]
         inter_data = inter_data[cols]
 
+    if params['online'] and params['recovering']:
+        seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] != 'offline') | (seismo_nat_data['status'] != 'Station not tracking by slinktool')]
+        accel_nat_data = accel_nat_data.loc[(accel_nat_data['status'] != 'offline') | (accel_nat_data['status'] != 'Station not tracking by slinktool')]
+        inter_data = inter_data.loc[(inter_data['status'] != 'offline') | (inter_data['status'] != 'Station not tracking by slinktool')]    
+    elif params['offline'] and params['recovering']:
+        seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] != 'online')]
+        accel_nat_data = accel_nat_data.loc[accel_nat_data['status'] != 'online']
+        inter_data = inter_data.loc[inter_data['status'] != 'online']
+    elif params['online']:
+        seismo_nat_data = seismo_nat_data.loc[seismo_nat_data['status'] == 'online']
+        accel_nat_data = accel_nat_data.loc[accel_nat_data['status'] == 'online']
+        inter_data = inter_data.loc[inter_data['status'] == 'online']
+    elif params['recovering']:
+        seismo_nat_data = seismo_nat_data.loc[seismo_nat_data['status'] == 'recovering']
+        accel_nat_data = accel_nat_data.loc[accel_nat_data['status'] == 'recovering']
+        inter_data = inter_data.loc[inter_data['status'] == 'recovering']
+    elif params['offline']:
+        seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] == 'offline') | (seismo_nat_data['status'] == 'Station not tracking by slinktool')]
+        accel_nat_data = accel_nat_data.loc[(accel_nat_data['status'] == 'offline') | (accel_nat_data['status'] == 'Station not tracking by slinktool')]
+        inter_data = inter_data.loc[(inter_data['status'] == 'offline') | (inter_data['status'] == 'Station not tracking by slinktool')]
+    else:
+        seismo_nat_data = seismo_nat_data
+        accel_nat_data = accel_nat_data
+        inter_data = inter_data
+
+    ## Configure a nice view for printing results
+    seismo_nat_data = seismo_nat_data.rename(columns={'network_code':'network', 'channel_code': 'loc'})
+    accel_nat_data = accel_nat_data.rename(columns={'network_code':'network', 'channel_code': 'loc'})
+    inter_data = inter_data.rename(columns={'network_code':'network', 'channel_code': 'loc'})
+    seismo_nat_data['status_'] = seismo_nat_data['status'].apply(Network.get_status_color)
+    accel_nat_data['status_'] = accel_nat_data['status'].apply(Network.get_status_color)
+    inter_data['status_'] = inter_data['status'].apply(Network.get_status_color)
+
     with pd.option_context('display.max_rows', None,
-                            'display.precision', 3,
+                            'display.precision', 1,
+                            'display.colheader_justify', 'center',
                             ):
             print(Style.BRIGHT + Fore.LIGHTGREEN_EX + '\nDelay times for national seismological stations:' + Fore.RESET)
-            print(seismo_nat_data)
+            print(seismo_nat_data.loc[:, seismo_nat_data.columns != 'status'])
             print(Style.BRIGHT + Fore.LIGHTGREEN_EX + '\nDelay times for national accelerometer stations:' + Fore.RESET)
-            print(accel_nat_data)
+            print(accel_nat_data.loc[:, accel_nat_data.columns != 'status'])
             print(Style.BRIGHT + Fore.LIGHTGREEN_EX + '\nDelay times for international stations:' + Fore.RESET)
-            print(inter_data)
+            print(inter_data.loc[:, inter_data.columns != 'status'])
 
-    ## Obtain connection statistics of stations
+    ## Obtain connection performance of the stations
     if params['sn']:
         online_seismo, online_accel, online_nat, total_nat = network.get_nat_statistics(nat_data, seismo_nat_data, accel_nat_data)
         transmission_parameters = network.get_type_transmission(nat_data)
-        print(Fore.LIGHTMAGENTA_EX + f"\nNumber of national stations in real-time: {online_nat}, (N={total_nat})" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of seismometers in real-time: {online_seismo}" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of accelerometers in real-time: {online_accel}" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of satelital stations in real-time: {transmission_parameters[1]}, (N={transmission_parameters[0]})" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of celular stations in real-time: {transmission_parameters[3]}, (N={transmission_parameters[2]})" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of internet stations in real-time: {transmission_parameters[5]}, (N={transmission_parameters[4]})" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of radio stations in real-time: {transmission_parameters[7]}, (N={transmission_parameters[6]})" + Fore.RESET)
+        print(Fore.LIGHTMAGENTA_EX + "\nNumber of national stations in real-time: " + Fore.LIGHTGREEN_EX + f"{online_nat}" + Fore.RESET + f" (N={total_nat})")
+        print(Fore.LIGHTMAGENTA_EX + "Number of seismometers in real-time: " + Fore.LIGHTGREEN_EX + f"{online_seismo}" + Fore.RESET)
+        print(Fore.LIGHTMAGENTA_EX + "Number of accelerometers in real-time: " + Fore.LIGHTGREEN_EX + f"{online_accel}" + Fore.RESET)
+        print(Fore.LIGHTMAGENTA_EX + "Number of satelital stations in real-time: " + Fore.LIGHTGREEN_EX + f"{transmission_parameters[1]}" + Fore.RESET + f" (N={transmission_parameters[0]})")
+        print(Fore.LIGHTMAGENTA_EX + "Number of celular stations in real-time: " + Fore.LIGHTGREEN_EX + f"{transmission_parameters[3]}" + Fore.RESET + f" (N={transmission_parameters[2]})")
+        print(Fore.LIGHTMAGENTA_EX + "Number of internet stations in real-time: " + Fore.LIGHTGREEN_EX + f"{transmission_parameters[5]}" + Fore.RESET + f" (N={transmission_parameters[4]})")
+        print(Fore.LIGHTMAGENTA_EX + "Number of radio stations in real-time: " + Fore.LIGHTGREEN_EX + f"{transmission_parameters[7]}" + Fore.RESET + f" (N={transmission_parameters[6]})")
 
     elif params['s']:
         online_nat, total_nat, online_inter, total_inter = network.get_station_statistics(nat_data, inter_data)
-        print(Fore.LIGHTMAGENTA_EX + f"\nNumber of national stations in real-time: {online_nat}, (N={total_nat})" + Fore.RESET)
-        print(Fore.LIGHTMAGENTA_EX + f"Number of international stations in real-time: {online_inter}, (N={total_inter})" + Fore.RESET)
+        print(Fore.LIGHTMAGENTA_EX + "\nNumber of national stations in real-time:" + Fore.LIGHTGREEN_EX + f" {online_nat}" + Fore.RESET + f" (N={total_nat})")
+        print(Fore.LIGHTMAGENTA_EX + "Number of international stations in real-time:" + Fore.LIGHTGREEN_EX + f" {online_inter}" + Fore.RESET + f" (N={total_inter})")
     else:
          print(Fore.LIGHTBLUE_EX + "\nNot computing any connection statistics!!!" + Fore.RESET)
-    
+
+    ## Storage checklist results into csv files    
     if params['o']:
         seismo_fname = 'seismo_checklist.csv'
         accel_fname = 'accel_checklist.csv'
@@ -161,4 +198,7 @@ if __name__ == "__main__":
         network.save_checklist(accel_nat_data, accel_fname)
         network.save_checklist(inter_data, inter_fname)
     else:
-        print(Fore.LIGHTBLUE_EX + "Not storaging checklist results!!!" + Fore.RESET)
+        print(Fore.LIGHTBLUE_EX + "Not storaging checklist results in files!!!" + Fore.RESET)
+
+    elapsed_time = (datetime.now() - current_time).total_seconds()
+    print(Fore.LIGHTGREEN_EX + f"Checklist routine executed in {round(elapsed_time, 1)} seconds")

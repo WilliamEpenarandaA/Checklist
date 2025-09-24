@@ -204,11 +204,17 @@ class Network:
         if channel_code not in channel_strcode:
             raise KeyError(Fore.LIGHTRED_EX + "Invalid channel code provided." + Fore.RESET)
         
-        special_stations = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'SJUM', 'TAPM', 'CNGN']
-        if station_code == 'SDV':
+        special_stations = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'SJUM', 'TAPM', 'FLF1', 'BLUN']
+        special_stations2 = ['JTS', 'SDV', 'ANWB', 'BBGH', 'BCIP', 'GRGR', 'GRTK', 'GTBY', 'LPAZ', 'MTDJ', 'NNA', 'PAYG', 'SAML', 'SDDR', 'SJG', 'TEIG', 'TGUH']
+        special_stations3 = ['CNGN', 'ESPN']
+        if station_code in special_stations2:
             channel = 'BHZ'
         elif station_code in special_stations:
             channel = 'HHZ'
+        elif station_code in special_stations3:
+            channel = 'EHZ'
+        elif station_code == 'DRL04' and channel_code == '10':
+            channel = 'EHZ'
         else:
             channel = channel_strcode[channel_code]
         return channel
@@ -228,7 +234,8 @@ class Network:
         -----------
         last_connection (datetime): last UTC datetime connection of channel of station.
         """
-        if station_code == 'SDV':    
+        special_inter_stations = ['JTS', 'SDV']
+        if station_code in special_inter_stations:    
             command = f"slinktool -Q 10.100.{server}:{port} | grep {station_code} | grep {channel} | grep 00"
         else:
             command = f"slinktool -Q 10.100.{server}:{port} | grep {station_code} | grep {channel}"
@@ -393,7 +400,7 @@ class Network:
 
         ## According to Reina, C.; Uruena, A.; Lopez A.; suggestions, Shared OVS stations will be at the end of the station list.
         ovs_man = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'PIRM', 'SJUM', 'TAPM']
-        ovs_pop = ['BELO', 'CONO', 'MARO', 'SOTO']
+        ovs_pop = ['BELO', 'CONO', 'MARO', 'SOTO', 'PALO']
         ovs_pa = ['BODP', 'GCUF']
         uq = ['PBLA', 'RIBER']
         sts = [*uq, *ovs_man, *ovs_pop, *ovs_pa]
@@ -404,6 +411,34 @@ class Network:
         data_stations = pd.concat([data_stations, shared_stations], ignore_index=True).reset_index(drop=True)
 
         return data_stations
+
+    @staticmethod
+    def get_status_color(status:str):
+        """
+        Function to configure a colorful view of status results.
+        
+        Parameters:
+        -----------
+        status (str): Status of each station
+
+        Return:
+        -----------
+        status_color(str): Status of each station in a Colorama format
+        """
+        if not status or not isinstance(status, str):
+            raise ValueError("Status must be a valid string!!!") 
+        if status == 'online':
+            color = Fore.LIGHTGREEN_EX
+        elif status == 'recovering':
+            color = Fore.LIGHTMAGENTA_EX
+        elif status == 'offline':
+            color = Fore.LIGHTRED_EX
+        elif status == 'Station not tracking by slinktool':
+            color = Fore.LIGHTYELLOW_EX
+        else:
+            color = Fore.RESET
+        status_color = color + status + Fore.RESET
+        return status_color
 
     @staticmethod
     def order_accel_stations(data_stations):

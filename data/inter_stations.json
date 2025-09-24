@@ -185,7 +185,7 @@
         "nombre": "Cerro Negro",
         "pais" : "Nicaragua",
         "CODIGO RED": "NU",
-        "CODIGO CANAL": "",
+        "CODIGO CANAL": "00",
         "ESTADO ESTACION": "conexion perdida",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"

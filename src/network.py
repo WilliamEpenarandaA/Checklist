@@ -12,18 +12,20 @@ from datetime import datetime, timedelta
 from colorama import Fore, Style
 
 class Network:
-    def __init__(self, data_path: str, url:str = 'https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/'):
+    def __init__(self, data_path: str, url:str = 'https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/', server:str = '232'):
         """
             Constructor of Usgs Class
 
             Args:
                 data_path (str): Path to the directory where data files will be stored. Defaults to '../data/'.
                 url (str): URL of Siigeo intranet service. By default is defined by: https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/
+                server (str): IP server to request the information.
 
             Raises:
                 ValueError: Trigger if: 
                 -url is not a valid string.
                 -data_path is not a valid str.
+                -server is not a valid str.
 
             Examples:
                 >>> Network(logs_path="../data/, url="https://earthquake.usgs.gov/fdsnws/event/1/query?")
@@ -33,11 +35,14 @@ class Network:
         self.data_path = data_path
         if not url or not isinstance(url, str):
             raise ValueError(Fore.LIGHTRED_EX + "URL must be a valid string." + Fore.RESET)
+        if not server or not isinstance(server, str):
+            raise ValueError(Fore.LIGHTRED_EX + "Server must be a valid string" + Fore.RESET)
         self.__url = url
         self.siigeo_data = pd.DataFrame()
         self.shared_data = pd.DataFrame()
         self.inter_data = pd.DataFrame()
-
+        self.server = server
+        
     @property
     def get_url(self):
         return self.__url
@@ -45,6 +50,18 @@ class Network:
     @get_url.setter
     def set_url(self, url: str):
         self.__url = url
+
+    def define_server(self, server:str):
+        """
+        Function to define server ip and port to request the information.
+        """
+        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000"}
+        port = server_dict[server]
+        if server != '2':
+            server = '100.' + server
+        else:
+            server = '101' + server
+        return server, port
 
     def download_siigeo_data(self, url:str, data_path: str, current_time: datetime, action:bool):
         """

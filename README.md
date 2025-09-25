@@ -6,12 +6,11 @@ Checklist is a Python routine developed for checking real-time data availability
 
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
 
-* Pandas
-* Tqdm
-* Slinktool
-* Request
-* Subprocess
-* Colorama
+* pandas
+* tqdm
+* slinktool
+* request
+* colorama
 * openpyxl
 
 ## Installation
@@ -19,7 +18,7 @@ We recommend using the package manager [pip](https://pip.pypa.io/en/stable/) to 
 
 To create a virtual environment using Pip manager:
 ```bash
-python3.12 -m venv {environment_name}
+python3 -m venv {environment_name}
 ```
 
 To create a virtual environmen using conda manager:
@@ -51,6 +50,10 @@ where:
     * `+u` or `+update`  Update station information with Siigeo database.
     * `+s` or `+stat`  Print statistics performance of National and International stations in terminal.
     * `+sn` or `+stat_nat`  Print statistics performance of National stations in terminal.
+    * `++server` Define the server to request the information. For e.g 232.
+    * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
+    * `++recovering` Print checklist of stations with recovering status. Can be combined with others filters.
+    * `++online` Print checklist of stations with online status. Can be combined with others filters.
 
 > [!NOTE]
 > For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in a csv file, we can execute the following command:

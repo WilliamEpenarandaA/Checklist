@@ -18,12 +18,13 @@ Style.RESET_ALL
 ## Define allowed arguments for the routine
 def read_args():
     prefix = '+'
-    parser = argparse.ArgumentParser(description="Retrieve last connection datetime of stations managed in SGC", prefix_chars=prefix)
+    parser = argparse.ArgumentParser(prog="Checklistv2.0", description="Retrieve last connection datetime of stations managed in SGC", prefix_chars=prefix)
     parser.add_argument(prefix + "p", prefix + "print", help="Print delay times in a readable format (dd HH MM SS)", action='store_true', required=False)
     parser.add_argument(prefix + "o", prefix + "output", help="Save the results on a .csv file", action='store_true', required=False)
     parser.add_argument(prefix + "u", prefix + "update", help="Update station information with Siigeo database", action='store_true', required=False)
     parser.add_argument(prefix + "s", prefix + "stat", help="Print statistics performance of National and International stations", action='store_true', required=False)
     parser.add_argument(prefix + "sn", prefix + "stat_nat", help="Print statistics performance of National stations", action='store_true', required=False)
+    parser.add_argument(prefix + prefix + "server", type=str, help="Define the server to request the information. For e.g 232", required=False)
     parser.add_argument(prefix + prefix + "offline", help="Show only offline stations", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "recovering", help="Show only recovering stations", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "online", help="Show only online stations", action='store_true', required=False)
@@ -34,19 +35,25 @@ def read_args():
 if __name__ == "__main__":
     params = read_args()
     current_time = datetime.now()
-    print(f"Current time (Local time): {current_time}")
+    current_strtime = current_time.strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Current time (Local time): {current_strtime}")
     path = str(Path(__file__).absolute().parent.parent)
     data_path = str(Path(path, "data"))
-    server = '100.232'
-    port = '16501'
 
     ## Initialize Network class and download siigeo data
-    network = Network(data_path)
+    if params['server']:
+        network = Network(data_path, server= params['server'])
+    else:
+        network = Network(data_path)
+
     siigeo_file = network.download_siigeo_data(network.get_url, data_path, current_time, params['u'])
     shared_file = "shared_stations.json"
     inter_file = "inter_stations.json"
     df1, df2, df3 = network.load_data(data_path, siigeo_file, shared_file, inter_file)
     network.format_station_dataframes(df1, df2, df3)
+
+    ## Define server IP and port to request the information
+    server, port = network.define_server(network.server)
 
     ## Calculate delay times for stations in siigeo, shared and international dataframes
     last_siigeo = []

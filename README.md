@@ -1,17 +1,18 @@
 # Checklist
 
-Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in Seiscomp 232 server and connected to Siigeo's database. This information is updated every month or can be forced to update.
+Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in Seiscomp 232 server and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time.
 
 ## Requirements
 
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
 
-* pandas
-* tqdm
-* slinktool
-* request
 * colorama
+* obspy
 * openpyxl
+* pandas
+* slinktool
+* tqdm
+* request
 
 ## Installation
 We recommend using the package manager [pip](https://pip.pypa.io/en/stable/) to install python, although you can use miniconda, conda or mamba as the default python package manager, but the instructions could slightly vary. Then, we suggest creating an isolated virtual environment to avoid conflicts with other dependencies, as follows:
@@ -51,14 +52,18 @@ where:
     * `+s` or `+stat`  Print statistics performance of National and International stations in terminal.
     * `+sn` or `+stat_nat`  Print statistics performance of National stations in terminal.
     * `++server` Define the server to request the information. For e.g 232.
+    * `++wave` Compute delay times for stations not tracked by slinktool module.
     * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
     * `++recovering` Print checklist of stations with recovering status. Can be combined with others filters.
     * `++online` Print checklist of stations with online status. Can be combined with others filters.
 
+> [!IMPORTANT]
+> If any station have datetime of 1970-01-01 00:00:00, this value indicate that the station is not being tracked by slinktool module. That is, there's not any avalaible information of last connection datetime for that station.
+
 > [!NOTE]
 > For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in a csv file, we can execute the following command:
 > ```bash
-> python3 <path_to_dir>/main.py +s +o
+> python3 <path_to_folder>/src/main.py +s +o
 > ```
 
 ## Contributing

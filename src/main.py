@@ -6,6 +6,7 @@
 import argparse
 import pandas as pd
 from network import Network
+from wavetime import Wavetime
 from pathlib import Path
 from datetime import datetime
 from colorama import init, Fore, Style
@@ -28,6 +29,7 @@ def read_args():
     parser.add_argument(prefix + prefix + "offline", help="Show only offline stations", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "recovering", help="Show only recovering stations", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "online", help="Show only online stations", action='store_true', required=False)
+    parser.add_argument(prefix + prefix + "wave", help="Compute delay times for stations not tracked by slinktool module", action='store_true', required=False)
     args_parser = parser.parse_args()
     vars_args = vars(args_parser)
     return vars_args
@@ -73,7 +75,6 @@ if __name__ == "__main__":
         cha = network.assign_channel(station_code, channel_code)
         last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
         delay = network.compute_delays(datetime.now(), last_time)  
-    # print(f"Station: {station_code}, Channel: {channel_code}, Delay: {delay}")
         last_siigeo.append(last_time)
         delays_siigeo.append(delay)
         cha_siigeo.append(cha)
@@ -84,7 +85,6 @@ if __name__ == "__main__":
         cha = network.assign_channel(station_code, channel_code)
         last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
         delay = network.compute_delays(datetime.now(), last_time)
-    #    print(f"Station: {station_code}, Channel: {channel_code}, Delay: {delay}")
         last_shared.append(last_time)
         delays_shared.append(delay)
         cha_shared.append(cha)
@@ -95,7 +95,6 @@ if __name__ == "__main__":
         cha = network.assign_channel(station_code, channel_code)
         last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
         delay = network.compute_delays(datetime.now(), last_time)
-    #    print(f"Station: {station_code}, Channel: {channel_code}, Delay: {delay}")
         last_inter.append(last_time)
         delays_inter.append(delay)
         cha_inter.append(cha)
@@ -120,19 +119,49 @@ if __name__ == "__main__":
     accel_nat_data = network.order_accel_stations(accel_nat_data)
     inter_data = network.order_inter_stations(inter_data)
 
-    ## Apply arguments in the execution of the routine 
+    ## Enable computation of delay times for stations not tracking by slinktool
+    if params['wave']:
+        wavetime = Wavetime(year=str(current_time.year), server=network.server)
+        wpath = wavetime.define_storage_path(wavetime.year, wavetime.server)
+        for ind, row in seismo_nat_data.iterrows():
+            if row['status'] == "Station not tracking by slinktool":
+                foldpath = wavetime.check_folder(server_path=wpath, network=row['network_code'], station=row['id'], channel=row['channel'])
+                filepath = wavetime.get_last_wavefile(foldpath)
+                endtime, delay = wavetime.get_delay(filepath, datetime.now())
+                status, prints = wavetime.get_station_status(delay)
+                seismo_nat_data.at[ind, 'last_connection'] = endtime
+                seismo_nat_data.at[ind, 'delay_readable'] = prints
+                seismo_nat_data.at[ind, 'status'] = status
+        for ind, row in accel_nat_data.iterrows():
+            if row['status'] == "Station not tracking by slinktool":
+                foldpath = wavetime.check_folder(server_path=wpath, network=row['network_code'], station=row['id'], channel=row['channel'])
+                filepath = wavetime.get_last_wavefile(foldpath)
+                endtime, delay = wavetime.get_delay(filepath, datetime.now())
+                status, prints = wavetime.get_station_status(delay)
+                accel_nat_data.at[ind, 'last_connection'] = endtime
+                accel_nat_data.at[ind, 'delay_readable'] = prints
+                accel_nat_data.at[ind, 'status'] = status
+        for ind, row in inter_data.iterrows():
+            if row['status'] == "Station not tracking by slinktool":
+                foldpath = wavetime.check_folder(server_path=wpath, network=row['network_code'], station=row['id'], channel=row['channel'])
+                filepath = wavetime.get_last_wavefile(foldpath)
+                endtime, delay = wavetime.get_delay(filepath, datetime.now())
+                status, prints = wavetime.get_station_status(delay)
+                inter_data.at[ind, 'last_connection'] = endtime
+                inter_data.at[ind, 'delay_readable'] = prints
+                inter_data.at[ind, 'status'] = status
+        
+    ## Apply arguments in the execution of the routine  
     if params['p']:
        cols = ['network_code', 'id', 'channel_code', 'channel', 'last_connection', 'delay_readable', 'status']
        seismo_nat_data = seismo_nat_data[cols]
        accel_nat_data = accel_nat_data[cols]
        inter_data = inter_data[cols] 
-
     else:
         cols = ['network_code', 'id', 'channel_code', 'channel', 'last_connection', 'status']
         seismo_nat_data = seismo_nat_data[cols]
         accel_nat_data = accel_nat_data[cols]
         inter_data = inter_data[cols]
-
     if params['online'] and params['recovering']:
         seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] != 'offline') | (seismo_nat_data['status'] != 'Station not tracking by slinktool')]
         accel_nat_data = accel_nat_data.loc[(accel_nat_data['status'] != 'offline') | (accel_nat_data['status'] != 'Station not tracking by slinktool')]

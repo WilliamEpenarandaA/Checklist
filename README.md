@@ -38,7 +38,7 @@ pip install -r requirements.txt
 To use the routine just need to execute the following command in the terminal: 
 
 ```bash
-python3 <path_to_dir>/main.py <options>
+python3 <path_to_dir>/src/main.py <options>
 ```
 
 where:

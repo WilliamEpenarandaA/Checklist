@@ -14,7 +14,7 @@ from colorama import Fore, Style
 class Network:
     def __init__(self, data_path: str, url:str = 'https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/', server:str = '232'):
         """
-            Constructor of Usgs Class
+            Constructor of Network Class
 
             Args:
                 data_path (str): Path to the directory where data files will be stored. Defaults to '../data/'.
@@ -22,13 +22,13 @@ class Network:
                 server (str): IP server to request the information.
 
             Raises:
-                ValueError: Trigger if: 
+                ValueError: Trigger if:
+                -data_path is not a valid str. 
                 -url is not a valid string.
-                -data_path is not a valid str.
                 -server is not a valid str.
 
             Examples:
-                >>> Network(logs_path="../data/, url="https://earthquake.usgs.gov/fdsnws/event/1/query?")
+                >>> Network(data_path="../data/", url="https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/", server='232')
         """
         if not Path(data_path).is_dir():
             raise ValueError(Fore.LIGHTRED_EX + "Provided data folder no exist." + Fore.RESET)
@@ -54,6 +54,15 @@ class Network:
     def define_server(self, server:str):
         """
         Function to define server ip and port to request the information.
+
+        Parameters:
+        -----------
+        server (str): Server IP, stored in a instance variable.
+
+        Return:
+        -----------
+        server (str): Last digits of server IP
+        port (str): Digit of the port for the correspond server IP.
         """
         server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000"}
         port = server_dict[server]
@@ -71,7 +80,7 @@ class Network:
         -----------
         data_path (str): Path to the directory where data files will be stored. Defaults to '../data/'.
         url (str): URL of Siigeo intranet service.
-        current time in datetime object.
+        current time in a datetime object.
         action (bool): True or False    
         
         Return:
@@ -249,7 +258,8 @@ class Network:
         
         Return:
         -----------
-        last_connection (datetime): last UTC datetime connection of channel of station.
+        last_connection (datetime): last UTC datetime connection of channel of station. For stations not tracked by
+        slinktool module, was set as 1970-01-01 00:00:00 UTC.
         """
         special_inter_stations = ['JTS', 'SDV']
         if station_code in special_inter_stations:    
@@ -284,7 +294,8 @@ class Network:
         
         Return:
         -----------
-        delay(float): delay in total seconds of channel of the correspond stations.
+        delay(float): delay in total seconds of channel of the correspond stations. Delay value was set as -99999
+        for stations not tracking by slinktool module.
         """
         current_time = current_time + timedelta(hours=5)
         if last_connection is not None and last_connection != datetime(1970, 1, 1, 0, 0, 0, 0):

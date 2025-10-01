@@ -55,7 +55,8 @@ where:
     * `++online` Print checklist of stations with online status. Can be combined with others filters.
 
 > [!IMPORTANT]
-> If any station have datetime of 1970-01-01 00:00:00, this value indicate that the station is not being tracked by slinktool module. If you need to calculate the last connection of the station using last datetime storage in server, you can use `++wave` option.
+> If any station is not being tracked by slinktool module, last connection datetime is defined a default value of **1970-01-01 00:00:00**.
+> `++wave` allow to compute last connection of a station using last data stored in waveform files in server. If a station has not data in the current year, delay time assign a default value of **one year and one day** before the current time.
 
 > [!NOTE]
 > For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in csv files, we can execute the following command:

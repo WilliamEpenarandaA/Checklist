@@ -1,9 +1,7 @@
 # Checklist
-
 Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in Seiscomp 232 server and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time.
 
 ## Requirements
-
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
 
 * colorama
@@ -34,7 +32,6 @@ pip install -r requirements.txt
 ``` 
 
 ## Usage
-
 To use the routine just need to execute the following command in the terminal: 
 
 ```bash
@@ -45,12 +42,12 @@ where:
 
 * `<path_to_dir>`: Need to declare the path to the folder where the routine is stored. We recommend to include it in PATH environment variable for more convenience.
 * `<options>`: There are additional parameters can be declared to activate additional parameters in the routine:
-    * `+h` or `+help`  display a help menu which shows the allowed parameters and its working.
-    * `+o` or `+output`  Save the results on a .csv file.
+    * `+h` or `+help`  display a menu on terminal which show different avalaible options.
+    * `+o` or `+output`  Save the results on csv files.
     * `+p` or `+print`  Print delay times in a readable format (dd HH MM SS) in terminal.
     * `+u` or `+update`  Update station information with Siigeo database.
-    * `+s` or `+stat`  Print statistics performance of National and International stations in terminal.
-    * `+sn` or `+stat_nat`  Print statistics performance of National stations in terminal.
+    * `+s` or `+stat`  Print performance of National and International stations in terminal.
+    * `+sn` or `+stat_nat`  Print performance of National stations in terminal divided by type of transmission.
     * `++server` Define the server to request the information. For e.g 232.
     * `++wave` Compute delay times for stations not tracked by slinktool module.
     * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
@@ -58,17 +55,16 @@ where:
     * `++online` Print checklist of stations with online status. Can be combined with others filters.
 
 > [!IMPORTANT]
-> If any station have datetime of 1970-01-01 00:00:00, this value indicate that the station is not being tracked by slinktool module. That is, there's not any avalaible information of last connection datetime for that station.
+> If any station have datetime of 1970-01-01 00:00:00, this value indicate that the station is not being tracked by slinktool module. If you need to calculate the last connection of the station using last datetime storage in server, you can use `++wave` option.
 
 > [!NOTE]
-> For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in a csv file, we can execute the following command:
+> For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in csv files, we can execute the following command:
 > ```bash
 > python3 <path_to_folder>/src/main.py +s +o
 > ```
 
 ## Contributing
-
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
 
 ## Authority
-This project was developed by William Eduardo Peñaranda Arévalo, Seismological Analyst, with the supervision of Angel Agudelo, Seismologist. Both belong to the working group: Evaluation, Monitoring, and Diagnostic of Geological Dynamics at RSNC. The use of this code is restricted only for internal purposes at RSNC, subject to the institution's internal policies and regulations, and cannot be shared without prior authorization. Intelectual property of this routine belongs to RSNC.
+This project was developed by William Eduardo Peñaranda Arévalo, Seismological Analyst, with the supervision of Angel Agudelo, Seismologist. Both belong to the working group: Evaluation, Monitoring, and Diagnostic of Geological Dynamics at SGC. The use of this code is restricted only for internal purposes at SGC, subject to the institution's internal policies and regulations, and cannot be shared without prior authorization. Intelectual property of this routine belongs to SGC.

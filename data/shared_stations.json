@@ -126,15 +126,6 @@
      "TIPO DE ADQUISICION": "tiempo real"
     },
     {
-     "IDENTIFICADOR": "CYOPA",
-     "nombre": "Yopal",
-     "CODIGO RED": "CM",
-     "CODIGO CANAL": "10",
-     "ESTADO ESTACION": "activa",
-     "TIPO DE TRANSMISION": "internet",
-     "TIPO DE ADQUISICION": "tiempo real"
-    },
-    {
      "IDENTIFICADOR": "SJUM",
      "nombre": "",
      "CODIGO RED": "CM",

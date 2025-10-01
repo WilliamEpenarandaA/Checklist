@@ -428,7 +428,7 @@ class Network:
 
         ## According to Reina, C.; Uruena, A.; Lopez A.; suggestions, Shared OVS stations will be at the end of the station list.
         ovs_man = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'PIRM', 'SJUM', 'TAPM']
-        ovs_pop = ['BELO', 'CONO', 'MARO', 'SOTO', 'PALO']
+        ovs_pop = ['BELO', 'CONO', 'SOTO', 'PALO']
         ovs_pa = ['BODP', 'GCUF']
         uq = ['PBLA', 'RIBER']
         sts = [*uq, *ovs_man, *ovs_pop, *ovs_pa]

@@ -435,7 +435,7 @@ class Network:
 
         shared_stations = data_stations.loc[data_stations['id'].isin(sts)]
         shared_stations = shared_stations.sort_values(by='id', key=lambda x: x.map(sts.index))
-        data_stations = data_stations.loc[~data_stations['id'].isin(sts)].sort_values(by='id')
+        data_stations = data_stations.loc[~data_stations['id'].isin(sts)].sort_values(by=['id', 'channel_code'], ascending=[True, True])
         data_stations = pd.concat([data_stations, shared_stations], ignore_index=True).reset_index(drop=True)
 
         return data_stations
@@ -483,7 +483,7 @@ class Network:
         """
         if not isinstance(data_stations, pd.DataFrame) or data_stations.empty:
             raise ValueError(Fore.LIGHTRED_EX + "National Accelerographic stations data must be in a valid Dataframe!!!" + Fore.RESET)
-        data_stations = data_stations.sort_values(by='id').reset_index(drop=True)
+        data_stations = data_stations.sort_values(by=['id', 'channel_code'], ascending=[True, True]).reset_index(drop=True)
         return data_stations
 
     @staticmethod

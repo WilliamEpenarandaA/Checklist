@@ -4,13 +4,13 @@ Checklist is a Python routine developed for checking real-time data availability
 ## Requirements
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
 
+* concurrent
 * colorama
 * obspy
 * openpyxl
 * pandas
-* slinktool
+* slinktool (Seiscomp module)
 * tqdm
-* request
 
 ## Installation
 We recommend using the package manager [pip](https://pip.pypa.io/en/stable/) to install python, although you can use miniconda, conda or mamba as the default python package manager, but the instructions could slightly vary. Then, we suggest creating an isolated virtual environment to avoid conflicts with other dependencies, as follows:
@@ -49,7 +49,6 @@ where:
     * `+u` or `+update`  Update station information with Siigeo database.
     * `+s` or `+stat`  Print performance of National and International stations in terminal.
     * `+sn` or `+stat_nat`  Print performance of National stations in terminal divided by type of transmission.
-    * `++server` Define the server to request the information. For e.g 232. (Not working in other servers)
     * `++wave` Compute delay times for stations not tracked by slinktool module.
     * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
     * `++recovering` Print checklist of stations with recovering status. Can be combined with others filters.

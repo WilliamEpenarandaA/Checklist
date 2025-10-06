@@ -43,12 +43,13 @@ where:
 * `<path_to_dir>`: Need to declare the path to the folder where the routine is stored. We recommend to include it in PATH environment variable for more convenience.
 * `<options>`: There are additional parameters can be declared to activate additional parameters in the routine:
     * `+h` or `+help`  display a menu on terminal which show different avalaible options.
+    * `+n` or `+n_process` number of process to use in parallel. Recommended to set as 8 to reduce computing time. It's limited to 10 according to capacities of server processor. 
     * `+o` or `+output`  Save the results on csv files.
     * `+p` or `+print`  Print delay times in a readable format (dd HH MM SS) in terminal.
     * `+u` or `+update`  Update station information with Siigeo database.
     * `+s` or `+stat`  Print performance of National and International stations in terminal.
     * `+sn` or `+stat_nat`  Print performance of National stations in terminal divided by type of transmission.
-    * `++server` Define the server to request the information. For e.g 232.
+    * `++server` Define the server to request the information. For e.g 232. (Not working in other servers)
     * `++wave` Compute delay times for stations not tracked by slinktool module.
     * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
     * `++recovering` Print checklist of stations with recovering status. Can be combined with others filters.

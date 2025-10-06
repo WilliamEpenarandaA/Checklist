@@ -4,7 +4,9 @@
 ####################################################################################################################################
 ####################################################################################################################################
 import argparse
+import concurrent.futures
 import pandas as pd
+import time
 from network import Network
 from wavetime import Wavetime
 from pathlib import Path
@@ -16,7 +18,35 @@ from tqdm import tqdm
 init(autoreset=True)
 Style.RESET_ALL
 
-## Define allowed arguments for the routine
+## Define required functions
+def run_calculations(station_info:pd.Series):
+    """
+    Function to perform calculations of last connection datetime an delay for a given station.
+
+    Parameters:
+    -----------
+    station_info (Pd.Series): Station parameters. It should contain following information:
+    (0) Station ID (str). For instance APAC.
+    (1) Channel ID (str). Allowed values are: 00, 10, 11, 20, 30, 40
+
+    Return:
+    -----------
+    last_time (datetime): last UTC datetime connection of channel of station. For stations not tracked by
+        slinktool module, was set as 1970-01-01 00:00:00 UTC.
+    delay (float): delay in total seconds of channel of the correspond stations. Delay value was set as -99999
+        for stations not tracking by slinktool module. 
+    cha (str): string code of the correspond channel in station.
+    """
+    if station_info.empty:
+        raise ValueError("Station info must be provided!!!")
+    station_code = station_info['id']
+    channel_code = station_info['channel_code']
+    cha = network.assign_channel(station_code, channel_code)
+    last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
+    delay = network.compute_delays(datetime.now(), last_time)  
+    return last_time, delay, cha
+
+# Stablish allowed arguments for the routine
 def read_args():
     prefix = '+'
     parser = argparse.ArgumentParser(prog="Checklistv2.0", description="Retrieve last connection datetime of stations managed in SGC", prefix_chars=prefix)
@@ -25,7 +55,7 @@ def read_args():
     parser.add_argument(prefix + "u", prefix + "update", help="Update station information with Siigeo database", action='store_true', required=False)
     parser.add_argument(prefix + "s", prefix + "stat", help="Print statistics performance of National and International stations", action='store_true', required=False)
     parser.add_argument(prefix + "sn", prefix + "stat_nat", help="Print statistics performance of National stations", action='store_true', required=False)
-    parser.add_argument(prefix + prefix + "server", type=str, help="Define the server to request the information. For e.g 232", required=False)
+    parser.add_argument(prefix + "n", prefix + "n_process", help="Number of process to use (recommended to reduce computation time), by default is setting only to one", type=int, default=1, required=False)
     parser.add_argument(prefix + prefix + "offline", help="Show only offline stations", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "recovering", help="Show only recovering stations", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "online", help="Show only online stations", action='store_true', required=False)
@@ -35,6 +65,7 @@ def read_args():
     return vars_args
 
 if __name__ == "__main__":
+    ti = time.perf_counter()
     params = read_args()
     current_time = datetime.now()
     current_strtime = current_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -42,11 +73,16 @@ if __name__ == "__main__":
     path = str(Path(__file__).absolute().parent.parent)
     data_path = str(Path(path, "data"))
 
-    ## Initialize Network class and download siigeo data
-    if params['server']:
-        network = Network(data_path, server= params['server'])
+    ## Add a hard cap in number of process to avoid server memory collapse in parallel processing
+    if params['n'] < 0 or not isinstance(params['n'], int):
+        raise ValueError(Fore.LIGHTRED_EX + "Number of proccess must be a positive integer" + Fore.RESET)
+    elif params['n'] > 10:
+        raise ValueError(Fore.LIGHTRED_EX + "Number of process exceeds the limit of the server procesor. Please use a number of process less than 10" + Fore.RESET)
     else:
-        network = Network(data_path)
+        print(Fore.LIGHTGREEN_EX + "Number of Process are according with server capacities" + Fore.RESET)
+
+    ## Initialize Network class and download siigeo data
+    network = Network(data_path)
 
     siigeo_file = network.download_siigeo_data(network.get_url, data_path, current_time, params['u'])
     shared_file = "shared_stations.json"
@@ -69,37 +105,41 @@ if __name__ == "__main__":
     cha_inter = []
 
     ## Loop over each dataframe and compute last connection times and delays
-    for _, row in tqdm(network.siigeo_data.iterrows(), desc= Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of national stations' + Fore.RESET, total=len(network.siigeo_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
-        station_code = row['id']
-        channel_code = row['channel_code']
-        cha = network.assign_channel(station_code, channel_code)
-        last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
-        delay = network.compute_delays(datetime.now(), last_time)  
-        last_siigeo.append(last_time)
-        delays_siigeo.append(delay)
-        cha_siigeo.append(cha)
-
-    for _, row in tqdm(network.shared_data.iterrows(), desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of shared national stations' + Fore.RESET, total=len(network.shared_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
-        station_code = row['id']
-        channel_code = row['channel_code']
-        cha = network.assign_channel(station_code, channel_code)
-        last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
-        delay = network.compute_delays(datetime.now(), last_time)
-        last_shared.append(last_time)
-        delays_shared.append(delay)
-        cha_shared.append(cha)
-
-    for _, row in tqdm(network.inter_data.iterrows(), desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of international stations' + Fore.RESET, total=len(network.inter_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
-        station_code = row['id']
-        channel_code = row['channel_code']
-        cha = network.assign_channel(station_code, channel_code)
-        last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
-        delay = network.compute_delays(datetime.now(), last_time)
-        last_inter.append(last_time)
-        delays_inter.append(delay)
-        cha_inter.append(cha)
-    network.compile_connection_information(last_siigeo, delays_siigeo, cha_siigeo, last_shared, delays_shared, cha_shared, last_inter, delays_inter, cha_inter)
+    if params['n'] == 1:
+        for _, row in tqdm(network.siigeo_data.iterrows(), desc= Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of national stations' + Fore.RESET, total=len(network.siigeo_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
+            last_time, delay, cha = run_calculations(row)
+            last_siigeo.append(last_time)
+            delays_siigeo.append(delay)
+            cha_siigeo.append(cha)
+        for _, row in tqdm(network.shared_data.iterrows(), desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of shared national stations' + Fore.RESET, total=len(network.shared_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
+            last_time, delay, cha = run_calculations(row)
+            last_shared.append(last_time)
+            delays_shared.append(delay)
+            cha_shared.append(cha)
+        for _, row in tqdm(network.inter_data.iterrows(), desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of international stations' + Fore.RESET, total=len(network.inter_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
+            last_time, delay, cha = run_calculations(row)
+            last_inter.append(last_time)
+            delays_inter.append(delay)
+            cha_inter.append(cha)
+    else:
+        ## Implementation of Parallel processing. Thanks to Garcia, K for his valuable explannations.
+        with concurrent.futures.ProcessPoolExecutor(max_workers=params['n']) as executor:
+            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.siigeo_data.iterrows()]), total=len(network.siigeo_data),\
+                             desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of national stations' + Fore.RESET, bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"))
+            last_siigeo, delays_siigeo, cha_siigeo = zip(*res)
+            last_siigeo, delays_siigeo, cha_siigeo = list(last_siigeo), list(delays_siigeo), list(cha_siigeo) 
+            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.shared_data.iterrows()]), total=len(network.shared_data),\
+                            desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of shared national stations' + Fore.RESET, bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"))
+            last_shared, delays_shared, cha_shared = zip(*res)
+            last_shared, delays_shared, cha_shared = list(last_shared), list(delays_shared), list(cha_shared)
+            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.inter_data.iterrows()]), total=len(network.inter_data),\
+                            desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of international stations' + Fore.RESET, bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"))
+            last_inter, delays_inter, cha_inter = zip(*res)
+            last_inter, delays_inter, cha_inter = list(last_inter), list(delays_inter), list(cha_inter)
     
+    ## Join the results into station dataframes
+    network.compile_connection_information(last_siigeo, delays_siigeo, cha_siigeo, last_shared, delays_shared, cha_shared, last_inter, delays_inter, cha_inter)
+
     ## Get status of each station in National and International groups
     nat_data = pd.concat([network.siigeo_data, network.shared_data])
     prints, status = network.get_station_status(nat_data)
@@ -235,6 +275,7 @@ if __name__ == "__main__":
         network.save_checklist(inter_data, inter_fname)
     else:
         print(Fore.LIGHTBLUE_EX + "Not storaging checklist results in files!!!" + Fore.RESET)
-
-    elapsed_time = (datetime.now() - current_time).total_seconds()
+    ## Print computing time spent on the checklist routine
+    te = time.perf_counter()
+    elapsed_time = te - ti
     print(Fore.LIGHTGREEN_EX + f"Checklist routine executed in {round(elapsed_time, 1)} seconds")

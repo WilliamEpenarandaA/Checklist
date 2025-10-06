@@ -7,9 +7,20 @@ import json
 import pandas as pd
 import requests
 import subprocess
+import time
 from pathlib import Path
 from datetime import datetime, timedelta
 from colorama import Fore, Style
+
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        init_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - init_time
+        print(f"Method {func.__name__} execution time: {elapsed_time:.5f} seconds")
+        return result
+    return wrapper
 
 class Network:
     def __init__(self, data_path: str, url:str = 'https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/', server:str = '232'):
@@ -50,7 +61,7 @@ class Network:
     @get_url.setter
     def set_url(self, url: str):
         self.__url = url
-
+ 
     def define_server(self, server:str):
         """
         Function to define server ip and port to request the information.
@@ -71,7 +82,7 @@ class Network:
         else:
             server = '101' + server
         return server, port
-
+ 
     def download_siigeo_data(self, url:str, data_path: str, current_time: datetime, action:bool):
         """
         Function to download the information of stations in Siigeo intranet service.
@@ -211,7 +222,7 @@ class Network:
         self.shared_data = shared_data[['network_code', 'id', 'channel_code', 'type_transmission']]
         self.inter_data = inter_data[['network_code', 'id', 'channel_code', 'type_transmission']]
         return True
-
+  
     def assign_channel(self, station_code: str, channel_code: str):
         """
         Function to assing string code to channel of the correspond station.
@@ -223,7 +234,7 @@ class Network:
         
         Return:
         -----------
-        channel (str): string code of correspond channel in station.
+        channel (str): string code of the correspond channel in station.
         """
         ## Map channel codes to string representations
         channel_strcode = {'': 'Z', '00':'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
@@ -244,7 +255,7 @@ class Network:
         else:
             channel = channel_strcode[channel_code]
         return channel
-
+ 
     def compute_last_times(self, server:str, port:str, station_code:str, channel:str):
         """
         Function to conmpute channel last connection in channel of the correspond station.
@@ -282,7 +293,7 @@ class Network:
         
         last_connection = datetime.strptime(last_connection, format_date)
         return last_connection
-
+ 
     def compute_delays(self, current_time:datetime, last_connection: datetime):
         """
         Function to calculate delay in seconds of channel of the correspond station.
@@ -305,6 +316,7 @@ class Network:
             delay = -99999
         return delay
 
+    @measure_time 
     def compile_connection_information(self, last_siigeo: list, delay_siigeo:list, channel_siigeo: list, last_shared: list, delay_shared: list, channel_shared: list, last_inter: list, delay_inter: list, channel_inter: list):
         """
         Function to compile last connection and delays information of national, shared and international stations.
@@ -439,7 +451,7 @@ class Network:
         data_stations = pd.concat([data_stations, shared_stations], ignore_index=True).reset_index(drop=True)
 
         return data_stations
-
+ 
     @staticmethod
     def get_status_color(status:str):
         """
@@ -485,7 +497,7 @@ class Network:
             raise ValueError(Fore.LIGHTRED_EX + "National Accelerographic stations data must be in a valid Dataframe!!!" + Fore.RESET)
         data_stations = data_stations.sort_values(by=['id', 'channel_code'], ascending=[True, True]).reset_index(drop=True)
         return data_stations
-
+ 
     @staticmethod
     def order_inter_stations(data_stations):
         """
@@ -503,7 +515,7 @@ class Network:
             raise ValueError(Fore.LIGHTRED_EX + "International stations data must be in a valid Dataframe!!!" + Fore.RESET)
         data_stations = data_stations.sort_values(by='id').reset_index(drop=True)
         return data_stations
-
+ 
     @staticmethod
     def get_nat_statistics(national_stations, seismo_nat_stations, accel_nat_stations):
         """

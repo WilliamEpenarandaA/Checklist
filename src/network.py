@@ -316,7 +316,6 @@ class Network:
             delay = -99999
         return delay
 
-    @measure_time 
     def compile_connection_information(self, last_siigeo: list, delay_siigeo:list, channel_siigeo: list, last_shared: list, delay_shared: list, channel_shared: list, last_inter: list, delay_inter: list, channel_inter: list):
         """
         Function to compile last connection and delays information of national, shared and international stations.
@@ -474,7 +473,7 @@ class Network:
         elif status == 'offline':
             color = Fore.LIGHTRED_EX
         elif status == 'Station not tracking by slinktool':
-            color = Fore.LIGHTYELLOW_EX
+            color = Fore.LIGHTBLUE_EX
         else:
             color = Fore.RESET
         status_color = color + status + Fore.RESET

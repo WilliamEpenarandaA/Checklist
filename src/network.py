@@ -273,10 +273,13 @@ class Network:
         slinktool module, was set as 1970-01-01 00:00:00 UTC.
         """
         special_inter_stations = ['JTS', 'SDV']
+        special_nat_stations = ['PGA6']
         if station_code in special_inter_stations:    
-            command = f"slinktool -Q 10.100.{server}:{port} | grep {station_code} | grep {channel} | grep 00"
+            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
+        elif station_code in special_nat_stations:
+            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 30"
         else:
-            command = f"slinktool -Q 10.100.{server}:{port} | grep {station_code} | grep {channel}"
+            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
 
         result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
         if result.returncode != 0:

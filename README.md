@@ -56,7 +56,7 @@ where:
 
 > [!IMPORTANT]
 > If any station is not being tracked by slinktool module, last connection datetime is defined a default value of **1970-01-01 00:00:00**.
-> `++wave` allow to compute last connection of a station using last data stored in waveform files in server. If a station has not data in the current year, delay time assign a default value of **one year and one day** before the current time.
+> `++wave` allow to compute last connection of a station using last data stored in waveform files in server. If a station has not data in the current year, delay time assign a default value of **one year and one day** before the current time and last connection datetime assign a default value of **last day of the previous year**. For example: if the year is 2025, last connection will be **2024-12-31 23:59:59**.
 
 > [!NOTE]
 > For instance, if we want to verify the availabity of the whole network with the corresponding metrics for National and International stations and save the results in csv files, we can execute the following command:

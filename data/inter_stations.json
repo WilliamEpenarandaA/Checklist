@@ -25,7 +25,7 @@
         "nombre": "Alcedo, Galapagos",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real" 
@@ -65,7 +65,7 @@
         "nombre": "Tulcain",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "",
+        "CODIGO CANAL": "10",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"         
@@ -85,7 +85,7 @@
         "nombre": "Azuero",
         "pais" : "Panama",
         "CODIGO RED": "RP",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "inactiva",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real" 
@@ -135,7 +135,7 @@
         "nombre": "La Bonita",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -145,7 +145,7 @@
         "nombre": "",
         "pais" : "Panama",
         "CODIGO RED": "PA",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -175,7 +175,7 @@
         "nombre": "Dorado de Cascales",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -195,7 +195,7 @@
         "nombre": "Conchacay",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -205,7 +205,7 @@
         "nombre": "San Cristobal",
         "pais" : "Nicaragua",
         "CODIGO RED": "NU",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -215,7 +215,7 @@
         "nombre": "Cuicocha Este",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -225,7 +225,7 @@
         "nombre": "Cruzeiro do Sul",
         "pais" : "Brasil",
         "CODIGO RED": "BR",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -234,7 +234,7 @@
         "IDENTIFICADOR": "DABV",
         "nombre": "Dabajuro",
         "pais" : "Venezuela",
-        "CODIGO RED": "",
+        "CODIGO RED": "VE",
         "CODIGO CANAL": "",
         "ESTADO ESTACION": "retirada",
         "TIPO DE TRANSMISION": "internet",
@@ -244,7 +244,7 @@
         "IDENTIFICADOR": "ELOV",
         "nombre": "Elorza",
         "pais" : "Venezuela",
-        "CODIGO RED": "",
+        "CODIGO RED": "VE",
         "CODIGO CANAL": "",
         "ESTADO ESTACION": "retirada",
         "TIPO DE TRANSMISION": "internet",
@@ -265,7 +265,7 @@
         "nombre": "Flavio Alfaro-Manabi",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -365,7 +365,7 @@
         "nombre": "Macarai",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -405,7 +405,7 @@
         "nombre": "Otavalo",
         "pais" : "Ecuador",
         "CODIGO RED": "IU",
-        "CODIGO CANAL": "",
+        "CODIGO CANAL": "00",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -415,7 +415,7 @@
         "nombre": "Pacto",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -435,7 +435,7 @@
         "nombre": "Ana Tenorio",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -444,9 +444,9 @@
         "IDENTIFICADOR": "PNME",
         "nombre": "Penonome",
         "pais" : "Panama",
-        "CODIGO RED": "",
-        "CODIGO CANAL": "00",
-        "ESTADO ESTACION": "conexion perdida",
+        "CODIGO RED": "RP",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
     },
@@ -455,7 +455,7 @@
         "nombre": "Puerto Lopez",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -485,7 +485,7 @@
         "nombre": "Rio Verde",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "conexion perdida",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -545,7 +545,7 @@
         "nombre": "San Lorenzo",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
@@ -554,7 +554,7 @@
         "IDENTIFICADOR": "SOCV",
         "nombre": "Socops",
         "pais" : "Venezuela",
-        "CODIGO RED": "",
+        "CODIGO RED": "VE",
         "CODIGO CANAL": "",
         "ESTADO ESTACION": "conexion perdida",
         "TIPO DE TRANSMISION": "internet",
@@ -605,7 +605,7 @@
         "nombre": "Tulcain-Chalpatan",
         "pais" : "Ecuador",
         "CODIGO RED": "EC",
-        "CODIGO CANAL": "00",
+        "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"

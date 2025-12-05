@@ -117,7 +117,7 @@ class Wavetime():
             raise ValueError("Wavefile doesn't exist.")
         current_time = current_time + timedelta(hours=5)
         if wavefile == "/NFS/":
-            date = f"{current_time.year}" + "-12-31" + " 23:59:59"
+            date = f"{current_time.year -1}" + "-12-31" + " 23:59:59"
             endtime = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             delay = 31536000.0 + 86400.0 # 1 year and one day
             return endtime, delay

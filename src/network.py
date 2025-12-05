@@ -236,22 +236,30 @@ class Network:
         -----------
         channel (str): string code of the correspond channel in station.
         """
-        ## Map channel codes to string representations
+        ## Map channel codes to string representations. Declare special cases.
         channel_strcode = {'': 'Z', '00':'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
         if channel_code not in channel_strcode:
             raise KeyError(Fore.LIGHTRED_EX + "Invalid channel code provided." + Fore.RESET)
         
-        special_stations = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'SJUM', 'TAPM', 'FLF1', 'BLUN']
-        special_stations2 = ['JTS', 'SDV', 'ANWB', 'BBGH', 'BCIP', 'GRGR', 'GRTK', 'GTBY', 'LPAZ', 'MTDJ', 'NNA', 'PAYG', 'SAML', 'SDDR', 'SJG', 'TEIG', 'TGUH']
-        special_stations3 = ['CNGN', 'ESPN']
+        special_stations = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'SJUM', 'TAPM', 'FLF1', 'BLUN', 'ACON', 'ALCE', 'APQN', 'AZU', 'BOAV', 'BONI', 'BRU2', 'CACAO', 'CASC', 'CZSB', 'COHC', 'CRIN', 'CUSE', 'GMAL', 'MCRA', 'PAC1', 'PIAT', 'PNME', 'PPLP', 'PTGL', 'PTP', 'RVRD', 'SGC2', 'SNLR', 'TBTG', 'TOTI', 'TULM', 'UPA', 'UPD2']
+        special_stations2 = ['AUA1', 'JTS', 'SDV', 'ANWB', 'BBGH', 'BCIP', 'GRGR', 'GRTK', 'GTBY', 'LPAZ', 'MTDJ', 'NNA', 'PAYG', 'SAML', 'SDDR', 'SJG', 'TEIG', 'TGUH', 'DABV', 'ELOV', 'OTAV', 'SOCV']
+        special_stations3 = ['CNGN', 'ESPN', 'HERN']
+        special_stations4 = ['LITA']
+        special_stations5 = ['ACOT', 'AOTA']
         if station_code in special_stations2:
             channel = 'BHZ'
         elif station_code in special_stations:
             channel = 'HHZ'
         elif station_code in special_stations3:
             channel = 'EHZ'
+        elif station_code in special_stations4:
+            channel = 'SHZ'
+        elif station_code in special_stations5:
+            channel = 'HNZ'
         elif station_code == 'DRL04' and channel_code == '10':
             channel = 'EHZ'
+        elif station_code == 'ROSC' and channel_code == '':
+            channel = 'BHZ'
         else:
             channel = channel_strcode[channel_code]
         return channel
@@ -273,11 +281,8 @@ class Network:
         slinktool module, was set as 1970-01-01 00:00:00 UTC.
         """
         special_inter_stations = ['JTS', 'SDV']
-        special_nat_stations = ['PGA6']
         if station_code in special_inter_stations:    
             command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
-        elif station_code in special_nat_stations:
-            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 30"
         else:
             command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
 

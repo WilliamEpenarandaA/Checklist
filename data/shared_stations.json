@@ -63,15 +63,6 @@
      "TIPO DE ADQUISICION": "tiempo real"
     },
     {
-     "IDENTIFICADOR": "MARO",
-     "nombre": "Maravillas(Nevado del Huila)",
-     "CODIGO RED": "CM",
-     "CODIGO CANAL": "00",
-     "ESTADO ESTACION": "activa",
-     "TIPO DE TRANSMISION": "internet",
-     "TIPO DE ADQUISICION": "tiempo real"
-    },
-    {
      "IDENTIFICADOR": "CONO",
      "nombre": "Condor(Purace)",
      "CODIGO RED": "CM",

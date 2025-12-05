@@ -83,7 +83,6 @@ if __name__ == "__main__":
 
     ## Initialize Network class and download siigeo data
     network = Network(data_path)
-
     siigeo_file = network.download_siigeo_data(network.get_url, data_path, current_time, params['u'])
     shared_file = "shared_stations.json"
     inter_file = "inter_stations.json"
@@ -151,7 +150,7 @@ if __name__ == "__main__":
     inter_data['status'] = status
     
     ## Separate National stations in Seismometers and Accelerometers
-    seismo_nat_data = nat_data.loc[(nat_data['channel'] == 'HHZ') | (nat_data['channel'] == 'Z') | (nat_data['channel'] == 'EHZ')]
+    seismo_nat_data = nat_data.loc[(nat_data['channel'] == 'HHZ') | (nat_data['channel'] == 'BHZ') | (nat_data['channel'] == 'EHZ')]
     accel_nat_data = nat_data.loc[(nat_data['channel'] == 'HNZ') | (nat_data['channel'] == 'HLZ')]
 
     ## Order stations by checklist defined format

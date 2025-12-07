@@ -169,5 +169,14 @@
      "ESTADO ESTACION": "activa",
      "TIPO DE TRANSMISION": "internet",
      "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+     "IDENTIFICADOR": "GUAP",
+     "nombre": "Guayapango",
+     "CODIGO RED": "CM",
+     "CODIGO CANAL": "00",
+     "ESTADO ESTACION": "activa",
+     "TIPO DE TRANSMISION": "internet",
+     "TIPO DE ADQUISICION": "tiempo real"
     }
 ]

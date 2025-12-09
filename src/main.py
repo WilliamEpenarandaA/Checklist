@@ -19,7 +19,7 @@ init(autoreset=True)
 Style.RESET_ALL
 
 ## Define required functions
-def run_calculations(station_info:pd.Series):
+def run_calculations(station_info:pd.Series, mode:bool=False):
     """
     Function to perform calculations of last connection datetime an delay for a given station.
 
@@ -27,7 +27,10 @@ def run_calculations(station_info:pd.Series):
     -----------
     station_info (Pd.Series): Station parameters. It should contain following information:
     (0) Station ID (str). For instance APAC.
-    (1) Channel ID (str). Allowed values are: 00, 10, 11, 20, 30, 40
+    (1) Channel (str). For example HHZ. (Optional). Used in International and Shared stations 
+    (2) Channel location (str). Allowed values are: 00, 10, 11, 20, 30, 40
+    
+    mode (bool). default false. Allow to activate channel input directly without infering from Channel location code.
 
     Return:
     -----------
@@ -41,7 +44,10 @@ def run_calculations(station_info:pd.Series):
         raise ValueError("Station info must be provided!!!")
     station_code = station_info['id']
     channel_code = station_info['channel_code']
-    cha = network.assign_channel(station_code, channel_code)
+    if mode:
+        cha = station_info['channel']
+    else:
+        cha = network.assign_channel(station_code, channel_code)
     last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
     delay = network.compute_delays(datetime.now(), last_time)  
     return last_time, delay, cha
@@ -111,27 +117,27 @@ if __name__ == "__main__":
             delays_siigeo.append(delay)
             cha_siigeo.append(cha)
         for _, row in tqdm(network.shared_data.iterrows(), desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of shared national stations' + Fore.RESET, total=len(network.shared_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
-            last_time, delay, cha = run_calculations(row)
+            last_time, delay, cha = run_calculations(row, True)
             last_shared.append(last_time)
             delays_shared.append(delay)
             cha_shared.append(cha)
         for _, row in tqdm(network.inter_data.iterrows(), desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of international stations' + Fore.RESET, total=len(network.inter_data), bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"):
-            last_time, delay, cha = run_calculations(row)
+            last_time, delay, cha = run_calculations(row, True)
             last_inter.append(last_time)
             delays_inter.append(delay)
             cha_inter.append(cha)
     else:
-        ## Implementation of Parallel processing. Thanks to Garcia, K for his valuable explannations.
+        ## Implementation of Parallel processing. Thanks to Garcia, K for his valuable explanations.
         with concurrent.futures.ProcessPoolExecutor(max_workers=params['n']) as executor:
             res = list(tqdm(executor.map(run_calculations, [row for _, row in network.siigeo_data.iterrows()]), total=len(network.siigeo_data),\
                              desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of national stations' + Fore.RESET, bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"))
             last_siigeo, delays_siigeo, cha_siigeo = zip(*res)
             last_siigeo, delays_siigeo, cha_siigeo = list(last_siigeo), list(delays_siigeo), list(cha_siigeo) 
-            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.shared_data.iterrows()]), total=len(network.shared_data),\
+            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.shared_data.iterrows()], [True]*len(network.shared_data)), total=len(network.shared_data),\
                             desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of shared national stations' + Fore.RESET, bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"))
             last_shared, delays_shared, cha_shared = zip(*res)
             last_shared, delays_shared, cha_shared = list(last_shared), list(delays_shared), list(cha_shared)
-            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.inter_data.iterrows()]), total=len(network.inter_data),\
+            res = list(tqdm(executor.map(run_calculations, [row for _, row in network.inter_data.iterrows()], [True]*len(network.inter_data)), total=len(network.inter_data),\
                             desc=Style.BRIGHT + Fore.LIGHTGREEN_EX + 'Computing delay times of international stations' + Fore.RESET, bar_format="{desc}: {bar:80} {percentage:.1f}% [{n_fmt}/{total}]"))
             last_inter, delays_inter, cha_inter = zip(*res)
             last_inter, delays_inter, cha_inter = list(last_inter), list(delays_inter), list(cha_inter)

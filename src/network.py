@@ -193,10 +193,11 @@ class Network:
         if shared_data.empty or not isinstance(shared_data, pd.DataFrame):
             raise ValueError(Fore.LIGHTRED_EX + "Shared data must be provided in a valid dataframe." + Fore.RESET)
         shared_data = shared_data.rename(columns={'IDENTIFICADOR':'id', 'NOMBRE':'name', 'ESTADO ESTACIÓN':'station_status',\
-            'CODIGO RED': 'network_code', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
+            'CODIGO RED': 'network_code', 'CODIGO SENSOR': 'channel', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
             'TIPO DE TRANSMISION':'type_transmission', 'TIPO DE ADQUISICION':'type_adquissition'})
         
         ## Assign correct data types in each column of shared_dataframe
+        shared_data['channel'] = shared_data['channel'].fillna('').astype(str)
         shared_data['channel_code'] = shared_data['channel_code'].fillna('').astype(str)
         shared_data['network_code'] = shared_data['network_code'].fillna('').astype(str)
         shared_data['station_status'] = shared_data['station_status'].astype(str).str.lower()
@@ -206,10 +207,11 @@ class Network:
         if inter_data.empty or not isinstance(inter_data, pd.DataFrame):
             raise ValueError(Fore.LIGHTRED_EX + "International data is empty." + Fore.RESET)
         inter_data = inter_data.rename(columns={'IDENTIFICADOR':'id', 'NOMBRE':'name',\
-            'CODIGO RED': 'network_code', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
+            'CODIGO RED': 'network_code', 'CODIGO SENSOR': 'channel', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
             'TIPO DE TRANSMISION':'type_transmission', 'TIPO DE ADQUISICION':'type_adquissition'})
 
         ## Assign correct data types in each column of inter_dataframe
+        inter_data['channel'] = inter_data['channel'].fillna('').astype(str)
         inter_data['channel_code'] = inter_data['channel_code'].fillna('').astype(str)
         inter_data['network_code'] = inter_data['network_code'].fillna('').astype(str)
         inter_data['station_status'] = inter_data['station_status'].astype(str).str.lower()
@@ -219,8 +221,8 @@ class Network:
         ## Subset dataframes to only include relevant columns and store them in the instance
         print(Style.BRIGHT + Fore.LIGHTGREEN_EX + "Dataframes formatted successfully!!!" + Style.RESET_ALL)
         self.siigeo_data = siigeo_data[['network_code', 'id', 'channel_code', 'type_transmission']]
-        self.shared_data = shared_data[['network_code', 'id', 'channel_code', 'type_transmission']]
-        self.inter_data = inter_data[['network_code', 'id', 'channel_code', 'type_transmission']]
+        self.shared_data = shared_data[['network_code', 'id', 'channel', 'channel_code', 'type_transmission']]
+        self.inter_data = inter_data[['network_code', 'id', 'channel', 'channel_code', 'type_transmission']]
         return True
   
     def assign_channel(self, station_code: str, channel_code: str):
@@ -240,25 +242,7 @@ class Network:
         channel_strcode = {'': 'Z', '00':'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
         if channel_code not in channel_strcode:
             raise KeyError(Fore.LIGHTRED_EX + "Invalid channel code provided." + Fore.RESET)
-        
-        special_stations = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'SJUM', 'TAPM', 'FLF1', 'BLUN', 'ACON', 'ALCE', 'APQN', 'AZU', 'BOAV', 'BONI', 'BRU2', 'CACAO', 'CASC', 'CZSB', 'COHC', 'CRIN', 'CUSE', 'GMAL', 'MCRA', 'PAC1', 'PIAT', 'PNME', 'PPLP', 'PTGL', 'PTP', 'RVRD', 'SGC2', 'SNLR', 'TBTG', 'TOTI', 'TULM', 'UPA', 'UPD2']
-        special_stations2 = ['AUA1', 'JTS', 'SDV', 'ANWB', 'BBGH', 'BCIP', 'GRGR', 'GRTK', 'GTBY', 'LPAZ', 'MTDJ', 'NNA', 'PAYG', 'SAML', 'SDDR', 'SJG', 'TEIG', 'TGUH', 'DABV', 'ELOV', 'OTAV', 'SOCV']
-        special_stations3 = ['CNGN', 'ESPN', 'HERN']
-        special_stations4 = ['LITA']
-        special_stations5 = ['ACOT', 'AOTA']
-        if station_code in special_stations2:
-            channel = 'BHZ'
-        elif station_code in special_stations:
-            channel = 'HHZ'
-        elif station_code in special_stations3:
-            channel = 'EHZ'
-        elif station_code in special_stations4:
-            channel = 'SHZ'
-        elif station_code in special_stations5:
-            channel = 'HNZ'
-        elif station_code == 'DRL04' and channel_code == '10':
-            channel = 'EHZ'
-        elif station_code == 'ROSC' and channel_code == '':
+        if station_code == 'ROSC' and channel_code == '':
             channel = 'BHZ'
         else:
             channel = channel_strcode[channel_code]
@@ -266,7 +250,7 @@ class Network:
  
     def compute_last_times(self, server:str, port:str, station_code:str, channel:str):
         """
-        Function to conmpute channel last connection in channel of the correspond station.
+        Function to compute channel last connection in channel of the correspond station.
 
         Parameters:
         -----------

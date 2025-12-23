@@ -80,8 +80,14 @@ class Network:
         if server != '2':
             server = '100.' + server
         else:
-            server = '101' + server
+            server = '101.' + server
         return server, port
+    
+    def request_server_stations(self, server:str, port:str):
+        command = f"slinktool -Q 10.100.{server}:{port} | awk -F' ' '!seen[$2]++' |" + " awk '{print $2}'"
+        result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
+        output = result.stdout.splitlines()
+        return output
  
     def download_siigeo_data(self, url:str, data_path: str, current_time: datetime, action:bool):
         """
@@ -225,6 +231,14 @@ class Network:
         self.inter_data = inter_data[['network_code', 'id', 'channel', 'channel_code', 'type_transmission']]
         return True
   
+    def filter_stations(self, stations:list):
+        if not stations or not isinstance(stations, list):
+            raise ValueError(Fore.LIGHTRED_EX + "Not provided stations in server or in a format different to a list." + Fore.RESET)
+        self.siigeo_data = self.siigeo_data[self.siigeo_data['id'].isin(stations)]
+        self.shared_data = self.shared_data[self.shared_data['id'].isin(stations)]
+        self.inter_data = self.inter_data[self.inter_data['id'].isin(stations)]
+        return True
+
     def assign_channel(self, station_code: str, channel_code: str):
         """
         Function to assing string code to channel of the correspond station.
@@ -349,17 +363,18 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if not last_inter or not isinstance(last_inter, list):
-            raise ValueError("last connections of international stations must be a valid list.")
-        if not delay_inter or not isinstance(delay_inter, list):
-            raise ValueError("Delays times of international stations must be in a valid list.")
-        if not channel_inter or not isinstance(channel_inter, list):
-            raise ValueError("Channels of international stations must be in a valid list.")
-        inter_data = self.inter_data
-        inter_data['last_connection'] = last_inter
-        inter_data['delay_seconds'] = delay_inter
-        inter_data['channel'] = channel_inter
-        self.inter_data = inter_data
+        if self.server in ['232', '13']:
+            if not last_inter or not isinstance(last_inter, list):
+                raise ValueError("last connections of international stations must be a valid list.")
+            if not delay_inter or not isinstance(delay_inter, list):
+                raise ValueError("Delays times of international stations must be in a valid list.")
+            if not channel_inter or not isinstance(channel_inter, list):
+                raise ValueError("Channels of international stations must be in a valid list.")
+            inter_data = self.inter_data
+            inter_data['last_connection'] = last_inter
+            inter_data['delay_seconds'] = delay_inter
+            inter_data['channel'] = channel_inter
+            self.inter_data = inter_data
         return True
 
     @staticmethod

@@ -5,8 +5,19 @@
 ####################################################################################################################################
 from datetime import datetime, timedelta
 from pathlib import Path
-import obspy
 from colorama import Fore
+import obspy
+import time
+
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        init_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - init_time
+        print(f"Method {func.__name__} execution time: {elapsed_time:.5f} seconds")
+        return result
+    return wrapper
 
 class Wavetime():
     def __init__(self, year:str, server: str = '232'):
@@ -99,6 +110,7 @@ class Wavetime():
         return last_file
     
     @staticmethod
+    #@measure_time
     def get_delay(wavefile:str, current_time:datetime):
         """
         Function to compute the delay time and last data stored in the server.
@@ -120,6 +132,11 @@ class Wavetime():
             date = f"{current_time.year -1}" + "-12-31" + " 23:59:59"
             endtime = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             delay = 31536000.0 + 86400.0 # 1 year and one day
+            return endtime, delay
+        elif wavefile == "/mnt/sc232/2025/NU/MGAN/BHZ.D/NU.MGAN..BHZ.D.2025.343": #Dealing with file with a lot of gaps
+            date = "2025-12-09 16:05:00"
+            endtime = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+            delay = (current_time - endtime).total_seconds()
             return endtime, delay
         else:
             try:

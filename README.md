@@ -1,5 +1,5 @@
 # Checklist
-Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in Seiscomp 232 server and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time.
+Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in servers of data adquisition and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time.
 
 ## Requirements
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
@@ -44,15 +44,16 @@ where:
 * `<options>`: There are additional parameters can be declared to activate additional parameters in the routine:
     * `+h` or `+help`  display a menu on terminal which show different avalaible options.
     * `+n` or `+n_process` number of process to use in parallel. Recommended to set as 8 to reduce computing time. It's limited to 10 according to capacities of server processor. 
-    * `+o` or `+output`  Save the results on csv files.
+    * `+o` or `+output`  Save the results on csv files. Only allowed for 232 and 13 servers.
     * `+p` or `+print`  Print delay times in a readable format (dd HH MM SS) in terminal.
     * `+u` or `+update`  Update station information with Siigeo database.
-    * `+s` or `+stat`  Print performance of National and International stations in terminal.
+    * `+s` or `+stat`  Print performance of National and International stations in terminal. Only allowed for 232 and 13 servers.
     * `+sn` or `+stat_nat`  Print performance of National stations in terminal divided by type of transmission.
-    * `++wave` Compute delay times for stations not tracked by slinktool module.
     * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
     * `++recovering` Print checklist of stations with recovering status. Can be combined with others filters.
     * `++online` Print checklist of stations with online status. Can be combined with others filters.
+    * `++server` Define server to perform checklist process. Avalaible options are: 232, 13, 97 and 2.
+    * `++wave` Compute delay times for stations not tracked by slinktool module. Only allowed in 232 server.
 
 > [!IMPORTANT]
 > If any station is not being tracked by slinktool module, last connection datetime is defined a default value of **1970-01-01 00:00:00**.

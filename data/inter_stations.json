@@ -1,5 +1,16 @@
 [
     {
+        "IDENTIFICADOR": "ACPR",
+        "nombre": "Escuela Internacional de Aruba",
+        "pais" : "Paises Bajos",
+        "CODIGO RED": "PR",
+        "CODIGO SENSOR": "HHZ",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real" 
+    },
+    {
         "IDENTIFICADOR": "ACON",
         "nombre": "Acoyapa",
         "pais" : "Nicaragua",
@@ -74,17 +85,6 @@
         "CODIGO SENSOR": "HNZ",
         "CODIGO CANAL": "10",
         "ESTADO ESTACION": "activa",
-        "TIPO DE TRANSMISION": "internet",
-        "TIPO DE ADQUISICION": "tiempo real"         
-    },
-    {
-        "IDENTIFICADOR": "AUA1",
-        "nombre": "Aruba",
-        "pais" : "Holanda",
-        "CODIGO RED": "PR",
-        "CODIGO SENSOR": "BHZ",
-        "CODIGO CANAL": "",
-        "ESTADO ESTACION": "inactiva",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"         
     },
@@ -305,6 +305,17 @@
         "CODIGO SENSOR": "HHZ",
         "CODIGO CANAL": "",
         "ESTADO ESTACION": "conexion perdida",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "GMALF",
+        "nombre": "Guarumal",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO SENSOR": "HNZ",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",
         "TIPO DE ADQUISICION": "tiempo real"
     },
@@ -688,6 +699,17 @@
         "pais" : "Panama",
         "CODIGO RED": "RP",
         "CODIGO SENSOR": "HHZ",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "YAVI3",
+        "nombre": "Yavi",
+        "pais" : "Panama",
+        "CODIGO RED": "RP",
+        "CODIGO SENSOR": "SHZ",
         "CODIGO CANAL": "",
         "ESTADO ESTACION": "activa",
         "TIPO DE TRANSMISION": "internet",

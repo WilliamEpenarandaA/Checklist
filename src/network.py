@@ -84,6 +84,18 @@ class Network:
         return server, port
     
     def request_server_stations(self, server:str, port:str):
+        """
+        Function to request stations which are sending information to a particular server.
+        
+        Parameters:
+        -----------
+        server (str): Last two groups of three digits of server ip.
+        port (str): port number to connect to the server.
+
+        Return:
+        -----------
+        output (list): Station list which are in the given server.
+        """
         command = f"slinktool -Q 10.100.{server}:{port} | awk -F' ' '!seen[$2]++' |" + " awk '{print $2}'"
         result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
         output = result.stdout.splitlines()
@@ -232,6 +244,19 @@ class Network:
         return True
   
     def filter_stations(self, stations:list):
+        """
+        Function to filter stations from siigeo, shared and international files which are in the given server.
+        
+        This function modify following atributes of the class: self.siigeo, self.shared and self.inter data.  
+
+        Parameters:
+        -----------
+        stations (list): Station list that are sending information in the given server.
+
+        Return:
+        -----------
+        bool: T.
+        """
         if not stations or not isinstance(stations, list):
             raise ValueError(Fore.LIGHTRED_EX + "Not provided stations in server or in a format different to a list." + Fore.RESET)
         self.siigeo_data = self.siigeo_data[self.siigeo_data['id'].isin(stations)]

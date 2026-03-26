@@ -79,12 +79,12 @@ if __name__ == "__main__":
     print(f"Current time (Local time): {current_strtime}")
     path = str(Path(__file__).absolute().parent.parent)
     data_path = str(Path(path, "data"))
-    available_servers = ['232', '13', '97', '2']
+    available_servers = ['232', '13', '97', '2', '91']
 
     ## Add a hard cap in number of process to avoid server memory collapse in parallel processing
     if params['n'] < 0 or not isinstance(params['n'], int):
         raise ValueError(Style.BRIGHT + Fore.LIGHTRED_EX + "Number of proccess must be a positive integer" + Fore.RESET)
-    elif params['n'] > 10:
+    elif params['n'] > 36:
         raise ValueError(Style.BRIGHT + Fore.LIGHTRED_EX + "Number of process exceeds the limit of the server procesor. Please use a number of process less than 10" + Fore.RESET)
     else:
         print(Style.BRIGHT + Fore.LIGHTGREEN_EX + "Number of Process are according with server capacities" + Fore.RESET)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
     ## Define server IP and port to request the information
     server, port = network.define_server(network.server)
-    if network.server != '232':
+    if network.server not in ['232', '91']:
         stats = network.request_server_stations(server, port)
         network.filter_stations(stats)
 

@@ -75,7 +75,7 @@ class Network:
         server (str): Last digits of server IP
         port (str): Digit of the port for the correspond server IP.
         """
-        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000"}
+        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000"}
         port = server_dict[server]
         if server != '2':
             server = '100.' + server
@@ -304,10 +304,16 @@ class Network:
         slinktool module, was set as 1970-01-01 00:00:00 UTC.
         """
         special_inter_stations = ['JTS', 'SDV']
-        if station_code in special_inter_stations:    
-            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
+        if server != '91':
+	        if station_code in special_inter_stations:    
+	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
+	        else:
+	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
         else:
-            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
+            if station_code in special_inter_stations:
+                command = f"slinktool -Q 10.100.{server} | grep -w {station_code} | grep -w {channel} | grep 00"
+            else:
+                command = f"slinktool -Q 10.100.{server} | grep -w {station_code} | grep -w {channel}"
 
         result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
         if result.returncode != 0:

@@ -131,7 +131,7 @@
     },
     {
      "IDENTIFICADOR": "SJUM",
-     "nombre": "",
+     "nombre": "San Juan",
      "CODIGO RED": "CM",
      "CODIGO SENSOR": "HHZ",
      "CODIGO CANAL": "",
@@ -141,7 +141,7 @@
     },
     {
      "IDENTIFICADOR": "ANIM",
-     "nombre": "Animas",
+     "nombre": "Anillo",
      "CODIGO RED": "CM",
      "CODIGO SENSOR": "HHZ",
      "CODIGO CANAL": "",

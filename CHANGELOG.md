@@ -2,6 +2,10 @@
 
 All important changes will be documented here.
 
+## [2.3.2] 2026-03-26
+### Added
+- Option to run checklist in server .91 
+
 ## [2.3.1] 2026-02-05
 ### Deprecated
 - Eliminate AUA1 station from checklist.

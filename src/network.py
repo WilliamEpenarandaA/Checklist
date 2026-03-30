@@ -7,37 +7,53 @@ import json
 import pandas as pd
 import requests
 import subprocess
+import time
 from pathlib import Path
 from datetime import datetime, timedelta
 from colorama import Fore, Style
 
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        init_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - init_time
+        print(f"Method {func.__name__} execution time: {elapsed_time:.5f} seconds")
+        return result
+    return wrapper
+
 class Network:
-    def __init__(self, data_path: str, url:str = 'https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/'):
+    def __init__(self, data_path: str, url:str = 'https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/', server:str = '232'):
         """
-            Constructor of Usgs Class
+            Constructor of Network Class
 
             Args:
                 data_path (str): Path to the directory where data files will be stored. Defaults to '../data/'.
                 url (str): URL of Siigeo intranet service. By default is defined by: https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/
+                server (str): IP server to request the information.
 
             Raises:
-                ValueError: Trigger if: 
+                ValueError: Trigger if:
+                -data_path is not a valid str. 
                 -url is not a valid string.
-                -data_path is not a valid str.
+                -server is not a valid str.
 
             Examples:
-                >>> Network(logs_path="../data/, url="https://earthquake.usgs.gov/fdsnws/event/1/query?")
+                >>> Network(data_path="../data/", url="https://siigeo.sgc.gov.co/stations/stationExcelCodLocation/", server='232')
         """
         if not Path(data_path).is_dir():
             raise ValueError(Fore.LIGHTRED_EX + "Provided data folder no exist." + Fore.RESET)
         self.data_path = data_path
         if not url or not isinstance(url, str):
             raise ValueError(Fore.LIGHTRED_EX + "URL must be a valid string." + Fore.RESET)
+        if not server or not isinstance(server, str):
+            raise ValueError(Fore.LIGHTRED_EX + "Server must be a valid string" + Fore.RESET)
         self.__url = url
         self.siigeo_data = pd.DataFrame()
         self.shared_data = pd.DataFrame()
         self.inter_data = pd.DataFrame()
-
+        self.server = server
+        
     @property
     def get_url(self):
         return self.__url
@@ -45,7 +61,46 @@ class Network:
     @get_url.setter
     def set_url(self, url: str):
         self.__url = url
+ 
+    def define_server(self, server:str):
+        """
+        Function to define server ip and port to request the information.
 
+        Parameters:
+        -----------
+        server (str): Server IP, stored in a instance variable.
+
+        Return:
+        -----------
+        server (str): Last digits of server IP
+        port (str): Digit of the port for the correspond server IP.
+        """
+        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000"}
+        port = server_dict[server]
+        if server != '2':
+            server = '100.' + server
+        else:
+            server = '101.' + server
+        return server, port
+    
+    def request_server_stations(self, server:str, port:str):
+        """
+        Function to request stations which are sending information to a particular server.
+        
+        Parameters:
+        -----------
+        server (str): Last two groups of three digits of server ip.
+        port (str): port number to connect to the server.
+
+        Return:
+        -----------
+        output (list): Station list which are in the given server.
+        """
+        command = f"slinktool -Q 10.100.{server}:{port} | awk -F' ' '!seen[$2]++' |" + " awk '{print $2}'"
+        result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
+        output = result.stdout.splitlines()
+        return output
+ 
     def download_siigeo_data(self, url:str, data_path: str, current_time: datetime, action:bool):
         """
         Function to download the information of stations in Siigeo intranet service.
@@ -54,7 +109,7 @@ class Network:
         -----------
         data_path (str): Path to the directory where data files will be stored. Defaults to '../data/'.
         url (str): URL of Siigeo intranet service.
-        current time in datetime object.
+        current time in a datetime object.
         action (bool): True or False    
         
         Return:
@@ -156,10 +211,11 @@ class Network:
         if shared_data.empty or not isinstance(shared_data, pd.DataFrame):
             raise ValueError(Fore.LIGHTRED_EX + "Shared data must be provided in a valid dataframe." + Fore.RESET)
         shared_data = shared_data.rename(columns={'IDENTIFICADOR':'id', 'NOMBRE':'name', 'ESTADO ESTACIÓN':'station_status',\
-            'CODIGO RED': 'network_code', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
+            'CODIGO RED': 'network_code', 'CODIGO SENSOR': 'channel', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
             'TIPO DE TRANSMISION':'type_transmission', 'TIPO DE ADQUISICION':'type_adquissition'})
         
         ## Assign correct data types in each column of shared_dataframe
+        shared_data['channel'] = shared_data['channel'].fillna('').astype(str)
         shared_data['channel_code'] = shared_data['channel_code'].fillna('').astype(str)
         shared_data['network_code'] = shared_data['network_code'].fillna('').astype(str)
         shared_data['station_status'] = shared_data['station_status'].astype(str).str.lower()
@@ -169,10 +225,11 @@ class Network:
         if inter_data.empty or not isinstance(inter_data, pd.DataFrame):
             raise ValueError(Fore.LIGHTRED_EX + "International data is empty." + Fore.RESET)
         inter_data = inter_data.rename(columns={'IDENTIFICADOR':'id', 'NOMBRE':'name',\
-            'CODIGO RED': 'network_code', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
+            'CODIGO RED': 'network_code', 'CODIGO SENSOR': 'channel', 'CODIGO CANAL':'channel_code', 'ESTADO ESTACION':'station_status',\
             'TIPO DE TRANSMISION':'type_transmission', 'TIPO DE ADQUISICION':'type_adquissition'})
 
         ## Assign correct data types in each column of inter_dataframe
+        inter_data['channel'] = inter_data['channel'].fillna('').astype(str)
         inter_data['channel_code'] = inter_data['channel_code'].fillna('').astype(str)
         inter_data['network_code'] = inter_data['network_code'].fillna('').astype(str)
         inter_data['station_status'] = inter_data['station_status'].astype(str).str.lower()
@@ -182,8 +239,29 @@ class Network:
         ## Subset dataframes to only include relevant columns and store them in the instance
         print(Style.BRIGHT + Fore.LIGHTGREEN_EX + "Dataframes formatted successfully!!!" + Style.RESET_ALL)
         self.siigeo_data = siigeo_data[['network_code', 'id', 'channel_code', 'type_transmission']]
-        self.shared_data = shared_data[['network_code', 'id', 'channel_code', 'type_transmission']]
-        self.inter_data = inter_data[['network_code', 'id', 'channel_code', 'type_transmission']]
+        self.shared_data = shared_data[['network_code', 'id', 'channel', 'channel_code', 'type_transmission']]
+        self.inter_data = inter_data[['network_code', 'id', 'channel', 'channel_code', 'type_transmission']]
+        return True
+  
+    def filter_stations(self, stations:list):
+        """
+        Function to filter stations from siigeo, shared and international files which are in the given server.
+        
+        This function modify following atributes of the class: self.siigeo, self.shared and self.inter data.  
+
+        Parameters:
+        -----------
+        stations (list): Station list that are sending information in the given server.
+
+        Return:
+        -----------
+        bool: T.
+        """
+        if not stations or not isinstance(stations, list):
+            raise ValueError(Fore.LIGHTRED_EX + "Not provided stations in server or in a format different to a list." + Fore.RESET)
+        self.siigeo_data = self.siigeo_data[self.siigeo_data['id'].isin(stations)]
+        self.shared_data = self.shared_data[self.shared_data['id'].isin(stations)]
+        self.inter_data = self.inter_data[self.inter_data['id'].isin(stations)]
         return True
 
     def assign_channel(self, station_code: str, channel_code: str):
@@ -197,25 +275,21 @@ class Network:
         
         Return:
         -----------
-        channel (str): string code of correspond channel in station.
+        channel (str): string code of the correspond channel in station.
         """
-        ## Map channel codes to string representations
+        ## Map channel codes to string representations. Declare special cases.
         channel_strcode = {'': 'Z', '00':'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
         if channel_code not in channel_strcode:
             raise KeyError(Fore.LIGHTRED_EX + "Invalid channel code provided." + Fore.RESET)
-        
-        special_stations = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'SJUM', 'TAPM', 'CNGN']
-        if station_code == 'SDV':
+        if station_code == 'ROSC' and channel_code == '':
             channel = 'BHZ'
-        elif station_code in special_stations:
-            channel = 'HHZ'
         else:
             channel = channel_strcode[channel_code]
         return channel
-
+ 
     def compute_last_times(self, server:str, port:str, station_code:str, channel:str):
         """
-        Function to conmpute channel last connection in channel of the correspond station.
+        Function to compute channel last connection in channel of the correspond station.
 
         Parameters:
         -----------
@@ -226,12 +300,20 @@ class Network:
         
         Return:
         -----------
-        last_connection (datetime): last UTC datetime connection of channel of station.
+        last_connection (datetime): last UTC datetime connection of channel of station. For stations not tracked by
+        slinktool module, was set as 1970-01-01 00:00:00 UTC.
         """
-        if station_code == 'SDV':    
-            command = f"slinktool -Q 10.100.{server}:{port} | grep {station_code} | grep {channel} | grep 00"
+        special_inter_stations = ['JTS', 'SDV']
+        if server != '91':
+	        if station_code in special_inter_stations:    
+	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
+	        else:
+	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
         else:
-            command = f"slinktool -Q 10.100.{server}:{port} | grep {station_code} | grep {channel}"
+            if station_code in special_inter_stations:
+                command = f"slinktool -Q 10.100.{server} | grep -w {station_code} | grep -w {channel} | grep 00"
+            else:
+                command = f"slinktool -Q 10.100.{server} | grep -w {station_code} | grep -w {channel}"
 
         result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
         if result.returncode != 0:
@@ -248,7 +330,7 @@ class Network:
         
         last_connection = datetime.strptime(last_connection, format_date)
         return last_connection
-
+ 
     def compute_delays(self, current_time:datetime, last_connection: datetime):
         """
         Function to calculate delay in seconds of channel of the correspond station.
@@ -260,7 +342,8 @@ class Network:
         
         Return:
         -----------
-        delay(float): delay in total seconds of channel of the correspond stations.
+        delay(float): delay in total seconds of channel of the correspond stations. Delay value was set as -99999
+        for stations not tracking by slinktool module.
         """
         current_time = current_time + timedelta(hours=5)
         if last_connection is not None and last_connection != datetime(1970, 1, 1, 0, 0, 0, 0):
@@ -311,17 +394,18 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if not last_inter or not isinstance(last_inter, list):
-            raise ValueError("last connections of international stations must be a valid list.")
-        if not delay_inter or not isinstance(delay_inter, list):
-            raise ValueError("Delays times of international stations must be in a valid list.")
-        if not channel_inter or not isinstance(channel_inter, list):
-            raise ValueError("Channels of international stations must be in a valid list.")
-        inter_data = self.inter_data
-        inter_data['last_connection'] = last_inter
-        inter_data['delay_seconds'] = delay_inter
-        inter_data['channel'] = channel_inter
-        self.inter_data = inter_data
+        if self.server in ['232', '13']:
+            if not last_inter or not isinstance(last_inter, list):
+                raise ValueError("last connections of international stations must be a valid list.")
+            if not delay_inter or not isinstance(delay_inter, list):
+                raise ValueError("Delays times of international stations must be in a valid list.")
+            if not channel_inter or not isinstance(channel_inter, list):
+                raise ValueError("Channels of international stations must be in a valid list.")
+            inter_data = self.inter_data
+            inter_data['last_connection'] = last_inter
+            inter_data['delay_seconds'] = delay_inter
+            inter_data['channel'] = channel_inter
+            self.inter_data = inter_data
         return True
 
     @staticmethod
@@ -393,17 +477,45 @@ class Network:
 
         ## According to Reina, C.; Uruena, A.; Lopez A.; suggestions, Shared OVS stations will be at the end of the station list.
         ovs_man = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'PIRM', 'SJUM', 'TAPM']
-        ovs_pop = ['BELO', 'CONO', 'MARO', 'SOTO']
-        ovs_pa = ['BODP', 'GCUF']
+        ovs_pop = ['BELO', 'CONO', 'SOTO', 'PALO']
+        ovs_pa = ['BODP', 'GCUF', 'GUAP']
         uq = ['PBLA', 'RIBER']
         sts = [*uq, *ovs_man, *ovs_pop, *ovs_pa]
 
         shared_stations = data_stations.loc[data_stations['id'].isin(sts)]
         shared_stations = shared_stations.sort_values(by='id', key=lambda x: x.map(sts.index))
-        data_stations = data_stations.loc[~data_stations['id'].isin(sts)].sort_values(by='id')
+        data_stations = data_stations.loc[~data_stations['id'].isin(sts)].sort_values(by=['id', 'channel_code'], ascending=[True, True])
         data_stations = pd.concat([data_stations, shared_stations], ignore_index=True).reset_index(drop=True)
 
         return data_stations
+ 
+    @staticmethod
+    def get_status_color(status:str):
+        """
+        Function to configure a colorful view of status results.
+        
+        Parameters:
+        -----------
+        status (str): Status of each station
+
+        Return:
+        -----------
+        status_color(str): Status of each station in a Colorama format
+        """
+        if not status or not isinstance(status, str):
+            raise ValueError("Status must be a valid string!!!") 
+        if status == 'online':
+            color = Fore.LIGHTGREEN_EX
+        elif status == 'recovering':
+            color = Fore.LIGHTMAGENTA_EX
+        elif status == 'offline':
+            color = Fore.LIGHTRED_EX
+        elif status == 'Station not tracking by slinktool':
+            color = Fore.LIGHTBLUE_EX
+        else:
+            color = Fore.RESET
+        status_color = color + status + Fore.RESET
+        return status_color
 
     @staticmethod
     def order_accel_stations(data_stations):
@@ -420,9 +532,9 @@ class Network:
         """
         if not isinstance(data_stations, pd.DataFrame) or data_stations.empty:
             raise ValueError(Fore.LIGHTRED_EX + "National Accelerographic stations data must be in a valid Dataframe!!!" + Fore.RESET)
-        data_stations = data_stations.sort_values(by='id').reset_index(drop=True)
+        data_stations = data_stations.sort_values(by=['id', 'channel_code'], ascending=[True, True]).reset_index(drop=True)
         return data_stations
-
+ 
     @staticmethod
     def order_inter_stations(data_stations):
         """
@@ -440,7 +552,7 @@ class Network:
             raise ValueError(Fore.LIGHTRED_EX + "International stations data must be in a valid Dataframe!!!" + Fore.RESET)
         data_stations = data_stations.sort_values(by='id').reset_index(drop=True)
         return data_stations
-
+ 
     @staticmethod
     def get_nat_statistics(national_stations, seismo_nat_stations, accel_nat_stations):
         """

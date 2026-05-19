@@ -278,7 +278,7 @@ class Network:
         channel (str): string code of the correspond channel in station.
         """
         ## Map channel codes to string representations. Declare special cases.
-        channel_strcode = {'': 'Z', '00':'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
+        channel_strcode = {'': 'Z', '00':'HHZ', '01': 'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
         if channel_code not in channel_strcode:
             raise KeyError(Fore.LIGHTRED_EX + "Invalid channel code provided." + Fore.RESET)
         if station_code == 'ROSC' and channel_code == '':

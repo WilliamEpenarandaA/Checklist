@@ -305,10 +305,10 @@ class Network:
         """
         special_inter_stations = ['JTS', 'SDV']
         if server != '91':
-	        if station_code in special_inter_stations:    
-	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
-	        else:
-	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
+            if station_code in special_inter_stations:    
+                command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
+            else:
+                command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
         else:
             if station_code in special_inter_stations:
                 command = f"slinktool -Q 10.100.{server} | grep -w {station_code} | grep -w {channel} | grep 00"
@@ -394,7 +394,7 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if self.server in ['232', '13']:
+        if self.server in ['232', '13', '91']:
             if not last_inter or not isinstance(last_inter, list):
                 raise ValueError("last connections of international stations must be a valid list.")
             if not delay_inter or not isinstance(delay_inter, list):

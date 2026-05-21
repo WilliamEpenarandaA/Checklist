@@ -9,7 +9,7 @@ import requests
 import subprocess
 import time
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from colorama import Fore, Style
 
 def measure_time(func):
@@ -331,13 +331,12 @@ class Network:
         last_connection = datetime.strptime(last_connection, format_date)
         return last_connection
  
-    def compute_delays(self, current_time:datetime, last_connection: datetime):
+    def compute_delays(self, last_connection: datetime):
         """
         Function to calculate delay in seconds of channel of the correspond station.
 
         Parameters:
         -----------
-        current time in datetime object.
         last_connection (datetime): last UTC datetime connection of channel of the correspond station.
         
         Return:
@@ -345,7 +344,7 @@ class Network:
         delay(float): delay in total seconds of channel of the correspond stations. Delay value was set as -99999
         for stations not tracking by slinktool module.
         """
-        current_time = current_time + timedelta(hours=5)
+        current_time = datetime.now(timezone.utc).replace(tzinfo=None)
         if last_connection is not None and last_connection != datetime(1970, 1, 1, 0, 0, 0, 0):
             delay = (current_time - last_connection).total_seconds()  # Delay in minutes
             pass

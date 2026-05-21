@@ -49,7 +49,7 @@ def run_calculations(station_info:pd.Series, mode:bool=False):
     else:
         cha = network.assign_channel(station_code, channel_code)
     last_time = network.compute_last_times(server=server, port=port, station_code=station_code, channel=cha)
-    delay = network.compute_delays(datetime.now(), last_time)  
+    delay = network.compute_delays(last_time)  
     return last_time, delay, cha
 
 # Stablish allowed arguments for the routine
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     params = read_args()
     current_time = datetime.now()
     current_strtime = current_time.strftime("%Y-%m-%d %H:%M:%S")
-    print(f"Current time (Local time): {current_strtime}")
+    print(f"Current system time: {current_strtime}")
     path = str(Path(__file__).absolute().parent.parent)
     data_path = str(Path(path, "data"))
     available_servers = ['232', '13', '97', '2', '91']

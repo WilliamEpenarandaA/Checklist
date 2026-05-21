@@ -1,6 +1,8 @@
+![Logo](Logo-SGC-01_original.png)
+
 # Checklist
 Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in servers of data adquisition and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time. Also allow to compute performance metrics of the Seismological network in real-time.
-
+	
 ## Requirements
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
 

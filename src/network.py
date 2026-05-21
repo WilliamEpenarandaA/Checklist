@@ -9,7 +9,7 @@ import requests
 import subprocess
 import time
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from colorama import Fore, Style
 
 def measure_time(func):
@@ -278,7 +278,7 @@ class Network:
         channel (str): string code of the correspond channel in station.
         """
         ## Map channel codes to string representations. Declare special cases.
-        channel_strcode = {'': 'Z', '00':'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
+        channel_strcode = {'': 'Z', '00':'HHZ', '01': 'HHZ', '10':'HNZ', '11':'HNZ', '20':'EHZ', '30':'HHZ', '40':'HLZ'}
         if channel_code not in channel_strcode:
             raise KeyError(Fore.LIGHTRED_EX + "Invalid channel code provided." + Fore.RESET)
         if station_code == 'ROSC' and channel_code == '':
@@ -305,10 +305,10 @@ class Network:
         """
         special_inter_stations = ['JTS', 'SDV']
         if server != '91':
-	        if station_code in special_inter_stations:    
-	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
-	        else:
-	            command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
+            if station_code in special_inter_stations:    
+                command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel} | grep 00"
+            else:
+                command = f"slinktool -Q 10.100.{server}:{port} | grep -w {station_code} | grep -w {channel}"
         else:
             if station_code in special_inter_stations:
                 command = f"slinktool -Q 10.100.{server} | grep -w {station_code} | grep -w {channel} | grep 00"
@@ -331,13 +331,12 @@ class Network:
         last_connection = datetime.strptime(last_connection, format_date)
         return last_connection
  
-    def compute_delays(self, current_time:datetime, last_connection: datetime):
+    def compute_delays(self, last_connection: datetime):
         """
         Function to calculate delay in seconds of channel of the correspond station.
 
         Parameters:
         -----------
-        current time in datetime object.
         last_connection (datetime): last UTC datetime connection of channel of the correspond station.
         
         Return:
@@ -345,7 +344,7 @@ class Network:
         delay(float): delay in total seconds of channel of the correspond stations. Delay value was set as -99999
         for stations not tracking by slinktool module.
         """
-        current_time = current_time + timedelta(hours=5)
+        current_time = datetime.now(timezone.utc).replace(tzinfo=None)
         if last_connection is not None and last_connection != datetime(1970, 1, 1, 0, 0, 0, 0):
             delay = (current_time - last_connection).total_seconds()  # Delay in minutes
             pass
@@ -394,7 +393,7 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if self.server in ['232', '13']:
+        if self.server in ['232', '13', '91']:
             if not last_inter or not isinstance(last_inter, list):
                 raise ValueError("last connections of international stations must be a valid list.")
             if not delay_inter or not isinstance(delay_inter, list):

@@ -15,7 +15,7 @@ The routine was developed on Python >= 3.7x and running on Linux systems. The ro
 ## Installation
 We recommend to create a virtual environment to avoid conflicts with other dependencies using [uv](https://docs.astral.sh/uv/) or [pip](https://pip.pypa.io/en/stable/) as Python preferred package manager, although you can use miniconda, conda or mamba, but the installation could slightly vary. In this case we explain how to start the project using uv and pip in the following section.
 
-### Using UV package manager
+### Using uv package manager
 Here, it's quite simple, you need just to run the following command which creates the virtual environment and install the required dependencies listed in the pyproject.toml. 
 
 ```bash
@@ -34,10 +34,6 @@ Then, you activate the virtual environment and install the required dependencies
 ```bash
 source <ENV_NAME>/bin/activate
 pip install -r requirements.txt
-```
-
-```bash
-uv run <path_to_project>/src/main.py <options>
 ```
 
 ## Usage

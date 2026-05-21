@@ -1,5 +1,5 @@
 # Checklist
-Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in servers of data adquisition and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time.
+Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in servers of data adquisition and connected to Siigeo's database. The Siigeo information is updated every month or can be forced to update at any time. Also allow to compute performance metrics of the Seismological network in real-time.
 
 ## Requirements
 The routine was developed on Python >= 3.7x and running on Linux systems. The routine required the following packages (a detailed list is in requirements.txt):
@@ -13,27 +13,42 @@ The routine was developed on Python >= 3.7x and running on Linux systems. The ro
 * tqdm
 
 ## Installation
-We recommend using the package manager [pip](https://pip.pypa.io/en/stable/) to install python, although you can use miniconda, conda or mamba as the default python package manager, but the instructions could slightly vary. Then, we suggest creating an isolated virtual environment to avoid conflicts with other dependencies, as follows:
+We recommend to create a virtual environment to avoid conflicts with other dependencies using [uv](https://docs.astral.sh/uv/) or [pip](https://pip.pypa.io/en/stable/) as Python preferred package manager, although you can use miniconda, conda or mamba, but the installation could slightly vary. In this case we explain how to start the project using uv and pip in the following section.
 
-To create a virtual environment using Pip manager:
+### Using UV package manager
+Here, it's quite simple, you need just to run the following command which creates the virtual environment and install the required dependencies listed in the pyproject.toml. 
+
 ```bash
-python3 -m venv {environment_name}
+uv sync
 ```
 
-To create a virtual environmen using conda manager:
+### Using pip package manager
+To build the project in the directory, first you need to create the virtual environment as follows:
+
 ```bash
-conda create -n {environment_name}
+python3 -m venv <ENV_NAME>
 ```
 
-Make sure you activate the virtual environment before installing the required dependencies. Finally, run the following command to install the dependencies using pip manager:
+Then, you activate the virtual environment and install the required dependencies listed in requirements.txt executing the following commands:
 
 ```bash
+source <ENV_NAME>/bin/activate
 pip install -r requirements.txt
-``` 
+```
+
+```bash
+uv run <path_to_project>/src/main.py <options>
+```
 
 ## Usage
-To use the routine just need to execute the following command in the terminal: 
+To use the project, we recommend to set an alias in your bash profile for ease to use. Just need to run the following commands in terminal which depends which package manager you use: 
 
+With uv:
+```bash
+uv run <path_to_project>/src/main.py <options>
+```
+
+and with Pip:
 ```bash
 python3 <path_to_dir>/src/main.py <options>
 ```
@@ -44,16 +59,16 @@ where:
 * `<options>`: There are additional parameters can be declared to activate additional parameters in the routine:
     * `+h` or `+help`  display a menu on terminal which show different avalaible options.
     * `+n` or `+n_process` number of process to use in parallel. Recommended to set as 8 to reduce computing time. It's limited to 10 according to capacities of server processor. 
-    * `+o` or `+output`  Save the results on csv files. Only allowed for 232 and 13 servers.
+    * `+o` or `+output`  Save the results on csv files. Only allowed for 91, 232 and 13 servers.
     * `+p` or `+print`  Print delay times in a readable format (dd HH MM SS) in terminal.
     * `+u` or `+update`  Update station information with Siigeo database.
-    * `+s` or `+stat`  Print performance of National and International stations in terminal. Only allowed for 232 and 13 servers.
+    * `+s` or `+stat`  Print performance of National and International stations in terminal. Only allowed for 91, 232 and 13 servers.
     * `+sn` or `+stat_nat`  Print performance of National stations in terminal divided by type of transmission.
     * `++offline` Print checklist of stations with offline status. Can be combined with others filters.
     * `++recovering` Print checklist of stations with recovering status. Can be combined with others filters.
     * `++online` Print checklist of stations with online status. Can be combined with others filters.
-    * `++server` Define server to perform checklist process. Avalaible options are: 232, 13, 97 and 2.
-    * `++wave` Compute delay times for stations not tracked by slinktool module. Only allowed in 232 server.
+    * `++server` Define server to perform checklist process. Avalaible options are: 91, 232, 13, 97 and 2.
+    * `++wave` Compute delay times for stations not tracked by slinktool module. Only allowed in 91 and 232 server.
 
 > [!IMPORTANT]
 > If any station is not being tracked by slinktool module, last connection datetime is defined a default value of **1970-01-01 00:00:00**.

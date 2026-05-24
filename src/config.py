@@ -44,7 +44,21 @@ class SiigeoConfig:
     CACHE_EXPIRATION_SECONDS = CACHE_EXPIRATION_DAYS * SECONDS_PER_DAY
 
 # ====================================================
-# ENTRY POINT CONFIGURATION CLASS
+# FILE CONFIGURATIONS
+# ====================================================
+class FileConfig:
+    # input files
+    SIIGEO_STATIONS_FILE = "siigeo_stations.xlsx"
+    SHARED_STATIONS_FILE = "shared_stations.json"
+    INTER_STATIONS_FILE = "inter_stations.json"
+
+    #output files
+    SEISMO_OUT_FILE = "seismo_checklist.csv"
+    ACCEL_OUT_FILE = "accel_checklist.csv"
+    INTER_OUT_FILE = "inter_checklist.csv" 
+
+# ====================================================
+# ENTRY POINT CONFIG CLASS
 # ====================================================
 @dataclass
 class ProjectSettings:
@@ -55,5 +69,7 @@ class ProjectSettings:
     ## Trick to call logger in a shorter way
     def get_logger(self, name:str, level=None):
         return self.logger_manager.get_logger(name, level)
+
+    files: FileConfig = field(default_factory=FileConfig)
 
 settings = ProjectSettings()

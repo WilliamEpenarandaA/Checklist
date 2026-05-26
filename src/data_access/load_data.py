@@ -1,5 +1,5 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
-# .
+# This python file contains an implementation to load SGC stations data.
 
 import json
 import pandas as pd
@@ -34,7 +34,7 @@ class StationRepository:
         cols = ['IDENTIFICADOR', 'ESTADO ESTACIÓN', 'CÓDIGO LOCALIZACION', 'ESTADO COD LOC.',\
             'TIPO DE TRANSMISIÓN', 'TIPO DE ESTACIÓN', 'TIPO DE ADQUISICIÓN']
         siigeo_data = pd.read_excel(cls.siigeo_data_path, usecols=cols, dtype={'CÓDIGO LOCALIZACION':str})
-        siigeo_data['network_code'] = 'CM'
+        siigeo_data['network'] = 'CM'
         logger.info(Fore.GREEN + "Stations from Siigeo file succesfully load." + Fore.RESET)
 
         return siigeo_data

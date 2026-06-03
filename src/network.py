@@ -672,12 +672,12 @@ class Network:
                 tmp.append('')
             elif row['status'] == 'recovering':
                 tmp.append('--')
-            elif row['status'] == 'offline':
+            elif row['status'] == 'offline' or row['status'] == 'Station not tracking by slinktool':
                 tmp.append('x')
             elif row['status'] == 'future (check)':
                 tmp.append('?')
             else:
-                tmp.append('x?')
+                tmp.append('#')
         stations_data['checklist'] = tmp
         cols = ['id', 'channel', 'checklist']
         stations_data = stations_data[cols]

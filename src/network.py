@@ -674,7 +674,7 @@ class Network:
                 tmp.append('--')
             elif row['status'] == 'offline' or row['status'] == 'Station not tracking by slinktool':
                 tmp.append('x')
-            elif row['status'] == 'future (check)':
+            elif row['status'] == 'Future (check)':
                 tmp.append('?')
             else:
                 tmp.append('#')

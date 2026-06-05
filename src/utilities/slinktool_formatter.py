@@ -7,7 +7,7 @@ from datetime import datetime
 from src.config import settings
 from src.data_access.slinktool_executor import SlinktoolExecutor
 from src.data_access.load_data import StationRepository
-from src.utilities.formatter import SiigeoFormatter, OtherStationsFormatter
+from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter
 
 logger = settings.get_logger(__name__)
 
@@ -68,6 +68,7 @@ class SlinktoolFormatter:
     def select_interest_channels(cls, slinktool_data: pd.DataFrame):
         slinktool_data = slinktool_data.loc[slinktool_data['channel'].isin(settings.stations.AVALAIBLE_SLINKTOOL_CHANNELS)]
         logger.info(Fore.GREEN + f"Selection of the {len(slinktool_data)} field sensors completed sucessfully!!" + Fore.RESET)
+        
         return slinktool_data
 
     @classmethod
@@ -79,7 +80,17 @@ class SlinktoolFormatter:
             return value
         
         slinktool_data['type_transmission'] = slinktool_data.apply(lambda row: get_transmission(row, ref_dict), axis=1)
+        logger.info(Fore.GREEN + "Transmission type assigned sucessfully!!" + Fore.RESET)
         
+        return slinktool_data
+    
+    @classmethod
+    def order_cols(cls, slinktool_data: pd.DataFrame):
+        slinktool_data = slinktool_data[['network', 'stid', 'loc', 'channel', 'type_transmission',
+       'last_connection']]
+        cols2convert = ['network', 'stid', 'loc', 'channel', 'type_transmission']
+        slinktool_data[cols2convert] = slinktool_data[cols2convert].astype("string[pyarrow]")
+        logger.info(Fore.GREEN + "Dataframe formatted sucessfully according to SGC data!!" + Fore.RESET)
         return slinktool_data
 
 if __name__ == '__main__':
@@ -115,3 +126,6 @@ if __name__ == '__main__':
     slink_data = SlinktoolFormatter.assign_transmission(slink_data, all_data)
     print(slink_data.columns)
     print(slink_data.loc[slink_data['stid'] == 'SDV'])
+
+    slink_data = SlinktoolFormatter.order_cols(slink_data)
+    print(slink_data.dtypes)

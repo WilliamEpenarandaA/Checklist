@@ -17,7 +17,7 @@ class SlinktoolExecutor:
             return port
 
         except KeyError:
-            logger.warning(Fore.RED + "Given Server is not defined as a data receiver in configurations." + Fore.RESET)
+            logger.warning(Fore.RED + "Given Server is not defined as a data receiver in environment variables." + Fore.RESET)
             raise
 
 

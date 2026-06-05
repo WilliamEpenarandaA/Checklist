@@ -33,8 +33,9 @@ class StationRepository:
 
         cols = ['IDENTIFICADOR', 'ESTADO ESTACIÓN', 'CÓDIGO LOCALIZACION', 'ESTADO COD LOC.',\
             'TIPO DE TRANSMISIÓN', 'TIPO DE ESTACIÓN', 'TIPO DE ADQUISICIÓN']
-        siigeo_data = pd.read_excel(cls.siigeo_data_path, usecols=cols, dtype={'CÓDIGO LOCALIZACION':str})
+        siigeo_data = pd.read_excel(cls.siigeo_data_path, usecols=cols, dtype_backend="pyarrow", dtype={'CÓDIGO LOCALIZACION':"string[pyarrow]"})
         siigeo_data['network'] = 'CM'
+        siigeo_data['network'] = siigeo_data['network'].astype("string[pyarrow]")
         logger.info(Fore.GREEN + "Stations from Siigeo file succesfully load." + Fore.RESET)
 
         return siigeo_data
@@ -44,8 +45,8 @@ class StationRepository:
         try:
             with open(cls.shared_data_path, 'r') as file:
                 shared_data = json.load(file)
-            shared_data = pd.DataFrame.from_dict(shared_data)
-            shared_data = shared_data.astype(dtype={"CODIGO CANAL":str})
+            shared_data = pd.DataFrame.from_dict(shared_data).convert_dtypes(dtype_backend="pyarrow")
+            shared_data = shared_data.astype(dtype={"CODIGO CANAL":"string[pyarrow]"})
             logger.info(Fore.GREEN + "Shared stations succesfully load." + Fore.RESET)
 
         except FileNotFoundError:
@@ -58,7 +59,7 @@ class StationRepository:
         try:
             with open(cls.inter_data_path, 'r') as file:
                 inter_data = json.load(file)
-            inter_data = pd.DataFrame.from_dict(inter_data)
+            inter_data = pd.DataFrame.from_dict(inter_data).convert_dtypes(dtype_backend="pyarrow")
             logger.info(Fore.GREEN + "International stations succesfully load." + Fore.RESET)
             
         except FileNotFoundError:
@@ -70,3 +71,4 @@ if __name__ == "__main__":
     StationRepository.get_siigeo_stations()
     StationRepository.get_shared_stations()
     StationRepository.get_inter_stations()
+    #print(StationRepository.get_inter_stations().dtypes)

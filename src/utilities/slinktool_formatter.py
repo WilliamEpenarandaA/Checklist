@@ -5,9 +5,6 @@ import pandas as pd
 from colorama import Fore
 from datetime import datetime
 from src.config import settings
-from src.data_access.slinktool_executor import SlinktoolExecutor
-from src.data_access.load_data import StationRepository
-from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter
 
 logger = settings.get_logger(__name__)
 
@@ -94,6 +91,10 @@ class SlinktoolFormatter:
         return slinktool_data
 
 if __name__ == '__main__':
+    from src.data_access.slinktool_executor import SlinktoolExecutor
+    from src.data_access.load_data import StationRepository
+    from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter
+    
     port = SlinktoolExecutor.get_port('91')
     comm = SlinktoolExecutor.build_command('91', port)
     output = SlinktoolExecutor.request_info(comm)
@@ -124,7 +125,6 @@ if __name__ == '__main__':
     all_data = pd.concat([siigeo_data, shared_data, inter_data], ignore_index=True)
     
     slink_data = SlinktoolFormatter.assign_transmission(slink_data, all_data)
-    print(slink_data.columns)
     print(slink_data.loc[slink_data['stid'] == 'SDV'])
 
     slink_data = SlinktoolFormatter.order_cols(slink_data)

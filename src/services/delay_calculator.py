@@ -27,7 +27,7 @@ class DelayCalculator:
     @classmethod
     def compute_delays(cls, stations_data:pd.DataFrame, datetime_column:str, delay_column:str = 'delay'):
         now_utc = np.datetime64(datetime.now(timezone.utc).replace(tzinfo=None))
-        datetimes = stations_data[datetime_column].to_numpy()
+        datetimes = pd.to_datetime(stations_data[datetime_column]).to_numpy()
         diff = pd.to_timedelta(now_utc - datetimes) 
         #diff = (now_utc - datetimes) / np.timedelta64(1, 's')
         stations_data[delay_column] = diff

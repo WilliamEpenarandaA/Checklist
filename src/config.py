@@ -68,15 +68,22 @@ class ServerConfig:
             return f"10.100.100.{server_id}"
 
 # ====================================================
+# STATUS THRESHOLDS
+# ====================================================
+class ThresholdsStatus:
+    # Limit time in seconds
+    ONLINE_MAX_DELAY = 600
+
+# ====================================================
 # FILE CONFIGURATIONS
 # ====================================================
 class FileConfig:
-    # input files
+    # Input files
     SIIGEO_STATIONS_FILE = "siigeo_stations.xlsx"
     SHARED_STATIONS_FILE = "shared_stations.json"
     INTER_STATIONS_FILE = "inter_stations.json"
 
-    #output files
+    # Output files
     SEISMO_OUT_FILE = "seismo_checklist.csv"
     ACCEL_OUT_FILE = "accel_checklist.csv"
     INTER_OUT_FILE = "inter_checklist.csv" 
@@ -97,7 +104,7 @@ class StationConfig:
     UNALIGN_CHANNELS = ['BH1', 'BH2'] 
     EAST_SLINKTOOL_CHANNELS = ['BHE', 'HHE', 'HNE', 'EHE', 'HLE']
     NORTH_SLINKTOOL_CHANNELS = ['BHN', 'HHN', 'HNN', 'EHN', 'HLN']
-    VERTICAL_SLINKTOOL_CHANNELS = ['BHZ', 'HHZ', 'HNZ', 'EHZ', 'HLZ']
+    VERTICAL_SLINKTOOL_CHANNELS = ['BHZ', 'HHZ', 'HNZ', 'EHZ', 'HLZ', 'SHZ']
     AVALAIBLE_SLINKTOOL_CHANNELS = [*EAST_SLINKTOOL_CHANNELS, 
                                     *NORTH_SLINKTOOL_CHANNELS, 
                                     *VERTICAL_SLINKTOOL_CHANNELS, 
@@ -109,9 +116,13 @@ class StationConfig:
     OVS_PA = ['BODP', 'GCUF', 'GUAP']
     UQ = ['PBLA', 'RIBER']
     SHARED_NAT_ORDER = [*UQ, *OVS_MAN, *OVS_POP, *OVS_PA]
+    SEISMOMETER_CHANNELS = ['BH1', 'BH2', 'BHE', 'BHN', 'BHZ', 'HHE', 'HHN', 'HHZ']
+    ACCELEROMETER_CHANNELS = ['HNE', 'HNN', 'HNZ']
+    STRONG_MOTION_CHANNELS = ['HLE', 'HLN', 'HLZ']
+    SHORT_PERIOD_CHANNELS = ['EHE', 'EHN', 'EHZ']
 
 # ====================================================
-# ENTRY POINT CONFIG CLASS
+# ENTRY POINT CONFIG ENVIRONMENT VARIABLES
 # ====================================================
 @dataclass
 class ProjectSettings:
@@ -126,5 +137,6 @@ class ProjectSettings:
     files: FileConfig = field(default_factory=FileConfig)
     servers: ServerConfig = field(default_factory=ServerConfig)
     stations: StationConfig = field(default_factory=StationConfig)
+    thresholds: ThresholdsStatus = field(default_factory=ThresholdsStatus)
 
 settings = ProjectSettings()

@@ -9,7 +9,7 @@ from colorama import Fore
 logger = settings.get_logger(__name__)
 
 class NetworkStatistics:
-    
+
     @classmethod
     def get_station_status(cls, stations_data:pd.DataFrame, delay_column:str = 'delay'):
         status = []

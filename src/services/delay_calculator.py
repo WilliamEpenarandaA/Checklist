@@ -13,11 +13,13 @@ class DelayCalculator:
     
     @classmethod
     def add_stations_untracked(cls, station_data:pd.DataFrame, slinktool_data:pd.DataFrame):
+        data = []
         for _, row in station_data.iterrows():
             if row['stid'] not in slinktool_data['stid'].values:
-                row = row.to_frame().T
-                final_data = pd.concat([slinktool_data, row], ignore_index=True)
+                data.append(row.to_dict())
         
+        data = pd.DataFrame(data)
+        final_data = pd.concat([slinktool_data, data], ignore_index=True)
         cols2convert = ['network', 'stid', 'loc', 'channel', 'type_transmission']
         final_data[cols2convert] = final_data[cols2convert].astype("string[pyarrow]")
         logger.info(Fore.GREEN + "Adding stations not tracked by slinktool sucessfully!!" + Fore.RESET)
@@ -103,11 +105,11 @@ if __name__ == "__main__":
     #print(final_data)
     #print(final_data.dtypes)
     #print("Memory usaged:", final_data.memory_usage(deep=True).sum()/(1024**2), "MB")
-    #import time
-    #init_time = time.perf_counter()
+    import time
+    init_time = time.perf_counter()
     final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
-    #end_time = time.perf_counter()
-    #print(f"Method execution time: {end_time - init_time:.5f} seconds")
+    end_time = time.perf_counter()
+    print(f"Method execution time: {end_time - init_time:.5f} seconds")
 
     print(DelayCalculator.format_delays(final_data, delay_column='delay'))
     #init_time = time.perf_counter()

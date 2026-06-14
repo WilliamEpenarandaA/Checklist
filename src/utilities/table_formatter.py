@@ -1,5 +1,5 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
-# This python file contains an implementation to print.
+# This python file contains an implementation to format information according to checklist document.
 
 import pandas as pd
 import re

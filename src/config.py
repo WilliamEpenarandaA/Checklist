@@ -110,7 +110,6 @@ class StationConfig:
                                     *VERTICAL_SLINKTOOL_CHANNELS, 
                                     *UNALIGN_CHANNELS]
 
-    SPECIAL_INTER_STATIONS = ['JTS', 'SDV']
     OVS_MAN = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'PIRM', 'SJUM', 'TAPM']
     OVS_POP = ['BELO', 'CONO', 'SOTO', 'PALO']
     OVS_PA = ['BODP', 'GCUF', 'GUAP']
@@ -120,6 +119,8 @@ class StationConfig:
     ACCELEROMETER_CHANNELS = ['HNE', 'HNN', 'HNZ']
     STRONG_MOTION_CHANNELS = ['HLE', 'HLN', 'HLZ']
     SHORT_PERIOD_CHANNELS = ['EHE', 'EHN', 'EHZ']
+    INTER_PATTERN_CHANNELS = {'BHZ': 'BH', 'HHZ': 'HH', 'HNZ': 'HN', 'EHZ': 'EH', 'HLZ': 'HL', 'SHZ': 'SH', '': ''}
+    SPECIAL_INTER_STATIONS = ['JTS', 'NNA', 'SDV', 'SJG']
 
 # ====================================================
 # ENTRY POINT CONFIG ENVIRONMENT VARIABLES

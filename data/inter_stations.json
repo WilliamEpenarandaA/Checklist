@@ -401,7 +401,7 @@
         "nombre": "Matapalga",
         "pais" : "Nicaragua",
         "CODIGO RED": "NU",
-        "CODIGO SENSOR": "",
+        "CODIGO SENSOR": "BHZ",
         "CODIGO CANAL": "",
         "ESTADO ESTACION": "conexion perdida",
         "TIPO DE TRANSMISION": "internet",

@@ -150,14 +150,15 @@ if __name__ == '__main__':
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
     final_data = NetworkStatistics.get_station_status(final_data)
     seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data, list(inter_data['stid']))
-    seismo_stations = TableFormatter.get_color_status(seismo_stations)
     seismo_stations = TableFormatter.get_display_table(seismo_stations, 'Seismological', mode=False)
+    seismo_stations = TableFormatter.get_color_status(seismo_stations)
+   
     print(f"\n{seismo_stations}")
 
     inter_stations = TableFormatter.extract_inter_stations(inter_data, inter_stations, settings.stations.INTER_PATTERN_CHANNELS)
     TableFormatter.export_csv_tables(inter_stations, settings.files.INTER_OUT_FILE)
-    inter_stations = TableFormatter.get_color_status(inter_stations)
     inter_stations = TableFormatter.get_display_table(inter_stations, 'International', mode=True)
+    inter_stations = TableFormatter.get_color_status(inter_stations)
     print(f"\n{inter_stations}")
     #print(inter_stations['stid'].unique())
 

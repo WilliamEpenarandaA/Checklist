@@ -13,10 +13,11 @@ class TableFormatter:
     @classmethod
     def order_stations_checklist(cls, stations_data: pd.DataFrame, inter_stations:list):
         # Order National Seismological stations according to checklist xlsx file
-        seismo_stations = stations_data.loc[
-                        (stations_data['channel'] == 'HHZ') | 
-                        (stations_data['channel'] == 'BHZ') | 
-                        (stations_data['channel'] == 'EHZ')
+        seismo_stations = stations_data.loc[~stations_data['stid'].isin(inter_stations)]
+        seismo_stations = seismo_stations.loc[
+                        (seismo_stations['channel'] == 'HHZ') | 
+                        (seismo_stations['channel'] == 'BHZ') | 
+                        (seismo_stations['channel'] == 'EHZ')
                         ]
 
         ## According to Reina, C.; Uruena, A.; Lopez A.; suggestions
@@ -64,6 +65,8 @@ class TableFormatter:
                 color = Fore.MAGENTA
             elif row[status_column] == 'Offline':
                 color = Fore.RED
+            elif row[status_column] == 'Future':
+                color = Fore.YELLOW
             else:
                 color = Fore.RESET
             

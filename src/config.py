@@ -86,7 +86,9 @@ class FileConfig:
     # Output files
     SEISMO_OUT_FILE = "seismo_checklist.csv"
     ACCEL_OUT_FILE = "accel_checklist.csv"
-    INTER_OUT_FILE = "inter_checklist.csv" 
+    INTER_OUT_FILE = "inter_checklist.csv"
+
+    SYMBOL_STATUS_CHECKLIST = {'Online': '', 'Recovering': '--', 'Offline': 'x', 'Future': '?', 'N/A': 'x'} 
 
 # ====================================================
 # CHANNEL AND STATION CONFIGURATION
@@ -120,7 +122,7 @@ class StationConfig:
     STRONG_MOTION_CHANNELS = ['HLE', 'HLN', 'HLZ']
     SHORT_PERIOD_CHANNELS = ['EHE', 'EHN', 'EHZ']
     INTER_PATTERN_CHANNELS = {'BHZ': 'BH', 'HHZ': 'HH', 'HNZ': 'HN', 'EHZ': 'EH', 'HLZ': 'HL', 'SHZ': 'SH', '': ''}
-    SPECIAL_INTER_STATIONS = ['JTS', 'NNA', 'SDV', 'SJG']
+    SPECIAL_INTER_STATIONS = ['JTS', 'NNA', 'SDV', 'SJG', 'TEIG']
 
 # ====================================================
 # ENTRY POINT CONFIG ENVIRONMENT VARIABLES

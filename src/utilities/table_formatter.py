@@ -58,23 +58,29 @@ class TableFormatter:
     def get_color_status(cls, stations_data:pd.DataFrame, status_column:str = 'status'):
         stats = []
         for _, row in stations_data.iterrows():
-            if row['status'] == 'Online':
+            if row[status_column] == 'Online':
                 color = Fore.GREEN
-            elif row['status'] == 'Recovering':
+            elif row[status_column] == 'Recovering':
                 color = Fore.MAGENTA
-            elif row['status'] == 'Offline':
+            elif row[status_column] == 'Offline':
                 color = Fore.RED
             else:
                 color = Fore.RESET
             
-            status_color = color + row['status'] + Fore.RESET
+            status_color = color + row[status_column] + Fore.RESET
             stats.append(status_color)
 
         stations_data[status_column] = stats
-        logger.info(Fore.GREEN + "Stations status determined sucessfully!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Station status color obtained sucessfully!!" + Fore.RESET)
         
         return stations_data
     
+    @classmethod
+    def filter_vertical_components(cls, stations_data: pd.DataFrame, channel_col:str = 'channel'):
+        stations_data = stations_data[stations_data[channel_col].isin(settings.stations.VERTICAL_SLINKTOOL_CHANNELS)].reset_index(drop=True)
+        
+        return stations_data
+
     @classmethod
     def get_display_table(cls, stations_data:pd.DataFrame, name:str, mode:bool):
         if mode:
@@ -82,10 +88,19 @@ class TableFormatter:
         else:
             cols2print = ['network', 'stid', 'loc', 'channel', 'last_connection', 'status']
         stations_data = stations_data[cols2print]
-        stations_data = stations_data[stations_data['channel'].isin(settings.stations.VERTICAL_SLINKTOOL_CHANNELS)].reset_index(drop=True)
+        stations_data = cls.filter_vertical_components(stations_data)
         logger.info(Fore.GREEN + f"{name} data succesfully formatted to display!!" + Fore.RESET)
 
         return stations_data
+    
+    @classmethod
+    def export_csv_tables(cls, formatted_table: pd.DataFrame, output_filename: str, status_column:str = 'status', col_name:str = 'checklist'):
+        formatted_table[col_name] = formatted_table[status_column].map(settings.files.SYMBOL_STATUS_CHECKLIST)
+        cols2export = ['stid', 'channel', 'checklist']
+        formatted_table = cls.filter_vertical_components(formatted_table)
+        formatted_table[cols2export].to_csv(output_filename, sep=',', index=False)
+        logger.info(Fore.GREEN + f"{output_filename} exported succesfully!!" + Fore.RESET)
+        return True
 
 if __name__ == '__main__':
     from src.data_access.slinktool_executor import SlinktoolExecutor
@@ -140,7 +155,10 @@ if __name__ == '__main__':
     print(f"\n{seismo_stations}")
 
     inter_stations = TableFormatter.extract_inter_stations(inter_data, inter_stations, settings.stations.INTER_PATTERN_CHANNELS)
+    TableFormatter.export_csv_tables(inter_stations, settings.files.INTER_OUT_FILE)
     inter_stations = TableFormatter.get_color_status(inter_stations)
     inter_stations = TableFormatter.get_display_table(inter_stations, 'International', mode=True)
     print(f"\n{inter_stations}")
+    #print(inter_stations['stid'].unique())
 
+    

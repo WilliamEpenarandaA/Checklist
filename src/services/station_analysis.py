@@ -8,7 +8,7 @@ from colorama import Fore
 
 logger = settings.get_logger(__name__)
 
-class NetworkStatistics:
+class StationAnalysis:
 
     @classmethod
     def get_station_status(cls, stations_data:pd.DataFrame, delay_column:str = 'delay'):
@@ -36,6 +36,11 @@ class NetworkStatistics:
 
         return stations_data
     
+    @classmethod
+    def find_recovering_status(cls, stations_data:pd.DataFrame):
+
+        return None
+
     @classmethod
     def sensor_metrics(cls, stations_data:pd.DataFrame, status_column:str = 'status'):
         
@@ -152,7 +157,7 @@ if __name__ == '__main__':
 
     final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
-    final_data = NetworkStatistics.get_station_status(final_data)
+    final_data = StationAnalysis.get_station_status(final_data)
     print(final_data)
-    res = NetworkStatistics.sensor_metrics(final_data)
+    res = StationAnalysis.sensor_metrics(final_data)
     print(res)

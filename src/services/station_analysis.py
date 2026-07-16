@@ -9,27 +9,17 @@ from colorama import Fore
 logger = settings.get_logger(__name__)
 
 class StationAnalysis:
-
+    
     @classmethod
     def get_station_status(cls, stations_data:pd.DataFrame, delay_column:str = 'delay'):
-        status = []
         delays = stations_data[delay_column].to_numpy()
         delays_seconds = delays / np.timedelta64(1, 's')
-
-        for delay in delays_seconds:
-            if delay < 0:
-                tmp = 'Future'
-            
-            elif delay <= settings.thresholds.ONLINE_MAX_DELAY:
-                tmp = 'Online'
-            
-            elif delay > settings.thresholds.ONLINE_MAX_DELAY:
-                tmp = 'Offline' 
-            
-            else:
-                tmp = 'N/A'
-
-            status.append(tmp)
+        conditions = [(delays_seconds < 0), 
+                      (delays_seconds <= settings.thresholds.ONLINE_MAX_DELAY), 
+                      (delays_seconds > settings.thresholds.ONLINE_MAX_DELAY)]
+        
+        outputs = ['Future', 'Online', 'Offline']
+        status = np.select(conditions, outputs, default='N/A')
         stations_data['status'] = status
         stations_data['status'] = stations_data['status'].astype("string[pyarrow]")
         logger.info(Fore.GREEN + "Station status determined succesfully!!" + Fore.RESET)
@@ -172,6 +162,7 @@ if __name__ == '__main__':
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
     final_data = StationAnalysis.get_station_status(final_data)
     print(final_data)
+    
     res = StationAnalysis.sensor_metrics(final_data)
     print(res)
 

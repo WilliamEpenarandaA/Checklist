@@ -109,7 +109,7 @@ if __name__ == '__main__':
     from src.data_access.slinktool_executor import SlinktoolExecutor
     from src.data_access.load_data import StationRepository
     from src.services.delay_calculator import DelayCalculator
-    from src.services.statistics import NetworkStatistics
+    from src.services.station_analysis import StationAnalysis
     from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter
     from src.utilities.slinktool_formatter import SlinktoolFormatter
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
 
     final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
-    final_data = NetworkStatistics.get_station_status(final_data)
+    final_data = StationAnalysis.get_station_status(final_data)
     seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data, list(inter_data['stid']))
     seismo_stations = TableFormatter.get_display_table(seismo_stations, 'Seismological', mode=False)
     seismo_stations = TableFormatter.get_color_status(seismo_stations)

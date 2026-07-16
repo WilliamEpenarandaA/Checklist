@@ -18,13 +18,13 @@ class StationRepository:
     inter_data_path = Path(settings.data_dir, settings.files.INTER_STATIONS_FILE)
 
     @classmethod
-    def get_siigeo_stations(cls):
+    def get_siigeo_stations(cls, mode:bool = False):
         try:
             timestamp_mod = SiigeoFetcher.filepath.stat().st_mtime
             mod_time = datetime.fromtimestamp(timestamp_mod)
             dt = (datetime.now() - mod_time).total_seconds()
 
-            if dt > settings.siigeo.CACHE_EXPIRATION_SECONDS:
+            if dt > settings.siigeo.CACHE_EXPIRATION_SECONDS or mode:
                 logger.info(Fore.GREEN + "Updating station information!!!" + Fore.RESET)
                 SiigeoFetcher.download_info()
             

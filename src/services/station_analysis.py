@@ -1,5 +1,5 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
-# This python file contains an implementation to calculate performance metrics of SGC stations.
+# This python file contains an implementation to analyze status and performance metrics of SGC stations.
 
 import numpy as np
 import pandas as pd
@@ -37,9 +37,22 @@ class StationAnalysis:
         return stations_data
     
     @classmethod
-    def find_recovering_status(cls, stations_data:pd.DataFrame):
+    def compute_diff_delays(cls, stations_data:pd.DataFrame, delay_column: str = 'delay', delay_column_after:str = 'delay2'):
+        _delay1 = (stations_data[delay_column].to_numpy()) / np.timedelta64(1, 's')
+        _delay2 = (stations_data[delay_column_after].to_numpy()) / np.timedelta64(1, 's')
+        diff = _delay2 - _delay1
+        stations_data['diff_delays'] = diff
+        logger.info(Fore.GREEN + "Differentials between two times computed succesfully!!" + Fore.RESET)
 
-        return None
+        return stations_data
+
+    @classmethod
+    def determine_recovering_status(cls, stations_data: pd.DataFrame, dt:float, status_column:str = 'status', diff_delays_column:str = 'diff_delays'):
+        stations_data[status_column] = stations_data.apply(lambda row: 'Recovering' if row[diff_delays_column] <= dt else row[status_column], axis=1)   
+        stations_data[status_column] = stations_data[status_column].astype("string[pyarrow]")
+        logger.info(Fore.GREEN + "Recovering status computed succesfully!!" + Fore.RESET)
+
+        return stations_data
 
     @classmethod
     def sensor_metrics(cls, stations_data:pd.DataFrame, status_column:str = 'status'):
@@ -161,3 +174,12 @@ if __name__ == '__main__':
     print(final_data)
     res = StationAnalysis.sensor_metrics(final_data)
     print(res)
+
+    ## Determine recovering status
+    import time
+    time.sleep(60)
+
+    final_data = DelayCalculator.compute_delays(final_data, 'last_connection', 'delay2')
+    final_data = StationAnalysis.compute_diff_delays(final_data)
+    final_data = StationAnalysis.determine_recovering_status(final_data, 60)
+    print(final_data)

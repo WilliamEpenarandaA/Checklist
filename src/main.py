@@ -79,7 +79,7 @@ if __name__ == "__main__":
     print(f"Current system time: {current_strtime}")
     path = str(Path(__file__).absolute().parent.parent)
     data_path = str(Path(path, "data"))
-    available_servers = ['232', '13', '97', '2', '91']
+    available_servers = ['232', '13', '97', '2', '91', '95']
 
     ## Add a hard cap in number of process to avoid server memory collapse in parallel processing
     if params['n'] < 0 or not isinstance(params['n'], int):
@@ -160,7 +160,7 @@ if __name__ == "__main__":
     prints, status = network.get_station_status(nat_data)
     nat_data['delay_readable'] = prints
     nat_data['status'] = status
-    if network.server in ['232', '13', '91']:
+    if network.server in ['232', '13', '91', '95']:
         inter_data = network.inter_data
         prints, status = network.get_station_status(inter_data)
         inter_data['delay_readable'] = prints
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     ## Order stations by checklist defined format
     seismo_nat_data = network.order_seismo_stations(seismo_nat_data)
     accel_nat_data = network.order_accel_stations(accel_nat_data)
-    if network.server in ['232', '13', '91']:
+    if network.server in ['232', '13', '91', '95']:
         inter_data = network.order_inter_stations(inter_data)
 
     ## Enable computation of delay times for stations not tracking by slinktool
@@ -213,53 +213,53 @@ if __name__ == "__main__":
        cols = ['network_code', 'id', 'channel_code', 'channel', 'last_connection', 'delay_readable', 'status']
        seismo_nat_data = seismo_nat_data[cols]
        accel_nat_data = accel_nat_data[cols]
-       if network.server in ['232', '13', '91']:
+       if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data[cols]
     else:
         cols = ['network_code', 'id', 'channel_code', 'channel', 'last_connection', 'status']
         seismo_nat_data = seismo_nat_data[cols]
         accel_nat_data = accel_nat_data[cols]
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data[cols]
     if params['online'] and params['recovering']:
         seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] != 'offline') | (seismo_nat_data['status'] != 'Station not tracking by slinktool')]
         accel_nat_data = accel_nat_data.loc[(accel_nat_data['status'] != 'offline') | (accel_nat_data['status'] != 'Station not tracking by slinktool')]
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data.loc[(inter_data['status'] != 'offline') | (inter_data['status'] != 'Station not tracking by slinktool')]    
     elif params['offline'] and params['recovering']:
         seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] != 'online')]
         accel_nat_data = accel_nat_data.loc[accel_nat_data['status'] != 'online']
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data.loc[inter_data['status'] != 'online']
     elif params['online']:
         seismo_nat_data = seismo_nat_data.loc[seismo_nat_data['status'] == 'online']
         accel_nat_data = accel_nat_data.loc[accel_nat_data['status'] == 'online']
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data.loc[inter_data['status'] == 'online']
     elif params['recovering']:
         seismo_nat_data = seismo_nat_data.loc[seismo_nat_data['status'] == 'recovering']
         accel_nat_data = accel_nat_data.loc[accel_nat_data['status'] == 'recovering']
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data.loc[inter_data['status'] == 'recovering']
     elif params['offline']:
         seismo_nat_data = seismo_nat_data.loc[(seismo_nat_data['status'] == 'offline') | (seismo_nat_data['status'] == 'Station not tracking by slinktool')]
         accel_nat_data = accel_nat_data.loc[(accel_nat_data['status'] == 'offline') | (accel_nat_data['status'] == 'Station not tracking by slinktool')]
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data.loc[(inter_data['status'] == 'offline') | (inter_data['status'] == 'Station not tracking by slinktool')]
     else:
         seismo_nat_data = seismo_nat_data
         accel_nat_data = accel_nat_data
-        if network.server in ['232', '13', '91']:
+        if network.server in ['232', '13', '91', '95']:
             inter_data = inter_data
 
     ## Configure a nice view for printing results
     seismo_nat_data = seismo_nat_data.rename(columns={'network_code':'network', 'channel_code': 'loc'})
     accel_nat_data = accel_nat_data.rename(columns={'network_code':'network', 'channel_code': 'loc'})
-    if network.server in ['232', '13', '91']:
+    if network.server in ['232', '13', '91', '95']:
         inter_data = inter_data.rename(columns={'network_code':'network', 'channel_code': 'loc'})
     seismo_nat_data['status_'] = seismo_nat_data['status'].apply(Network.get_status_color)
     accel_nat_data['status_'] = accel_nat_data['status'].apply(Network.get_status_color)
-    if network.server in ['232', '13', '91']:
+    if network.server in ['232', '13', '91', '95']:
         inter_data['status_'] = inter_data['status'].apply(Network.get_status_color)
 
     with pd.option_context('display.max_rows', None,
@@ -270,7 +270,7 @@ if __name__ == "__main__":
             print(seismo_nat_data.loc[:, seismo_nat_data.columns != 'status'])
             print(Style.BRIGHT + Fore.LIGHTGREEN_EX + '\nDelay times for national accelerometer stations:' + Fore.RESET)
             print(accel_nat_data.loc[:, accel_nat_data.columns != 'status'])
-            if network.server in ['232', '13', '91']:
+            if network.server in ['232', '13', '91', '95']:
                 print(Style.BRIGHT + Fore.LIGHTGREEN_EX + '\nDelay times for international stations:' + Fore.RESET)
                 print(inter_data.loc[:, inter_data.columns != 'status'])
 
@@ -286,7 +286,7 @@ if __name__ == "__main__":
         print(Fore.LIGHTMAGENTA_EX + "Number of internet stations in real-time: " + Fore.LIGHTGREEN_EX + f"{transmission_parameters[5]}" + Fore.RESET + f" (N={transmission_parameters[4]})")
         print(Fore.LIGHTMAGENTA_EX + "Number of radio stations in real-time: " + Fore.LIGHTGREEN_EX + f"{transmission_parameters[7]}" + Fore.RESET + f" (N={transmission_parameters[6]})")
 
-    elif params['s'] and network.server in ['232', '13', '91']:
+    elif params['s'] and network.server in ['232', '13', '91', '95']:
         online_nat, total_nat, online_inter, total_inter = network.get_station_statistics(nat_data, inter_data)
         print(Fore.LIGHTMAGENTA_EX + "\nNumber of national stations in real-time:" + Fore.LIGHTGREEN_EX + f" {online_nat}" + Fore.RESET + f" (N={total_nat})")
         print(Fore.LIGHTMAGENTA_EX + "Number of international stations in real-time:" + Fore.LIGHTGREEN_EX + f" {online_inter}" + Fore.RESET + f" (N={total_inter})")
@@ -294,7 +294,7 @@ if __name__ == "__main__":
          print(Fore.LIGHTBLUE_EX + "\nNot computing any connection statistics!!!" + Fore.RESET)
 
     ## Storage checklist results into csv files    
-    if params['o'] and network.server in ['232', '13', '91']:
+    if params['o'] and network.server in ['232', '13', '91', '95']:
         seismo_fname = 'seismo_checklist.csv'
         accel_fname = 'accel_checklist.csv'
         inter_fname = 'inter_checklist.csv'

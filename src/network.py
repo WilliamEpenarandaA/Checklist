@@ -75,7 +75,7 @@ class Network:
         server (str): Last digits of server IP
         port (str): Digit of the port for the correspond server IP.
         """
-        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000"}
+        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000", "95":"18000"}
         port = server_dict[server]
         if server != '2':
             server = '100.' + server

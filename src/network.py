@@ -393,7 +393,7 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if self.server in ['232', '13', '91']:
+        if self.server in ['232', '13', '91', '95']:
             if not last_inter or not isinstance(last_inter, list):
                 raise ValueError("last connections of international stations must be a valid list.")
             if not delay_inter or not isinstance(delay_inter, list):

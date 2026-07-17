@@ -2,6 +2,10 @@
 
 All important changes will be documented here.
 
+## [1.3.3] 2026-07-17
+### Added
+- Option to run checklist in server .95 
+
 ## [1.3.2] 2026-03-26
 ### Added
 - Option to run checklist in server .91 

@@ -21,7 +21,7 @@ class LoggerManager:
         if not logger.hasHandlers():
             console = logging.StreamHandler()
             console.setFormatter(self.formatter)
-            console.setLevel(logger_level)
+            console.setLevel(logger_level)  
             logger.addHandler(console)
             logger.propagate = False
         
@@ -71,8 +71,8 @@ class ServerConfig:
 # STATUS THRESHOLDS
 # ====================================================
 class ThresholdsStatus:
-    # Limit time in seconds
-    ONLINE_MAX_DELAY = 600
+    ONLINE_MAX_DELAY = 600  # Limit time in seconds
+    RECOVERING_RATE = 0.95
 
 # ====================================================
 # FILE CONFIGURATIONS

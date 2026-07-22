@@ -38,7 +38,7 @@ class StationAnalysis:
 
     @classmethod
     def determine_recovering_status(cls, stations_data: pd.DataFrame, dt:float, status_column:str = 'status', diff_delays_column:str = 'diff_delays'):
-        stations_data[status_column] = stations_data.apply(lambda row: 'Recovering' if row[diff_delays_column] <= dt else row[status_column], axis=1)   
+        stations_data[status_column] = stations_data.apply(lambda row: 'Recovering' if row[diff_delays_column] <= dt and row[diff_delays_column] != 0.0 else row[status_column], axis=1)   
         stations_data[status_column] = stations_data[status_column].astype("string[pyarrow]")
         logger.info(Fore.GREEN + "Recovering status computed succesfully!!" + Fore.RESET)
 

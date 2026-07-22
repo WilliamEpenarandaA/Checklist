@@ -7,6 +7,8 @@ import argparse
 import pandas as pd
 import time
 import warnings
+from colorama import init, Fore, Style
+from tqdm import tqdm
 from src.config import settings
 from src.data_access.slinktool_executor import SlinktoolExecutor
 from src.data_access.load_data import StationRepository
@@ -15,8 +17,6 @@ from src.services.station_analysis import StationAnalysis
 from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter
 from src.utilities.slinktool_formatter import SlinktoolFormatter
 from src.utilities.table_formatter import TableFormatter
-from colorama import init, Fore, Style
-from tqdm import tqdm
 
 ## Initialize colorama, avoiding manually reset the text color each time
 init(autoreset=True)

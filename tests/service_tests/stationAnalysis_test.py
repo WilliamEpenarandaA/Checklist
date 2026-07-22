@@ -32,7 +32,7 @@ class StationAnalysisTest(unittest.TestCase):
         
         # Theorical outputs
         theorical_status = ['Online', 'Online', 'Online', 'Online', 'N/A', 'N/A', 'Offline']
-        theorical_status_dt = ['Recovering', 'Recovering', 'Recovering', 'Recovering', 'N/A', 'N/A', 'Recovering']
+        theorical_status_dt = ['Online', 'Online', 'Online', 'Online', 'N/A', 'N/A', 'Recovering']
         theorical_diffs = pd.Series([0.0, 0.0, 0.0, 0.0, np.nan, np.nan, -7140.0], name='diff_delays')
         theorical_metrics = {'online_stations': 2, 'total_stations': 5, 'online_seismo': 2, 'total_seismo': 3, 
                              'online_accel': 0, 'total_accel': 2, 'online_strong': 0, 'total_strong': 0, 
@@ -66,6 +66,7 @@ class StationAnalysisTest(unittest.TestCase):
         res =  StationAnalysis.compute_diff_delays(res)
         res = StationAnalysis.determine_recovering_status(res, 60*settings.thresholds.RECOVERING_RATE)
         status = res['status'].to_list()
+        print(status)
 
         self.assertListEqual(status, theorical_status_dt)
 

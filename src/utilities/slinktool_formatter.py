@@ -1,5 +1,5 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
-# This file has implementation of.
+# This file has implementation of a module to process slinktool output.
 
 import pandas as pd
 from colorama import Fore
@@ -88,6 +88,7 @@ class SlinktoolFormatter:
         cols2convert = ['network', 'stid', 'loc', 'channel', 'type_transmission']
         slinktool_data[cols2convert] = slinktool_data[cols2convert].astype("string[pyarrow]")
         logger.info(Fore.GREEN + "Dataframe formatted sucessfully according to SGC data!!" + Fore.RESET)
+        
         return slinktool_data
 
 if __name__ == '__main__':

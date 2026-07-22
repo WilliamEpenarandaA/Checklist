@@ -2,9 +2,10 @@
 # This python file contains an implementation to give an specific format SGC stations data.
 
 import pandas as pd
-from src.config import settings
 from abc import ABC, abstractmethod
 from colorama import Fore
+from src.config import settings
+from src.data_access.load_data import StationRepository
 
 logger = settings.get_logger(__name__)
 
@@ -121,7 +122,6 @@ class OtherStationsFormatter:
         return station_data
     
 if __name__ == "__main__":
-    from src.data_access.load_data import StationRepository
     siigeo_data = StationRepository.get_siigeo_stations()
     shared_data = StationRepository.get_shared_stations()
     inter_data = StationRepository.get_inter_stations()

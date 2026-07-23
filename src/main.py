@@ -4,11 +4,18 @@
 ####################################################################################################################################
 ####################################################################################################################################
 import argparse
+import os
 import pandas as pd
+import sys
 import time
 import warnings
 from colorama import init, Fore, Style
 from tqdm import tqdm
+
+## Adds the project root directory to sys.path
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(PROJECT_ROOT)
+
 from src.config import settings
 from src.data_access.slinktool_executor import SlinktoolExecutor
 from src.data_access.load_data import StationRepository
@@ -37,7 +44,7 @@ def read_args():
     parser.add_argument(prefix + prefix + "offline", help="Show stations with offline status.", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "recovering", help="Show stations with recovering status.", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "online", help="Show stations with online status.", action='store_true', required=False)
-    parser.add_argument(prefix + prefix + "server", help="Define server to perform checklist process. Avalaible options are: 91, 95, 232, 13, 97 and 2.", type=str, default='91', required=False)
+    parser.add_argument(prefix + prefix + "server", help="Define server to perform checklist. Avalaible options are: 91, 95, 232, 13, 97 and 2.", type=str, default='91', required=False)
     args_parser = parser.parse_args()
     vars_args = vars(args_parser)
 
@@ -46,7 +53,6 @@ def read_args():
 if __name__ == "__main__":
     ti = time.perf_counter()
     params = read_args()
-    print(params)
 
     # Load stations data
     siigeo_data = StationRepository.get_siigeo_stations(params['u'])

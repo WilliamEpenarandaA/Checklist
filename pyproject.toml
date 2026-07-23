@@ -1,7 +1,7 @@
 [project]
 name = "checklist"
-version = "2.3.2"
-description = "Checklist is a Python routine developed for checking real-time data availability of total number of SGC stations from RSNC (Colombian National Seismological Network) directly in servers of data adquisition and connected to Siigeo's database."
+version = "2.0.0"
+description = "Checklist is a Python module for verifying the real-time availability and performance metrics of seismological stations monitored by the Colombian National Seismological Network (RSNC) integrated to the architecture of data adqusition and processing based on SeisComP and linked to Siigeo database of RSNC."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

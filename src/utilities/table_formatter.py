@@ -1,10 +1,10 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
 # This python file contains an implementation to format information according to checklist document.
 
-import pandas as pd
 import re
-from src.config import settings
 from colorama import Fore
+import pandas as pd
+from src.config import settings
 
 logger = settings.get_logger(__name__)
 
@@ -20,7 +20,6 @@ class TableFormatter:
                         (seismo_stations['channel'] == 'EHZ')
                         ]
 
-        ## According to Reina, C.; Uruena, A.; Lopez A.; suggestions
         shared_nat_stations = seismo_stations.loc[seismo_stations['stid'].isin(settings.stations.SHARED_NAT_ORDER)] 
         shared_nat_stations = shared_nat_stations.sort_values(by='stid', key=lambda x: x.map(settings.stations.SHARED_NAT_ORDER.index))
         seismo_stations = seismo_stations.loc[~seismo_stations['stid'].isin(settings.stations.SHARED_NAT_ORDER)].sort_values(by=['stid', 'loc'], ascending=[True, True])
@@ -47,11 +46,11 @@ class TableFormatter:
             interest_channels = [item for item in res if re.search(pattern, item)]
             df = inter_stations[(inter_stations['stid'] == row['stid']) & (inter_stations['channel'].isin(interest_channels))]
             data.append(df)
-        
+
         inter_stations = pd.concat(data, ignore_index=True)
         inter_stations = inter_stations[~((inter_stations['stid'].isin(settings.stations.SPECIAL_INTER_STATIONS)) & (inter_stations['loc'] == '10'))]
         inter_stations = inter_stations.sort_values(by=['stid', 'loc'], ascending=[True, True]).reset_index(drop=True)
-        logger.info(Fore.GREEN + "Sucessfully extracted international stations!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "succesfully extracted international stations!!" + Fore.RESET)
 
         return inter_stations
 
@@ -74,7 +73,7 @@ class TableFormatter:
             stats.append(status_color)
 
         stations_data[status_column] = stats
-        logger.info(Fore.GREEN + "Station status color obtained sucessfully!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Station status color obtained succesfully!!" + Fore.RESET)
         
         return stations_data
     
@@ -103,6 +102,7 @@ class TableFormatter:
         formatted_table = cls.filter_vertical_components(formatted_table)
         formatted_table[cols2export].to_csv(output_filename, sep=',', index=False)
         logger.info(Fore.GREEN + f"{output_filename} exported succesfully!!" + Fore.RESET)
+
         return True
 
 if __name__ == '__main__':

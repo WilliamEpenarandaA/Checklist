@@ -1,10 +1,10 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
 # This python file contains an implementation to analyze status and performance metrics of SGC stations.
 
+from colorama import Fore
 import numpy as np
 import pandas as pd
 from src.config import settings
-from colorama import Fore
 
 logger = settings.get_logger(__name__)
 
@@ -111,7 +111,7 @@ class StationAnalysis:
                    "online_radio": int(num_onradio),
                    "total_radio": int(num_radio)
             }
-        logger.info(Fore.GREEN + "Sensor metrics computed sucessfully!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Sensor metrics computed succesfully!!" + Fore.RESET)
 
         return results
 

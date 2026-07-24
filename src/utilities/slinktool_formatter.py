@@ -1,9 +1,9 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
 # This file has implementation of a module to process slinktool output.
 
-import pandas as pd
 from colorama import Fore
 from datetime import datetime
+import pandas as pd
 from src.config import settings
 
 logger = settings.get_logger(__name__)
@@ -51,7 +51,7 @@ class SlinktoolFormatter:
         cols = ['network', 'stid', 'loc', 'channel', 'last_connection']
         try:
             data = pd.DataFrame(input, columns=cols)
-            logger.info(Fore.GREEN + "Dataframe created sucessfully!!" + Fore.RESET)
+            logger.info(Fore.GREEN + "Dataframe created succesfully!!" + Fore.RESET)
 
         except ValueError as err:
             logger.critical(Fore.RED + f"Error. Column mismatch or data issue. {err}" + Fore.RESET)
@@ -64,7 +64,7 @@ class SlinktoolFormatter:
     @classmethod
     def select_interest_channels(cls, slinktool_data: pd.DataFrame):
         slinktool_data = slinktool_data.loc[slinktool_data['channel'].isin(settings.stations.AVALAIBLE_SLINKTOOL_CHANNELS)]
-        logger.info(Fore.GREEN + f"Selection of the {len(slinktool_data)} field sensors completed sucessfully!!" + Fore.RESET)
+        logger.info(Fore.GREEN + f"Selection of the {len(slinktool_data)} field sensors completed succesfully!!" + Fore.RESET)
         
         return slinktool_data
 
@@ -77,7 +77,7 @@ class SlinktoolFormatter:
             return value
         
         slinktool_data['type_transmission'] = slinktool_data.apply(lambda row: get_transmission(row, ref_dict), axis=1)
-        logger.info(Fore.GREEN + "Transmission type assigned sucessfully!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Transmission type assigned succesfully!!" + Fore.RESET)
         
         return slinktool_data
     
@@ -87,7 +87,7 @@ class SlinktoolFormatter:
        'last_connection']]
         cols2convert = ['network', 'stid', 'loc', 'channel', 'type_transmission']
         slinktool_data[cols2convert] = slinktool_data[cols2convert].astype("string[pyarrow]")
-        logger.info(Fore.GREEN + "Dataframe formatted sucessfully according to SGC data!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Dataframe formatted succesfully according to SGC data!!" + Fore.RESET)
         
         return slinktool_data
 

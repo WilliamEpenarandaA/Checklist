@@ -2,12 +2,12 @@
 # This python file contains an implementation to load SGC stations data.
 
 import json
-import pandas as pd
-from src.config import settings
-from src.data_access.siigeo_client import SiigeoFetcher
 from colorama import Fore
 from datetime import datetime
+import pandas as pd
 from pathlib import Path
+from src.config import settings
+from src.data_access.siigeo_client import SiigeoFetcher
 
 logger = settings.get_logger(__name__)
 

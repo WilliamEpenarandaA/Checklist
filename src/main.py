@@ -4,21 +4,20 @@
 ####################################################################################################################################
 ####################################################################################################################################
 import argparse
-import os
-import pandas as pd
+import os 
 import sys
 import time
 import warnings
-from colorama import init, Fore, Style
-from tqdm import tqdm
 
-## Adds the project root directory to sys.path
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(PROJECT_ROOT)
 
+from colorama import Fore, Style, init
+import pandas as pd
+from tqdm import tqdm
 from src.config import settings
-from src.data_access.slinktool_executor import SlinktoolExecutor
 from src.data_access.load_data import StationRepository
+from src.data_access.slinktool_executor import SlinktoolExecutor
 from src.services.delay_calculator import DelayCalculator
 from src.services.station_analysis import StationAnalysis
 from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter

@@ -1,10 +1,10 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
 # This file has implementation of a siigeo client to download station information from SGC.
 
+import requests
 from colorama import Fore
 from pathlib import Path
 from src.config import settings
-import requests
 
 logger = settings.get_logger(__name__)
 

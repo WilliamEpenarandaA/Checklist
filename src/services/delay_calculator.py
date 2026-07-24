@@ -1,30 +1,26 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
 # This python file contains an implementation to compute delays of SGC stations.
 
+from colorama import Fore
+from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
-from colorama import Fore
 from src.config import settings
-from datetime import datetime, timezone
 
 logger = settings.get_logger(__name__)
 
 class DelayCalculator:
-    
-    @classmethod
-    def add_stations_untracked(cls, station_data:pd.DataFrame, slinktool_data:pd.DataFrame):
-        data = []
-        for _, row in station_data.iterrows():
-            if row['stid'] not in slinktool_data['stid'].values:
-                data.append(row.to_dict())
-        
-        data = pd.DataFrame(data)
-        final_data = pd.concat([slinktool_data, data], ignore_index=True)
-        cols2convert = ['network', 'stid', 'loc', 'channel', 'type_transmission']
-        final_data[cols2convert] = final_data[cols2convert].astype("string[pyarrow]")
-        logger.info(Fore.GREEN + "Adding stations not tracked by slinktool sucessfully!!" + Fore.RESET)
 
-        return final_data
+    @classmethod 
+    def add_stations_untracked(cls, station_data:pd.DataFrame, slinktool_data:pd.DataFrame):
+            cols = ['stid', 'channel']
+            data = station_data[~station_data.set_index(cols).index.isin(slinktool_data.set_index(cols).index)]
+            final_data = pd.concat([slinktool_data, data], ignore_index=True)
+            cols2convert = ['network', 'stid', 'loc', 'channel', 'type_transmission']
+            final_data[cols2convert] = final_data[cols2convert].astype("string[pyarrow]")
+            logger.info(Fore.GREEN + "Adding stations not tracked by slinktool succesfully!!" + Fore.RESET)            
+    
+            return final_data
 
     @classmethod
     def compute_delays(cls, stations_data:pd.DataFrame, datetime_column:str, delay_column:str = 'delay', datetime: datetime = datetime.now(timezone.utc)):
@@ -33,7 +29,7 @@ class DelayCalculator:
         diff = pd.to_timedelta(now_utc - datetimes) 
         #diff = (now_utc - datetimes) / np.timedelta64(1, 's')
         stations_data[delay_column] = diff
-        logger.info(Fore.GREEN + "Delays sucessfully computed!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Delays succesfully computed!!" + Fore.RESET)
 
         return stations_data
     
@@ -54,11 +50,10 @@ class DelayCalculator:
             comp['minutes'].astype("string[pyarrow]") + 'm ' +
             comp['seconds'].astype("string[pyarrow]") + 's'
         )
-        logger.info(Fore.GREEN + "Delays sucessfully formatted!!" + Fore.RESET)
+        logger.info(Fore.GREEN + "Delays succesfully formatted!!" + Fore.RESET)
 
         return stations_data
     
-
 if __name__ == "__main__":
     from src.data_access.slinktool_executor import SlinktoolExecutor
     from src.data_access.load_data import StationRepository
@@ -100,9 +95,9 @@ if __name__ == "__main__":
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=FutureWarning)
         final_data = DelayCalculator.add_stations_untracked(all_data, slink_data)
-    
+
     #print(len(final_data), final_data.columns)    
-    #print(final_data)
+    print(final_data.loc[final_data['stid'] == 'YAVI3'])
     #print(final_data.dtypes)
     #print("Memory usaged:", final_data.memory_usage(deep=True).sum()/(1024**2), "MB")
     import time
@@ -111,7 +106,7 @@ if __name__ == "__main__":
     end_time = time.perf_counter()
     print(f"Method execution time: {end_time - init_time:.5f} seconds")
 
-    print(DelayCalculator.format_delays(final_data, delay_column='delay'))
+    #print(DelayCalculator.format_delays(final_data, delay_column='delay'))
     #init_time = time.perf_counter()
     #print(DelayCalculator.compute_delays2(final_data, 'last_connection'))
     #end_time = time.perf_counter()

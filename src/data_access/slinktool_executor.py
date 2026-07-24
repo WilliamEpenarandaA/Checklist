@@ -2,8 +2,8 @@
 # This file has implementation of a slinktool client.
 
 import subprocess
-from src.config import settings
 from colorama import Fore
+from src.config import settings
 
 logger = settings.get_logger(__name__)
 
@@ -13,7 +13,7 @@ class SlinktoolExecutor:
     def get_port(cls, server):
         try:
             port = settings.servers.PORTS[server]
-            logger.info(Fore.GREEN + "Port stablished sucessfully." + Fore.RESET)
+            logger.info(Fore.GREEN + "Port stablished succesfully." + Fore.RESET)
             return port
 
         except KeyError:

@@ -1,9 +1,9 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
 # This python file contains an implementation to give an specific format SGC stations data.
 
-import pandas as pd
 from abc import ABC, abstractmethod
 from colorama import Fore
+import pandas as pd
 from src.config import settings
 from src.data_access.load_data import StationRepository
 
@@ -75,7 +75,7 @@ class SiigeoFormatter:
         station_data = station_data.loc[(station_data['type_acquisition'] != 'descarga')]
         cols = ['network', 'stid', 'loc', 'channel', 'type_transmission']
         station_data = station_data[cols] 
-        logger.info(Fore.GREEN + "Dataframe formatted sucessfully." + Fore.RESET + f" n={len(station_data)}")
+        logger.info(Fore.GREEN + "Dataframe formatted succesfully." + Fore.RESET + f" n={len(station_data)}")
 
         return station_data
     
@@ -113,7 +113,7 @@ class OtherStationsFormatter:
     def filter_data(cls, station_data:pd.DataFrame):
         cols = ['network', 'stid', 'loc', 'channel', 'type_transmission']
         station_data = station_data[cols] 
-        logger.info(Fore.GREEN + "Dataframe formatted sucessfully." + Fore.RESET + f" n={len(station_data)}")
+        logger.info(Fore.GREEN + "Dataframe formatted succesfully." + Fore.RESET + f" n={len(station_data)}")
         return station_data
     
     @classmethod

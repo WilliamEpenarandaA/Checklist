@@ -40,7 +40,7 @@ pip install -r requirements.txt
 ```
 
 ## Testing
-This module contains a suite of tests to confirm that all functionality operates correctly. To check the module, within module's root folder ```../checklist/``` and execute the following command:
+This module contains a suite of tests to confirm that all functionality operates correctly. To check the module, within module's root folder ```../checklist/```, enable the virtual environment and execute the following command:
 
 ```bash
 python3 -m unittest discover -p "*_test.py" -v

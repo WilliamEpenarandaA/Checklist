@@ -1,7 +1,7 @@
 import os
 import logging
-from pathlib import Path
 from dataclasses import dataclass, field
+from pathlib import Path
 
 # ====================================================
 # SETUP LOGS
@@ -71,8 +71,7 @@ class ServerConfig:
 # STATUS THRESHOLDS
 # ====================================================
 class ThresholdsStatus:
-    ONLINE_MAX_DELAY = 600  # Limit time in seconds
-    RECOVERING_RATE = 0.95
+    ONLINE_MAX_DELAY = 180  # in seconds
 
 # ====================================================
 # FILE CONFIGURATIONS
@@ -88,7 +87,7 @@ class FileConfig:
     ACCEL_OUT_FILE = "accel_checklist.csv"
     INTER_OUT_FILE = "inter_checklist.csv"
 
-    SYMBOL_STATUS_CHECKLIST = {'Online': '', 'Recovering': '--', 'Offline': 'x', 'Future': '?', 'N/A': 'x'} 
+    SYMBOL_STATUS_CHECKLIST = {'Online': '', 'Intermittent': '--', 'Offline': 'x', 'Future': '?', 'N/A': 'x'} 
 
 # ====================================================
 # CHANNEL AND STATION CONFIGURATION

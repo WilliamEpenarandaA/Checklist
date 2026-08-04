@@ -38,7 +38,7 @@ class DelayCalculatorTest(unittest.TestCase):
                 ('GT', 'LPAZ', '00', 'BHZ', 'Internet', '2026/07/19 10:10:37.5750')
                 )
         
-        parsed_datetime = datetime.strptime('2026/07/19 11:14:38', "%Y/%m/%d %H:%M:%S")        
+        parsed_datetime = datetime.strptime('2026/07/19 11:14:38', "%Y/%m/%d %H:%M:%S").replace(tzinfo=None)        
 
         # Theorical outputs
         theorical_stations_df = {'network': ['CM', 'CM', 'CM', 'GT', 'CM', 'NU'], 
@@ -69,7 +69,7 @@ class DelayCalculatorTest(unittest.TestCase):
 
     def test_compute_delays(self):
         data = pd.DataFrame(base_data)
-        res = DelayCalculator.compute_delays(data, datetime_column='last_connection', datetime=parsed_datetime)
+        res = DelayCalculator.compute_delays(data, datetime=parsed_datetime, datetime_column='last_connection')
         delays = res['delay'].to_numpy()
 
         np.testing.assert_array_equal(delays, theorical_delays)

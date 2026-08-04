@@ -2,6 +2,7 @@
 # This python file contains an implementation to analyze status and performance metrics of SGC stations.
 
 from colorama import Fore
+from datetime import datetime, UTC
 import numpy as np
 import pandas as pd
 from src.config import settings
@@ -11,38 +12,23 @@ logger = settings.get_logger(__name__)
 class StationAnalysis:
     
     @classmethod
-    def get_station_status(cls, stations_data:pd.DataFrame, delay_column:str = 'delay'):
-        delays = stations_data[delay_column].to_numpy()
-        delays_seconds = delays / np.timedelta64(1, 's')
-        conditions = [(delays_seconds < 0), 
-                      (delays_seconds <= settings.thresholds.ONLINE_MAX_DELAY), 
-                      (delays_seconds > settings.thresholds.ONLINE_MAX_DELAY)]
-        
-        outputs = ['Future', 'Online', 'Offline']
-        status = np.select(conditions, outputs, default='N/A')
-        stations_data['status'] = status
-        stations_data['status'] = stations_data['status'].astype("string[pyarrow]")
+    def get_station_status(cls, delay1: np.array, delay2: np.array, dt:float):
+        conditions = [(np.isnan(delay1)) & (np.isnan(delay2)),
+                        (delay1 < 0) & (delay2 < 0),
+                        (delay1 <= settings.thresholds.ONLINE_MAX_DELAY) & (delay2 - delay1 <= dt),
+                        (delay1 <= settings.thresholds.ONLINE_MAX_DELAY) & (delay2 - delay1 > dt),
+                        (delay1 > settings.thresholds.ONLINE_MAX_DELAY) & (delay2 - delay1 <= dt),
+                        (delay1 > settings.thresholds.ONLINE_MAX_DELAY) & (delay2 - delay1 > dt)
+        ]
+        outputs = ["N/A", "Future", "Online", "Intermittent", "Intermittent", "Offline"]
+        status = np.select(conditions, outputs, default='Error')
         logger.info(Fore.GREEN + "Station status determined succesfully!!" + Fore.RESET)
+        has_error = 'Error' in status
+        count = np.sum(status == 'Error')
+        if has_error:
+            logger.error(Fore.RED + f"There are {count} stations with Error status!!" + Fore.RESET)
 
-        return stations_data
-    
-    @classmethod
-    def compute_diff_delays(cls, stations_data:pd.DataFrame, delay_column: str = 'delay', delay_column_after:str = 'delay2'):
-        _delay1 = (stations_data[delay_column].to_numpy()) / np.timedelta64(1, 's')
-        _delay2 = (stations_data[delay_column_after].to_numpy()) / np.timedelta64(1, 's')
-        diff = _delay2 - _delay1
-        stations_data['diff_delays'] = diff
-        logger.info(Fore.GREEN + "Differentials between two times computed succesfully!!" + Fore.RESET)
-
-        return stations_data
-
-    @classmethod
-    def determine_recovering_status(cls, stations_data: pd.DataFrame, dt:float, status_column:str = 'status', diff_delays_column:str = 'diff_delays'):
-        stations_data[status_column] = stations_data.apply(lambda row: 'Recovering' if row[diff_delays_column] <= dt and row[diff_delays_column] != 0.0 else row[status_column], axis=1)   
-        stations_data[status_column] = stations_data[status_column].astype("string[pyarrow]")
-        logger.info(Fore.GREEN + "Recovering status computed succesfully!!" + Fore.RESET)
-
-        return stations_data
+        return status
 
     @classmethod
     def sensor_metrics(cls, stations_data:pd.DataFrame, status_column:str = 'status'):
@@ -158,19 +144,37 @@ if __name__ == '__main__':
         warnings.simplefilter("ignore", category=FutureWarning)
         final_data = DelayCalculator.add_stations_untracked(all_data, slink_data)
 
-    final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
+    #Compute Delay Time
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data = DelayCalculator.compute_delays(final_data, actual_time, 'last_connection')
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
-    final_data = StationAnalysis.get_station_status(final_data)
-    print(final_data)
-    
-    res = StationAnalysis.sensor_metrics(final_data)
-    print(res)
 
-    ## Determine recovering status
+    # Second validation of Delay Time
     import time
-    time.sleep(60)
+    dt = 30
+    time.sleep(dt)
+    output = SlinktoolExecutor.request_info(comm)
+    solution = SlinktoolFormatter.extract_info(output)
+    slink_data = SlinktoolFormatter.build_dataframe(solution)
+    slink_data = SlinktoolFormatter.select_interest_channels(slink_data)
+    slink_data = SlinktoolFormatter.assign_transmission(slink_data, all_data)
+    slink_data = SlinktoolFormatter.order_cols(slink_data)
 
-    final_data = DelayCalculator.compute_delays(final_data, 'last_connection', 'delay2')
-    final_data = StationAnalysis.compute_diff_delays(final_data)
-    final_data = StationAnalysis.determine_recovering_status(final_data, 60)
-    print(final_data)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=FutureWarning)
+        final_data2 = DelayCalculator.add_stations_untracked(all_data, slink_data)
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data2 = DelayCalculator.compute_delays(final_data2, actual_time, 'last_connection')
+    final_data2 = DelayCalculator.format_delays(final_data2, delay_column='delay')
+
+    ## Extract delay columns
+    delay1 = final_data['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+    delay2 = final_data2['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+    status = StationAnalysis.get_station_status(delay1, delay2, dt)
+    final_data2['delay1_seconds'] = delay1
+    final_data2['delay2_seconds'] = delay2
+    final_data2['status'] = status
+    print(final_data2)
+    
+    res = StationAnalysis.sensor_metrics(final_data2)
+    print(res)

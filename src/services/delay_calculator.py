@@ -2,7 +2,7 @@
 # This python file contains an implementation to compute delays of SGC stations.
 
 from colorama import Fore
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 import numpy as np
 import pandas as pd
 from src.config import settings
@@ -23,8 +23,8 @@ class DelayCalculator:
             return final_data
 
     @classmethod
-    def compute_delays(cls, stations_data:pd.DataFrame, datetime_column:str, delay_column:str = 'delay', datetime: datetime = datetime.now(timezone.utc)):
-        now_utc = np.datetime64(datetime.replace(tzinfo=None))
+    def compute_delays(cls, stations_data:pd.DataFrame,  datetime: datetime, datetime_column:str, delay_column:str = 'delay'):
+        now_utc = np.datetime64(datetime)
         datetimes = pd.to_datetime(stations_data[datetime_column]).to_numpy()
         diff = pd.to_timedelta(now_utc - datetimes) 
         #diff = (now_utc - datetimes) / np.timedelta64(1, 's')
@@ -55,8 +55,8 @@ class DelayCalculator:
         return stations_data
     
 if __name__ == "__main__":
-    from src.data_access.slinktool_executor import SlinktoolExecutor
     from src.data_access.load_data import StationRepository
+    from src.data_access.slinktool_executor import SlinktoolExecutor
     from src.utilities.data_formatter import SiigeoFormatter, OtherStationsFormatter
     from src.utilities.slinktool_formatter import SlinktoolFormatter
 
@@ -102,10 +102,11 @@ if __name__ == "__main__":
     #print("Memory usaged:", final_data.memory_usage(deep=True).sum()/(1024**2), "MB")
     import time
     init_time = time.perf_counter()
-    final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data = DelayCalculator.compute_delays(final_data, actual_time, 'last_connection')
     end_time = time.perf_counter()
     print(f"Method execution time: {end_time - init_time:.5f} seconds")
-
+    print(final_data.loc[final_data['stid'] == 'YAVI3'])
     #print(DelayCalculator.format_delays(final_data, delay_column='delay'))
     #init_time = time.perf_counter()
     #print(DelayCalculator.compute_delays2(final_data, 'last_connection'))

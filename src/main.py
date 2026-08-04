@@ -13,6 +13,8 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(PROJECT_ROOT)
 
 from colorama import Fore, Style, init
+from datetime import datetime, UTC
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from src.config import settings
@@ -39,7 +41,7 @@ def read_args():
     parser.add_argument(prefix + "u", prefix + "update", help="Integrate station updates from the Siigeo database", action='store_true', required=False)
     parser.add_argument(prefix + "s", prefix + "stat", help="Present performance metrics by sensor types.", action='store_true', required=False)
     parser.add_argument(prefix + "st", prefix + "stat_type", help="Present performance metrics categorized by transmission type.", action='store_true', required=False)
-    parser.add_argument(prefix + "d", prefix + "delay", help="Re-validate stations status after a specified time interval in seconds.", type=int, default=0, required=False)
+    parser.add_argument(prefix + "d", prefix + "delay", help="Re-validate stations status after a specified time interval in seconds.", type=int, default=30, required=False)
     parser.add_argument(prefix + prefix + "offline", help="Show stations with offline status.", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "recovering", help="Show stations with recovering status.", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "online", help="Show stations with online status.", action='store_true', required=False)
@@ -89,23 +91,46 @@ if __name__ == "__main__":
         final_data = DelayCalculator.add_stations_untracked(all_data, slink_data)
 
     # Compute delays of the stations
-    final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data = DelayCalculator.compute_delays(final_data, actual_time, 'last_connection')
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
-    final_data = StationAnalysis.get_station_status(final_data)
-    stats = StationAnalysis.sensor_metrics(final_data) # Compute performance metrics
 
-    if params['d'] > 0:
-        with tqdm(total=params['d'], desc=f"Waiting {params['d']} seconds to execute a new validation") as pbar:
-            for _ in range(params['d']):
-                time.sleep(1)
-                pbar.update(1)
+    # Second validation of Delay Time
+    dt = params['d']
+    if dt <= 15:
+        logger.debug(Fore.RED + "Time difference small to obtain consistent results!!" + Fore.RESET)
 
-        final_data = DelayCalculator.compute_delays(final_data, 'last_connection', 'delay2')
-        final_data = StationAnalysis.compute_diff_delays(final_data)
-        final_data = StationAnalysis.determine_recovering_status(final_data, params['d'] * settings.thresholds.RECOVERING_RATE)
-        stats = StationAnalysis.sensor_metrics(final_data) # Compute performance metrics
+    with tqdm(total=dt, desc=f"Waiting {dt} seconds to execute a new validation") as pbar:
+        for _ in range(dt):
+            time.sleep(1)
+            pbar.update(1)
 
-    seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data, list(inter_data['stid']))
+    output = SlinktoolExecutor.request_info(comm)
+    solution = SlinktoolFormatter.extract_info(output)
+    slink_data = SlinktoolFormatter.build_dataframe(solution)
+    slink_data = SlinktoolFormatter.select_interest_channels(slink_data)
+    slink_data = SlinktoolFormatter.assign_transmission(slink_data, all_data)
+    slink_data = SlinktoolFormatter.order_cols(slink_data)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=FutureWarning)
+        final_data2 = DelayCalculator.add_stations_untracked(all_data, slink_data)
+
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data2 = DelayCalculator.compute_delays(final_data2, actual_time, 'last_connection')
+    final_data2 = DelayCalculator.format_delays(final_data2, delay_column='delay')
+
+    # Extract delay columns
+    delay1 = final_data['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+    delay2 = final_data2['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+    status = StationAnalysis.get_station_status(delay1, delay2, dt)
+    final_data2['status'] = status    
+
+    # Compute performance metrics
+    stats = StationAnalysis.sensor_metrics(final_data2) 
+
+    # Separate stations into three groups
+    seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data2, list(inter_data['stid']))
     inter_stations = TableFormatter.extract_inter_stations(inter_data, inter_stations, settings.stations.INTER_PATTERN_CHANNELS)
 
     # Save results if it's enabled

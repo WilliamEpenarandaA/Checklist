@@ -60,7 +60,7 @@ class TableFormatter:
         for _, row in stations_data.iterrows():
             if row[status_column] == 'Online':
                 color = Fore.GREEN
-            elif row[status_column] == 'Recovering':
+            elif row[status_column] == 'Intermittent':
                 color = Fore.MAGENTA
             elif row[status_column] == 'Offline':
                 color = Fore.RED

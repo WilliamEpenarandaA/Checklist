@@ -13,6 +13,7 @@ class StationAnalysisTest(unittest.TestCase):
 
     def setUp(self):
         global base_data
+        global base_data2
         global parsed_datetime
         global parsed_datetime2
         global theorical_status
@@ -24,11 +25,19 @@ class StationAnalysisTest(unittest.TestCase):
                          'loc': ['00', '00', '00', '00', '10', None, '10'], 
                          'channel': ['HHE', 'HHN', 'HHZ', 'BHZ', 'HNZ', 'HHZ', 'HNZ'], 
                          'type_transmission': ['Satelital', 'Satelital', 'Satelital', 'Internet', 'Celular', 'Internet', 'Celular'], 
-                         'last_connection': ['2026/07/19 11:14:08.1583', '2026/07/19 11:14:09.2983', '2026/07/19 11:14:09.3383', '2026/07/19 11:13:20.8000', None, None, '2026/07/19 04:16:36.9845'],
-                         'last_connection2': ['2026/07/19 11:15:08.1583', '2026/07/19 11:15:09.2983', '2026/07/19 11:15:09.3383', '2026/07/19 11:14:20.8000', None, None, '2026/07/19 06:16:36.9845']
+                         'last_connection': ['2026/07/19 11:14:08.1583', '2026/07/19 11:14:09.2983', '2026/07/19 11:14:09.3383', '2026/07/19 11:13:20.8000', None, None, '2026/07/19 04:16:36.9845']
                          }
-        parsed_datetime = datetime.strptime('2026/07/19 11:14:38', "%Y/%m/%d %H:%M:%S")
-        parsed_datetime2 = datetime.strptime('2026/07/19 11:15:38', "%Y/%m/%d %H:%M:%S")
+
+        base_data2 = {'network': ['CM', 'CM', 'CM', 'GT', 'CM', 'NU', 'CM'], 
+                                 'stid': ['APAC', 'APAC', 'APAC', 'LPAZ', 'CSAMU', 'APQN', 'PIZC'], 
+                                 'loc': ['00', '00', '00', '00', '10', None, '10'], 
+                                 'channel': ['HHE', 'HHN', 'HHZ', 'BHZ', 'HNZ', 'HHZ', 'HNZ'], 
+                                 'type_transmission': ['Satelital', 'Satelital', 'Satelital', 'Internet', 'Celular', 'Internet', 'Celular'], 
+                                 'last_connection': ['2026/07/19 11:15:08.1583', '2026/07/19 11:15:09.2983', '2026/07/19 11:15:09.3383', '2026/07/19 11:14:20.8000', None, None, '2026/07/19 06:16:36.9845']
+                                 }
+        
+        parsed_datetime = datetime.strptime('2026/07/19 11:14:38', "%Y/%m/%d %H:%M:%S").replace(tzinfo=None)
+        parsed_datetime2 = datetime.strptime('2026/07/19 11:15:38', "%Y/%m/%d %H:%M:%S").replace(tzinfo=None)
         
         # Theorical outputs
         theorical_status = ['Online', 'Online', 'Online', 'Online', 'N/A', 'N/A', 'Offline']
@@ -42,41 +51,28 @@ class StationAnalysisTest(unittest.TestCase):
         print('setUp method execution....')
 
     def test_get_station_status(self):
-        data = pd.DataFrame(base_data)
-        res = DelayCalculator.compute_delays(data, datetime_column='last_connection', datetime=parsed_datetime)
-        res = StationAnalysis.get_station_status(res)
-        status = res['status'].to_list()
-        
-        self.assertListEqual(status, theorical_status)
+        dt = 10 
+        delay1 = pd.Series([-600, 10, 20, 80, 210, 2000, pd.NaT], dtype=object).fillna(np.nan).to_numpy()
+        delay2 = pd.Series([-610, 10, 9, 92, 200, 2300, pd.NaT], dtype=object).fillna(np.nan).to_numpy()
+        res = StationAnalysis.get_station_status(delay1, delay2, dt)
+        res = res.tolist()
+        theorical_status = ["Future", "Online", "Online", "Intermittent", "Intermittent", "Offline", "N/A"]
 
-    def test_compute_diff_delays(self):
-        data = pd.DataFrame(base_data)
-        res = DelayCalculator.compute_delays(data, datetime_column='last_connection', datetime=parsed_datetime)
-        res = DelayCalculator.compute_delays(res, datetime_column='last_connection2', delay_column='delay2', datetime=parsed_datetime2)
-        res =  StationAnalysis.compute_diff_delays(res)
-        diffs = res['diff_delays']
-
-        pd.testing.assert_series_equal(diffs, theorical_diffs)
-
-    def test_determine_recovering_status(self):
-        data = pd.DataFrame(base_data)
-        res = DelayCalculator.compute_delays(data, datetime_column='last_connection', datetime=parsed_datetime)
-        res = DelayCalculator.compute_delays(res, datetime_column='last_connection2', delay_column='delay2', datetime=parsed_datetime2)
-        res = StationAnalysis.get_station_status(res)
-        res =  StationAnalysis.compute_diff_delays(res)
-        res = StationAnalysis.determine_recovering_status(res, 60*settings.thresholds.RECOVERING_RATE)
-        status = res['status'].to_list()
-        print(status)
-
-        self.assertListEqual(status, theorical_status_dt)
+        self.assertListEqual(res, theorical_status)
 
     def test_sensor_metrics(self):
         data = pd.DataFrame(base_data)
+        data2 = pd.DataFrame(base_data2)
         res = DelayCalculator.compute_delays(data, datetime_column='last_connection', datetime=parsed_datetime)
-        res = StationAnalysis.get_station_status(res)
-        metrics = StationAnalysis.sensor_metrics(res)
+        res2 = DelayCalculator.compute_delays(data2, datetime_column='last_connection', datetime=parsed_datetime2)
+        delay1 = res['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+        delay2 = res2['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+        status = StationAnalysis.get_station_status(delay1, delay2, 60)
+        res2['status'] = status
+        metrics = StationAnalysis.sensor_metrics(res2)
         
         self.assertDictEqual(metrics, theorical_metrics)
+
 
 if __name__ == '__main__':
     unittest.main()

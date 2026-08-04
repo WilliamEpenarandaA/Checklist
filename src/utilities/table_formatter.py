@@ -2,7 +2,10 @@
 # This python file contains an implementation to format information according to checklist document.
 
 import re
+import time
 from colorama import Fore
+from datetime import datetime, UTC
+import numpy as np
 import pandas as pd
 from src.config import settings
 
@@ -149,13 +152,34 @@ if __name__ == '__main__':
         warnings.simplefilter("ignore", category=FutureWarning)
         final_data = DelayCalculator.add_stations_untracked(all_data, slink_data)
 
-    final_data = DelayCalculator.compute_delays(final_data, 'last_connection')
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data = DelayCalculator.compute_delays(final_data, actual_time, 'last_connection')
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
-    final_data = StationAnalysis.get_station_status(final_data)
-    seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data, list(inter_data['stid']))
-    seismo_stations = TableFormatter.get_display_table(seismo_stations, 'Seismological', mode=False)
-    seismo_stations = TableFormatter.get_color_status(seismo_stations)
-   
+    dt = 30
+    time.sleep(dt)
+    output = SlinktoolExecutor.request_info(comm)
+    solution = SlinktoolFormatter.extract_info(output)
+    slink_data = SlinktoolFormatter.build_dataframe(solution)
+    slink_data = SlinktoolFormatter.select_interest_channels(slink_data)
+    slink_data = SlinktoolFormatter.assign_transmission(slink_data, all_data)
+    slink_data = SlinktoolFormatter.order_cols(slink_data)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=FutureWarning)
+        final_data2 = DelayCalculator.add_stations_untracked(all_data, slink_data)
+    actual_time = datetime.now(UTC).replace(tzinfo=None)
+    final_data2 = DelayCalculator.compute_delays(final_data2, actual_time, 'last_connection')
+    final_data2 = DelayCalculator.format_delays(final_data2, delay_column='delay')
+
+    ## Extract delay columns
+    delay1 = final_data['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+    delay2 = final_data2['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
+    status = StationAnalysis.get_station_status(delay1, delay2, dt)
+    final_data2['delay1_seconds'] = delay1
+    final_data2['delay2_seconds'] = delay2
+    final_data2['status'] = status
+
+    seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data2, list(inter_data['stid']))
     print(f"\n{seismo_stations}")
 
     inter_stations = TableFormatter.extract_inter_stations(inter_data, inter_stations, settings.stations.INTER_PATTERN_CHANNELS)

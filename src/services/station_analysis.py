@@ -178,3 +178,5 @@ if __name__ == '__main__':
     
     res = StationAnalysis.sensor_metrics(final_data2)
     print(res)
+
+    print(final_data2.loc[final_data2['stid'] == 'ACH6'])

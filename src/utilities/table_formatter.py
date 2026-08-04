@@ -27,10 +27,12 @@ class TableFormatter:
         shared_nat_stations = shared_nat_stations.sort_values(by='stid', key=lambda x: x.map(settings.stations.SHARED_NAT_ORDER.index))
         seismo_stations = seismo_stations.loc[~seismo_stations['stid'].isin(settings.stations.SHARED_NAT_ORDER)].sort_values(by=['stid', 'loc'], ascending=[True, True])
         seismo_stations = pd.concat([seismo_stations, shared_nat_stations], ignore_index=True).reset_index(drop=True)
+        seismo_stations = seismo_stations.loc[~seismo_stations['stid'].isin(inter_stations)]
 
         # Order National Accelerograph stations according to checklist xlsx file
         accel_stations = stations_data.loc[(stations_data['channel'] == 'HNZ') | (stations_data['channel'] == 'HLZ')]
         accel_stations = accel_stations.sort_values(by=['stid', 'loc'], ascending=[True, True]).reset_index(drop=True)
+        accel_stations = accel_stations.loc[~accel_stations['stid'].isin(inter_stations)]
 
         # Order International stations according to checklist xlsx file
         inter_stations = stations_data.loc[stations_data['stid'].isin(inter_stations)]

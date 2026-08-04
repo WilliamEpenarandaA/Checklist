@@ -140,18 +140,19 @@ if __name__ == "__main__":
         TableFormatter.export_csv_tables(inter_stations, settings.files.INTER_OUT_FILE)
 
     # Stablish allowed status to be displayed
-    allowed_status = ['Online', 'Recovering', 'Offline', 'N/A', 'Future']
+    allowed_status = ['Online', 'Intermittent', 'Offline', 'N/A', 'Future', 'Error']
     display_status = []
     if params['online']:
         display_status.append('Online')
         display_status.append('Future')
     
     if params['recovering']:
-        display_status.append('Recovering')
+        display_status.append('Intermittent')
     
     if params['offline']:
         display_status.append('Offline')
         display_status.append('N/A')
+        display_status.append('Error')
 
     if not allowed_status:
         logger.critical(Fore.RED + "Error declaring allowed status to be displayed!!!" + Fore.RESET)

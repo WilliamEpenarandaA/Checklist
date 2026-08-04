@@ -87,7 +87,7 @@ class FileConfig:
     ACCEL_OUT_FILE = "accel_checklist.csv"
     INTER_OUT_FILE = "inter_checklist.csv"
 
-    SYMBOL_STATUS_CHECKLIST = {'Online': '', 'Intermittent': '--', 'Offline': 'x', 'Future': '?', 'N/A': 'x'} 
+    SYMBOL_STATUS_CHECKLIST = {'Online': '', 'Intermittent': '--', 'Offline': 'x', 'Future': '?', 'N/A': 'x', 'Error': 'xx'} 
 
 # ====================================================
 # CHANNEL AND STATION CONFIGURATION

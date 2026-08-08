@@ -76,11 +76,12 @@ where:
     * `+h` or `+help` Display a menu on terminal which show different avalaible options.
     * `+o` or `+output` Export results as csv files.
     * `+p` or `+print` Display delays in a user-friendly manner (day, hour, minute, seconds).
-    * `+u` or `+update` Integrate station updates from the Siigeo database
     * `+s` or `+stat` Present performance metrics by sensor types.
-    * `+sn` or `+stat_nat` Present performance metrics categorized by transmission type.
+    * `+sn` or `+stat_nat` Present performance metrics categorized by transmission types.
+    * `+t` or `+time` Re-validate stations status after a specified time interval in seconds. By default is set as 30 seconds.
+    * `+u` or `+update` Integrate station updates from the Siigeo database
     * `++offline` Show stations with offline status. Can be combined with others filters.
-    * `++recovering` Show stations with recovering status. Can be combined with others filters.
+    * `++intermittent` Show stations with intermittent status. Can be combined with others filters.
     * `++online` Show stations with online status. Can be combined with others filters.
     * `++server` Define server to perform checklist. Avalaible options are: 91, 95, 232, 13, 97 and 2.
 

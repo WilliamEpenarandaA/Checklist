@@ -17,7 +17,7 @@ All important changes will be documented here.
 
 ### Removed
 - +n. Number of process to use in parallel. 
-- ++wave. Compute delays from last connection datetime from stations not tracked by slinktool. 
+- ++wave. Compute delays from last connection datetime from stations not tracked by slinktool using data stored in server. 
 - Default values of last connection datetime in the cases when the station is not tracked by slinktool, **1970-01-01 00:00:00**, and when a station has no data stored in the actual year, **one year and one day before the current time**.
 
 ## [1.3.3] 2026-07-17

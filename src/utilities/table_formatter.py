@@ -59,28 +59,18 @@ class TableFormatter:
 
         return inter_stations
 
-    @classmethod
-    def get_color_status(cls, stations_data:pd.DataFrame, status_column:str = 'status'):
-        stats = []
-        for _, row in stations_data.iterrows():
-            if row[status_column] == 'Online':
-                color = Fore.GREEN
-            elif row[status_column] == 'Intermittent':
-                color = Fore.MAGENTA
-            elif row[status_column] == 'Offline':
-                color = Fore.RED
-            elif row[status_column] == 'Future':
-                color = Fore.YELLOW
-            else:
-                color = Fore.RESET
-            
-            status_color = color + row[status_column] + Fore.RESET
-            stats.append(status_color)
-
-        stations_data[status_column] = stats
-        logger.info(Fore.GREEN + "Station status color obtained succesfully!!" + Fore.RESET)
-        
-        return stations_data
+    @staticmethod
+    def format_status(status_str: str):
+        if status_str == 'Online':
+            return Fore.GREEN + status_str + Fore.RESET
+        elif status_str == 'Intermittent':
+            return Fore.MAGENTA + status_str + Fore.RESET
+        elif status_str == 'Offline':
+            return Fore.RED + status_str + Fore.RESET
+        elif status_str == 'Future':
+            return Fore.YELLOW + status_str + Fore.RESET
+        else:
+            return Fore.RESET + status_str + Fore.RESET
     
     @classmethod
     def filter_vertical_components(cls, stations_data: pd.DataFrame, channel_col:str = 'channel'):
@@ -187,8 +177,5 @@ if __name__ == '__main__':
     inter_stations = TableFormatter.extract_inter_stations(inter_data, inter_stations, settings.stations.INTER_PATTERN_CHANNELS)
     TableFormatter.export_csv_tables(inter_stations, settings.files.INTER_OUT_FILE)
     inter_stations = TableFormatter.get_display_table(inter_stations, 'International', mode=True)
-    inter_stations = TableFormatter.get_color_status(inter_stations)
+    inter_stations['status'] = inter_stations['status'].apply(TableFormatter.format_status)
     print(f"\n{inter_stations}")
-    #print(inter_stations['stid'].unique())
-
-    

@@ -35,15 +35,15 @@ logger = settings.get_logger(__name__)
 ## Define function to parse arguments
 def read_args():
     prefix = '+'
-    parser = argparse.ArgumentParser(prog="Checklist", description="Find the last recorded connection time of seismological stations managed by SGC.", prefix_chars=prefix)
+    parser = argparse.ArgumentParser(prog="Checklist", description="Find the last recorded connection time of seismological stations monitored by SGC.", prefix_chars=prefix)
     parser.add_argument(prefix + "p", prefix + "print", help="Display delays in a user-friendly manner (day, hour, minute, seconds).", action='store_true', required=False)
     parser.add_argument(prefix + "o", prefix + "output", help="Export results as csv files.", action='store_true', required=False)
     parser.add_argument(prefix + "u", prefix + "update", help="Integrate station updates from the Siigeo database", action='store_true', required=False)
     parser.add_argument(prefix + "s", prefix + "stat", help="Present performance metrics by sensor types.", action='store_true', required=False)
     parser.add_argument(prefix + "st", prefix + "stat_type", help="Present performance metrics categorized by transmission type.", action='store_true', required=False)
-    parser.add_argument(prefix + "d", prefix + "delay", help="Re-validate stations status after a specified time interval in seconds.", type=int, default=30, required=False)
+    parser.add_argument(prefix + "t", prefix + "time", help="Re-validate stations status after a specified time interval in seconds.", type=int, default=30, required=False)
     parser.add_argument(prefix + prefix + "offline", help="Show stations with offline status.", action='store_true', required=False)
-    parser.add_argument(prefix + prefix + "recovering", help="Show stations with recovering status.", action='store_true', required=False)
+    parser.add_argument(prefix + prefix + "intermittent", help="Show stations with intermittent status.", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "online", help="Show stations with online status.", action='store_true', required=False)
     parser.add_argument(prefix + prefix + "server", help="Define server to perform checklist. Avalaible options are: 91, 95, 232, 13, 97 and 2.", type=str, default='91', required=False)
     args_parser = parser.parse_args()
@@ -96,9 +96,9 @@ if __name__ == "__main__":
     final_data = DelayCalculator.format_delays(final_data, delay_column='delay')
 
     # Second validation of Delay Time
-    dt = params['d']
+    dt = params['t']
     if dt <= 15:
-        logger.debug(Fore.RED + "Time difference small to obtain consistent results!!" + Fore.RESET)
+        logger.debug(Fore.RED + "Selected time difference can produce inconsistent results!!" + Fore.RESET)
 
     with tqdm(total=dt, desc=f"Waiting {dt} seconds to execute a new validation") as pbar:
         for _ in range(dt):
@@ -146,7 +146,7 @@ if __name__ == "__main__":
         display_status.append('Online')
         display_status.append('Future')
     
-    if params['recovering']:
+    if params['intermittent']:
         display_status.append('Intermittent')
     
     if params['offline']:
@@ -170,11 +170,12 @@ if __name__ == "__main__":
 
     # Format dataframe results to be displayed in terminal
     _seismo_stations = TableFormatter.get_display_table(seismo_stations, 'Seismological', mode=params['p'])
-    _seismo_stations = TableFormatter.get_color_status(_seismo_stations)
+    _seismo_stations['status'] = _seismo_stations['status'].apply(TableFormatter.format_status)
     _accel_stations = TableFormatter.get_display_table(accel_stations, 'Acelerographic', mode=params['p'])
-    _accel_stations = TableFormatter.get_color_status(_accel_stations)
+    _accel_stations['status'] = _accel_stations['status'].apply(TableFormatter.format_status)
     _inter_stations = TableFormatter.get_display_table(inter_stations, 'International', mode=params['p'])
-    _inter_stations = TableFormatter.get_color_status(_inter_stations)
+    _inter_stations['status'] = _inter_stations['status'].apply(TableFormatter.format_status)
+    logger.info(Fore.GREEN + "Station status formatted succesfully!!" + Fore.RESET)
 
     with pd.option_context('display.max_rows', None,
                             'display.precision', 1,

@@ -12,7 +12,7 @@ class SlinktoolExecutorTest(unittest.TestCase):
         server = '91'
 
         # Theorical Outputs
-        theorical_command = 'slinktool -Q 10.100.100.91'
+        theorical_command = ["slinktool", "-Q", "10.100.100.91"]
         print('setUp method execution....')
 
     def test_get_port(self):
@@ -22,7 +22,7 @@ class SlinktoolExecutorTest(unittest.TestCase):
     def test_build_command(self):
         port = SlinktoolExecutor.get_port(server=server)
         command = SlinktoolExecutor.build_command(server, port)
-        self.assertEqual(command, theorical_command)
+        self.assertListEqual(command, theorical_command)
 
     def test_request_info(self):
         port = SlinktoolExecutor.get_port(server=server)

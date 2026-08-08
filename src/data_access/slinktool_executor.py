@@ -20,17 +20,16 @@ class SlinktoolExecutor:
             logger.warning(Fore.RED + "Given Server is not defined as a data receiver in environment variables." + Fore.RESET)
             raise
 
-
     @classmethod
     def build_command(cls, server: str = None, port:str = None):
         ip = settings.servers.get_server_ip(server, port)
-        command = f"slinktool -Q {ip}"
+        command = ["slinktool", "-Q", f"{ip}"]
 
         return command
 
     @classmethod
-    def request_info(cls, command: str):
-        result = subprocess.run(command, shell=True, capture_output=True, encoding='utf-8')
+    def request_info(cls, command: list):
+        result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', timeout=15)
         output = result.stdout.splitlines()
         logger.info(Fore.GREEN + "Sucessful information request from slinktool." + Fore.RESET)
         

@@ -81,9 +81,9 @@ class TableFormatter:
     @classmethod
     def get_display_table(cls, stations_data:pd.DataFrame, name:str, mode:bool):
         if mode:
-            cols2print = ['network', 'stid', 'loc', 'channel', 'last_connection', 'delay_', 'status']
+            cols2print = ['network', 'stid', 'loc', 'channel', '_last_connection', 'last_connection', 'delay_', 'status']
         else:
-            cols2print = ['network', 'stid', 'loc', 'channel', 'last_connection', 'status']
+            cols2print = ['network', 'stid', 'loc', 'channel', '_last_connection', 'last_connection', 'status']
         stations_data = stations_data[cols2print]
         stations_data = cls.filter_vertical_components(stations_data)
         logger.info(Fore.GREEN + f"{name} data succesfully formatted to display!!" + Fore.RESET)

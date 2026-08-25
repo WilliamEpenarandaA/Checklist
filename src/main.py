@@ -120,11 +120,15 @@ if __name__ == "__main__":
     final_data2 = DelayCalculator.compute_delays(final_data2, actual_time, 'last_connection')
     final_data2 = DelayCalculator.format_delays(final_data2, delay_column='delay')
 
-    # Extract delay columns
+    # Extract delay columns and determine status
     delay1 = final_data['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
     delay2 = final_data2['delay'].dt.total_seconds().fillna(np.nan).to_numpy()
     status = StationAnalysis.get_station_status(delay1, delay2, dt)
     final_data2['status'] = status    
+
+    # Extract previous last connection and add into the second dataframe
+    lt1 = final_data['last_connection']
+    final_data2['_last_connection'] = lt1
 
     # Compute performance metrics
     stats = StationAnalysis.sensor_metrics(final_data2) 

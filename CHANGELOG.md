@@ -2,6 +2,24 @@
 
 All important changes will be documented here.
 
+## [2.0.0] 2026-08-25
+### Changed
+- **Complete Module Refactor**. Overhauled the core architecture to a layered architecture to ease maintain and develop.
+- Core functions are divided in a smaller functions with unique responsability to reduce coupling.
+- Environment variables are grouped in an unique entry point.
+
+### Performance
+- Reduce memory consumption by 40% during dataframe operations.
+- Decreased execution times by 92%. Passing from 6 seconds to 0.5 seconds.
+
+### Added
+- +d. Re-validate stations status after a specified time interval in seconds.
+
+### Removed
+- +n. Number of process to use in parallel. 
+- ++wave. Compute delays from last connection datetime from stations not tracked by slinktool using data stored in server. 
+- Default values of last connection datetime in the cases when the station is not tracked by slinktool, **1970-01-01 00:00:00**, and when a station has no data stored in the actual year, **one year and one day before the current time**.
+
 ## [1.3.3] 2026-07-17
 ### Added
 - Option to run checklist in server .95 
@@ -45,4 +63,4 @@ All important changes will be documented here.
 
 ## [1.0.0] - 2025-09-09
 ### Added
-- Initial launch of the program.
+- Initial public release.

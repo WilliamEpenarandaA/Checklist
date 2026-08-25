@@ -75,7 +75,7 @@ class Network:
         server (str): Last digits of server IP
         port (str): Digit of the port for the correspond server IP.
         """
-        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000", "95":"18000"}
+        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000"}
         port = server_dict[server]
         if server != '2':
             server = '100.' + server
@@ -394,7 +394,7 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if self.server in ['232', '13', '91', '95']:
+        if self.server in ['232', '13', '91']:
             if not last_inter or not isinstance(last_inter, list):
                 raise ValueError("last connections of international stations must be a valid list.")
             if not delay_inter or not isinstance(delay_inter, list):
@@ -673,12 +673,12 @@ class Network:
                 tmp.append('')
             elif row['status'] == 'recovering':
                 tmp.append('--')
-            elif row['status'] == 'offline' or row['status'] == 'Station not tracking by slinktool':
+            elif row['status'] == 'offline':
                 tmp.append('x')
-            elif row['status'] == 'Future (check)':
+            elif row['status'] == 'future (check)':
                 tmp.append('?')
             else:
-                tmp.append('#')
+                tmp.append('x?')
         stations_data['checklist'] = tmp
         cols = ['id', 'channel', 'checklist']
         stations_data = stations_data[cols]

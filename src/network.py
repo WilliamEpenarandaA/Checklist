@@ -9,7 +9,7 @@ import requests
 import subprocess
 import time
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 from colorama import Fore, Style
 
 def measure_time(func):
@@ -75,7 +75,7 @@ class Network:
         server (str): Last digits of server IP
         port (str): Digit of the port for the correspond server IP.
         """
-        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000", "95":"18000"}
+        server_dict = {"232":"16501", "13":"16501", "97":"18000", "2":"18000", "91":"18000"}
         port = server_dict[server]
         if server != '2':
             server = '100.' + server
@@ -331,12 +331,13 @@ class Network:
         last_connection = datetime.strptime(last_connection, format_date)
         return last_connection
  
-    def compute_delays(self, last_connection: datetime):
+    def compute_delays(self, current_time:datetime, last_connection: datetime):
         """
         Function to calculate delay in seconds of channel of the correspond station.
 
         Parameters:
         -----------
+        current time in datetime object.
         last_connection (datetime): last UTC datetime connection of channel of the correspond station.
         
         Return:
@@ -344,7 +345,7 @@ class Network:
         delay(float): delay in total seconds of channel of the correspond stations. Delay value was set as -99999
         for stations not tracking by slinktool module.
         """
-        current_time = datetime.now(timezone.utc).replace(tzinfo=None)
+        current_time = current_time + timedelta(hours=5)
         if last_connection is not None and last_connection != datetime(1970, 1, 1, 0, 0, 0, 0):
             delay = (current_time - last_connection).total_seconds()  # Delay in minutes
             pass
@@ -393,7 +394,7 @@ class Network:
         shared_data['delay_seconds'] = delay_shared
         shared_data['channel'] = channel_shared
         self.shared_data = shared_data
-        if self.server in ['232', '13', '91', '95']:
+        if self.server in ['232', '13', '91']:
             if not last_inter or not isinstance(last_inter, list):
                 raise ValueError("last connections of international stations must be a valid list.")
             if not delay_inter or not isinstance(delay_inter, list):
@@ -672,12 +673,12 @@ class Network:
                 tmp.append('')
             elif row['status'] == 'recovering':
                 tmp.append('--')
-            elif row['status'] == 'offline' or row['status'] == 'Station not tracking by slinktool':
+            elif row['status'] == 'offline':
                 tmp.append('x')
-            elif row['status'] == 'Future (check)':
+            elif row['status'] == 'future (check)':
                 tmp.append('?')
             else:
-                tmp.append('#')
+                tmp.append('x?')
         stations_data['checklist'] = tmp
         cols = ['id', 'channel', 'checklist']
         stations_data = stations_data[cols]

@@ -27,4 +27,4 @@ If a PR contains AI hallucinations (code that does not do what the description s
 - For bug fixes, add a test that fails before the change and passes after, where the code allows it.
 
 ## License
-By contributing to checklist, you agree that your contributions will be licensed under the defined license in the root of this repository.
+By contributing to checklist, you agree that your contributions will be licensed under [LICENSE](LICENSE) in the root of this repository.

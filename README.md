@@ -91,8 +91,5 @@ where:
 > checklist +s +o
 > ```
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
-
 ## Authority
-This project was developed by William Eduardo Peñaranda Arévalo, Geophysical Analyst, with the supervision of Angel Agudelo, Seismologist. Both belong to the working group: Evaluation, Monitoring, and Diagnostic of Geological Dynamics at Colombian Geological Survey (SGC, acronym in spanish). The use of this code is restricted only for internal purposes at SGC, subject to the institution's internal policies and regulations, and cannot be shared without prior authorization.
+This project was developed by William Eduardo Peñaranda Arévalo, Geophysical Analyst, with the supervision of Angel Agudelo, Seismologist. Both belong to the working group: Evaluation, Monitoring, and Diagnostic of Geological Dynamics at Colombian Geological Survey (SGC, acronym in spanish).

@@ -2,14 +2,14 @@
 
 All important changes will be documented here.
 
-## [2.0.0] 2026-0?-??
+## [2.0.0] 2026-08-25
 ### Changed
 - **Complete Module Refactor**. Overhauled the core architecture to a layered architecture to ease maintain and develop.
 - Core functions are divided in a smaller functions with unique responsability to reduce coupling.
 - Environment variables are grouped in an unique entry point.
 
 ### Performance
-- Reduce memory consumption by 30% during dataframe operations.
+- Reduce memory consumption by 40% during dataframe operations.
 - Decreased execution times by 92%. Passing from 6 seconds to 0.5 seconds.
 
 ### Added

@@ -20,7 +20,7 @@ class TableFormatter:
         seismo_stations = seismo_stations.loc[
                         (seismo_stations['channel'] == 'HHZ') | 
                         (seismo_stations['channel'] == 'BHZ') | 
-                        (seismo_stations['channel'] == 'EHZ')
+                        (seismo_stations['channel'] == 'EHZ') |
                         (seismo_stations['channel'] == 'ELZ')
                         ]
 

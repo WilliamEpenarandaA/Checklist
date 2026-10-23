@@ -103,23 +103,23 @@ class StationConfig:
         '40': 'HLZ'
     }
     UNALIGN_CHANNELS = ['BH1', 'BH2'] 
-    EAST_SLINKTOOL_CHANNELS = ['BHE', 'HHE', 'HNE', 'EHE', 'HLE']
-    NORTH_SLINKTOOL_CHANNELS = ['BHN', 'HHN', 'HNN', 'EHN', 'HLN']
-    VERTICAL_SLINKTOOL_CHANNELS = ['BHZ', 'HHZ', 'HNZ', 'EHZ', 'HLZ', 'SHZ']
+    EAST_SLINKTOOL_CHANNELS = ['BHE', 'HHE', 'HNE', 'EHE', 'HLE', 'ELE']
+    NORTH_SLINKTOOL_CHANNELS = ['BHN', 'HHN', 'HNN', 'EHN', 'HLN', 'ELN']
+    VERTICAL_SLINKTOOL_CHANNELS = ['BHZ', 'HHZ', 'HNZ', 'EHZ', 'HLZ', 'SHZ', 'ELZ']
     AVALAIBLE_SLINKTOOL_CHANNELS = [*EAST_SLINKTOOL_CHANNELS, 
                                     *NORTH_SLINKTOOL_CHANNELS, 
                                     *VERTICAL_SLINKTOOL_CHANNELS, 
                                     *UNALIGN_CHANNELS]
 
     OVS_MAN = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'PIRM', 'SJUM', 'TAPM']
-    OVS_POP = ['BELO', 'CONO', 'SOTO', 'PALO']
+    OVS_POP = ['BELO', 'CALO', 'CONO', 'SOTO', 'PALO']
     OVS_PA = ['BODP', 'GCUF', 'GUAP']
     UQ = ['PBLA', 'RIBER']
     SHARED_NAT_ORDER = [*UQ, *OVS_MAN, *OVS_POP, *OVS_PA]
     SEISMOMETER_CHANNELS = ['BH1', 'BH2', 'BHE', 'BHN', 'BHZ', 'HHE', 'HHN', 'HHZ']
     ACCELEROMETER_CHANNELS = ['HNE', 'HNN', 'HNZ']
     STRONG_MOTION_CHANNELS = ['HLE', 'HLN', 'HLZ']
-    SHORT_PERIOD_CHANNELS = ['EHE', 'EHN', 'EHZ']
+    SHORT_PERIOD_CHANNELS = ['EHE', 'EHN', 'EHZ', 'ELZ']
     INTER_PATTERN_CHANNELS = {'BHZ': 'BH', 'HHZ': 'HH', 'HNZ': 'HN', 'EHZ': 'EH', 'HLZ': 'HL', 'SHZ': 'SH', '': ''}
     SPECIAL_INTER_STATIONS = ['JTS', 'NNA', 'SDV', 'SJG', 'TEIG']
 

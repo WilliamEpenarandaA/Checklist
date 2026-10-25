@@ -540,6 +540,28 @@
         "TIPO DE ADQUISICION": "tiempo real"
     },
     {
+        "IDENTIFICADOR": "PULI",
+        "nombre": "",
+        "pais" : "Costa Rica",
+        "CODIGO RED": "OV",
+        "CODIGO SENSOR": "HHZ",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
+        "IDENTIFICADOR": "QPSB",
+        "nombre": "",
+        "pais" : "Costa Rica",
+        "CODIGO RED": "OV",
+        "CODIGO SENSOR": "HHZ",
+        "CODIGO CANAL": "",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
         "IDENTIFICADOR": "RVRD",
         "nombre": "Rio Verde",
         "pais" : "Ecuador",

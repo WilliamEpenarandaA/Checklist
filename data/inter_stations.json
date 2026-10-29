@@ -364,6 +364,17 @@
         "TIPO DE ADQUISICION": "tiempo real"
     },
     {
+        "IDENTIFICADOR": "ISCO",
+        "nombre": "",
+        "pais" : "Costa Rica",
+        "CODIGO RED": "OV",
+        "CODIGO SENSOR": "HHZ",
+        "CODIGO CANAL": "00",
+        "ESTADO ESTACION": "activa",
+        "TIPO DE TRANSMISION": "internet",
+        "TIPO DE ADQUISICION": "tiempo real"
+    },
+    {
         "IDENTIFICADOR": "JTS",
         "nombre": "Las Juntas de Abangares",
         "pais" : "Costa Rica",

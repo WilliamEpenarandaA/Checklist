@@ -113,7 +113,7 @@ class StationConfig:
 
     OVS_MAN = ['AGAM', 'ANIM', 'ELAM', 'NIDM', 'PIRM', 'SJUM', 'TAPM']
     OVS_POP = ['BELO', 'CALO', 'CONO', 'SOTO', 'PALO']
-    OVS_PA = ['BODP', 'GCUF', 'GUAP']
+    OVS_PA = ['BODP', 'DANP', 'GCUF', 'GUAP']
     UQ = ['PBLA', 'RIBER']
     SHARED_NAT_ORDER = [*UQ, *OVS_MAN, *OVS_POP, *OVS_PA]
     SEISMOMETER_CHANNELS = ['BH1', 'BH2', 'BHE', 'BHN', 'BHZ', 'HHE', 'HHN', 'HHZ']

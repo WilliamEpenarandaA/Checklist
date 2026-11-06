@@ -74,22 +74,25 @@ where:
 * `<path_to_dir>`: Need to declare the path to the folder where the routine is stored. We recommend to include it in PATH environment variable for more convenience.
 * `<options>`: There are additional parameters can be declared to activate additional parameters in the routine:
     * `+h` or `+help` Display a menu on terminal which show different avalaible options.
-    * `+o` or `+output` Export results as csv files.
+    * `+o` or `+output` Generate CSV files for checklist results in the specified RSNC drive file order.
     * `+p` or `+print` Display delays in a user-friendly manner (day, hour, minute, seconds).
+    * `+nat` Restrict performance metrics to RSNC stations only.
     * `+s` or `+stat` Present performance metrics by sensor types.
-    * `+sn` or `+stat_nat` Present performance metrics categorized by transmission types.
+    * `+st` or `stat_type` Present performance metrics categorized by transmission type.
     * `+t` or `+time` Re-validate stations status after a specified time interval in seconds. By default is set as 30 seconds.
-    * `+u` or `+update` Integrate station updates from the Siigeo database
+    * `+u` or `+update` Integrate station updates from the Siigeo database.
     * `++offline` Show stations with offline status. Can be combined with others filters.
     * `++intermittent` Show stations with intermittent status. Can be combined with others filters.
     * `++online` Show stations with online status. Can be combined with others filters.
-    * `++server` Define server to perform checklist. Avalaible options are: 91, 95, 232, 13, 97 and 2.
+    * `++server` Define server to perform checklist. Avalaible options are: .91, .95, .232, .13, .97 and .2.
+    * `++save` Produce files containing stations connectivity data and metrics.
 
 > [!NOTE]
-> For instance, if we want to verify the real-time availabity and performance metrics by sensor types of monitored RSNC stations and save the results in csv files, we can execute the following command:
+> For instance, to check the real-time availability and performance of RSNC stations categorized by sensor types and create the CSV files needed for the RSNC checklist, run the command below:
 > ```bash
-> checklist +s +o
+> checklist +nat +s +o
 > ```
+> The module saves output files to the current working directory.
 
 ## Authority
 This project was developed by William Eduardo Peñaranda Arévalo, Geophysical Analyst, with the supervision of Angel Agudelo, Seismologist. Both belong to the working group: Evaluation, Monitoring, and Diagnostic of Geological Dynamics at Colombian Geological Survey (SGC, acronym in spanish).

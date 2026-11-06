@@ -2,6 +2,13 @@
 
 All important changes will be documented here.
 
+## [2.1.0] 2026-11-05
+### Changed
+- Sensor metric class method change its logic to address connectivity variations of sensors of each station.
+
+### Added
+- ++save option. Generates station connectivity (CSV) and metrics (JSON) files within the current working directory. 
+
 ## [2.0.0] 2026-08-25
 ### Changed
 - **Complete Module Refactor**. Overhauled the core architecture to a layered architecture to ease maintain and develop.

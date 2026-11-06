@@ -37,8 +37,9 @@ def read_args():
     prefix = '+'
     parser = argparse.ArgumentParser(prog="Checklist", description="Find the last recorded connection time of seismological stations monitored by SGC.", prefix_chars=prefix)
     parser.add_argument(prefix + "p", prefix + "print", help="Display delays in a user-friendly manner (day, hour, minute, seconds).", action='store_true', required=False)
-    parser.add_argument(prefix + "o", prefix + "output", help="Export results as csv files.", action='store_true', required=False)
+    parser.add_argument(prefix + "o", prefix + "output", help="Generate CSV files for checklist results in the specified RSNC order.", action='store_true', required=False)
     parser.add_argument(prefix + "u", prefix + "update", help="Integrate station updates from the Siigeo database", action='store_true', required=False)
+    parser.add_argument(prefix + "nat", help="Restrict performance metrics to RSNC stations only.", action='store_true', required=False)
     parser.add_argument(prefix + "s", prefix + "stat", help="Present performance metrics by sensor types.", action='store_true', required=False)
     parser.add_argument(prefix + "st", prefix + "stat_type", help="Present performance metrics categorized by transmission type.", action='store_true', required=False)
     parser.add_argument(prefix + "t", prefix + "time", help="Re-validate stations status after a specified time interval in seconds.", type=int, default=30, required=False)
@@ -131,7 +132,11 @@ if __name__ == "__main__":
     final_data2['_last_connection'] = lt1
 
     # Compute performance metrics
-    stats = StationAnalysis.sensor_metrics(final_data2) 
+    if params['nat']:
+        stats = StationAnalysis.sensor_metrics(final_data2.loc[~final_data2['stid'].isin(list(inter_data['stid']))])
+    
+    else:
+        stats = StationAnalysis.sensor_metrics(final_data2) 
 
     # Separate stations into three groups
     seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data2, list(inter_data['stid']))
@@ -193,16 +198,17 @@ if __name__ == "__main__":
         print(_inter_stations)
 
     if params['s']:
-        print(f"""\nStations in real-time: {stats['online_stations']} (n={stats['total_stations']})
-Seismometers in real-time: {stats['online_seismo']} (n={stats['total_seismo']})
-Acelerometers in real-time: {stats['online_accel']} (n={stats['total_accel']})
-Strong-motion sensors in real-time: {stats['online_strong']} (n={stats['total_strong']})""")
+        print(f"""\nOnline Stations: {stats['online_stations']} (n={stats['total_stations']})
+Online Seismometers: {stats['online_seismometers']} (n={stats['total_seismometers']})
+Online Acelerometers: {stats['online_accelerometers']} (n={stats['total_accelerometers']})
+Online Strong-motion: {stats['online_strongmotion']} (n={stats['total_strongmotion']})""")
     
     if params['st']:
-        print(f"""\nSensors in real-time: {stats['online_stations']} (n={stats['total_stations']})
-Satellital sensors in real-time: {stats['online_satellital']} (n={stats['total_satellital']})
-Cellphone sensors in real-time: {stats['online_cellphone']} (n={stats['total_cellphone']})
-Radio sensors in real-time: {stats['online_radio']} (n={stats['total_radio']})""")
+        print(f"""\nOnline stations: {stats['online_stations']} (n={stats['total_stations']})
+Online Satellital: {stats['online_satellital']} (n={stats['total_satellital']})
+Online Cellphone: {stats['online_cellphone']} (n={stats['total_cellphone']})
+Online Radio: {stats['online_radio']} (n={stats['total_radio']})
+Online Internet: {stats['online_internet']} (n={stats['total_internet']})""")
 
     ## Print computing time spent on the checklist routine
     te = time.perf_counter()

@@ -8,12 +8,7 @@ Checklist is a Python module designed for monitoring the real-time availability 
 * Connects directly to the RSNC's Siigeo station database.
 
 ## Requirements
-This module operates on Linux and was built with Python 3.12+. To use this module, you must install the packages specified in requirements.txt. Some of the key packages are listed below:
-
-* numpy
-* openpyxl
-* pandas
-* slinktool
+This module operates on Linux and was built with Python 3.12+. This module requires the installation of the packages found in either pyproject.toml or requirements.txt. Furthermore, you need to have [slinktool](https://github.com/EarthScope/slinktool/tree/main) installed.
 
 > [!IMPORTANT]
 > This module is built in a different environment to encapsulate its functionality and to avoid possible dependency conflicts from [SeisComP](https://www.seiscomp.de/) or any other seismological software.

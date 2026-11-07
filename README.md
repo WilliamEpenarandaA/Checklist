@@ -1,19 +1,22 @@
 ![Logo](Logo-SGC-01_original.png)
 
 # Checklist
-Checklist is a Python module for verifying the real-time availability and performance metrics of seismological stations monitored by the Colombian National Seismological Network (RSNC) integrated to the architecture of data adqusition and processing based on [SeisComP](https://www.seiscomp.de/) and linked to Siigeo database of RSNC.
+Checklist is a Python module designed for monitoring the real-time availability and performance metrics of seismological stations within the Colombian National Seismological Network (RSNC). 
+
+## Key Features
+* Compatible with any standard seismological software for real-time monitoring of earthquakes. Fully tested with [SeisComP](https://www.seiscomp.de/)
+* Connects directly to the RSNC's Siigeo station database.
 
 ## Requirements
 This module operates on Linux and was built with Python 3.12+. To use this module, you must install the packages specified in requirements.txt. Some of the key packages are listed below:
 
-* colorama
+* numpy
 * openpyxl
 * pandas
-* seiscomp
-* tqdm
+* slinktool
 
 > [!IMPORTANT]
-> Although [SeisComP](https://www.seiscomp.de/) is a required package to run this module, it's important to highlight that this module is built in a different environment to encapsulate its functionality and to avoid possible dependency conflicts from [SeisComP](https://www.seiscomp.de/).
+> This module is built in a different environment to encapsulate its functionality and to avoid possible dependency conflicts from [SeisComP](https://www.seiscomp.de/) or any other seismological software.
 
 ## Installation
 To avoid dependency conflicts, we suggest using [uv](https://docs.astral.sh/uv/) or [pip](https://pip.pypa.io/en/stable/) as your preferred Python package manager and creating a virtual environment. The installation process might vary slightly depending on whether you choose Miniconda, Conda, or Mamba. In this case, we explain how to start the project using uv and pip in the following section.

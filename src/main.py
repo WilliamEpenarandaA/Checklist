@@ -142,17 +142,17 @@ if __name__ == "__main__":
         stats = StationAnalysis.sensor_metrics(final_data2) 
 
     # Generate stations connectivity and metrics files
-        if params['save']:
-            export_data = final_data2
-            export_data = export_data.rename(columns={'last_connection': 'conn_time_next', 
-                                                      '_last_connection': 'conn_time_initial'})
-            export_data['latency_sec_initial'] = delay1
-            export_data['latency_sec_next'] = delay2
-            cols2export = ['network', 'stid', 'loc', 'channel', 'type_transmission', 'conn_time_initial', 
-                           'latency_sec_initial', 'conn_time_next', 'latency_sec_next', 'status']
-            
-            CsvResult.save_results(export_data, cols=cols2export)
-            JsonResult.save_metrics(stats)
+    if params['save']:
+        export_data = final_data2
+        export_data = export_data.rename(columns={'last_connection': 'conn_time_next', 
+                                                    '_last_connection': 'conn_time_initial'})
+        export_data['latency_sec_initial'] = delay1
+        export_data['latency_sec_next'] = delay2
+        cols2export = ['network', 'stid', 'loc', 'channel', 'type_transmission', 'conn_time_initial', 
+                        'latency_sec_initial', 'conn_time_next', 'latency_sec_next', 'status']
+        
+        CsvResult.save_results(export_data, cols=cols2export)
+        JsonResult.save_metrics(stats)
 
     # Separate stations into three groups
     seismo_stations, accel_stations, inter_stations = TableFormatter.order_stations_checklist(final_data2, list(inter_data['stid']))

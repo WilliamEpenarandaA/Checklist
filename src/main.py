@@ -37,7 +37,7 @@ logger = settings.get_logger(__name__)
 ## Define function to parse arguments
 def read_args():
     prefix = '+'
-    parser = argparse.ArgumentParser(prog="Checklist", description="Find the last recorded connection time of seismological stations monitored by SGC.", prefix_chars=prefix)
+    parser = argparse.ArgumentParser(prog="Checklist", description="Monitor the real-time availability and performance metrics of RSNC seismological stations", prefix_chars=prefix)
     parser.add_argument(prefix + "p", prefix + "print", help="Display delays in a user-friendly manner (day, hour, minute, seconds).", action='store_true', required=False)
     parser.add_argument(prefix + "o", prefix + "output", help="Generate CSV files for checklist results in the specified RSNC drive file order.", action='store_true', required=False)
     parser.add_argument(prefix + "u", prefix + "update", help="Integrate station updates from the Siigeo database", action='store_true', required=False)

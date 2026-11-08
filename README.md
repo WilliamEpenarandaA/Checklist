@@ -5,7 +5,7 @@ Checklist is a Python module designed for monitoring the real-time availability 
 
 ## Key Features
 * Compatible with any standard seismological software for real-time monitoring of earthquakes. Fully tested with [SeisComP](https://www.seiscomp.de/)
-* Connects directly to the RSNC's Siigeo station database.
+* Connects directly to the RSNC's inventory station database (Siigeo).
 
 ## Requirements
 This module operates on Linux and was built with Python 3.12+. This module requires the installation of the packages found in either pyproject.toml or requirements.txt. Furthermore, you need to have [slinktool](https://github.com/EarthScope/slinktool/tree/main) installed.
@@ -24,7 +24,7 @@ uv sync
 ```
 
 ### Using pip package manager
-Within of module's root folder ```../checklist/```, To begin the installation, create the virtual environment with this command::
+Navigate to the module's root folder ```../checklist/```. To begin the installation, create the virtual environment with this command:
 
 ```bash
 python3 -m venv <ENV_NAME>
@@ -58,10 +58,10 @@ uv run <path_to_project>/src/main.py <options>
 
 With pip manager:
 ```bash
-source .venv/bin/activate; python3 <path_to_dir>/src/main.py <options>
+source .venv/bin/activate; python3 <path_to_projectr>/src/main.py <options>
 ```
 > [!NOTE]
-> If you are working in .191 RSNC server, it's not neccesary to declare ```python3```, since Python environment is configured by default. In this case, you can execute the module directly with the command ```checklist``` according to the following structure:
+> If you are working in .191 RSNC server, it's already configured alias in bash profiles of all users. In this case, you can execute the module directly with the command ```checklist``` according to the following syntaxis:
 
 ```bash
 checklist <options>
@@ -69,7 +69,7 @@ checklist <options>
 
 where:
 
-* `<path_to_dir>`: Need to declare the path to the folder where the routine is stored. We recommend to include it in PATH environment variable for more convenience.
+* `<path_to_project>`: Need to declare the path to the folder where the module is stored. We recommend to use an alias in bash profile for more convenience.
 * `<options>`: There are additional parameters can be declared to activate additional parameters in the routine:
     * `+h` or `+help` Display a menu on terminal which show different avalaible options.
     * `+o` or `+output` Generate CSV files for checklist results in the specified RSNC drive file order.

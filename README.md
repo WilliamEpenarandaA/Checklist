@@ -82,7 +82,7 @@ where:
     * `++offline` Show stations with offline status. Can be combined with others filters.
     * `++intermittent` Show stations with intermittent status. Can be combined with others filters.
     * `++online` Show stations with online status. Can be combined with others filters.
-    * `++server` Define server to perform checklist. Avalaible options are: .91, .95, .232, .13, .97 and .2.
+    * `++server` Define server to perform checklist. Avalaible options are: .91, .95, .232, .13, .97 and .2. By default is set as .91.
     * `++save` Produce files containing stations connectivity data and metrics.
 
 > [!NOTE]

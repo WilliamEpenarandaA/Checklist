@@ -31,39 +31,47 @@ class StationAnalysis:
         return status
 
     @classmethod
-    def sensor_metrics(cls, stations_data:pd.DataFrame, status_column:str = 'status'):
-        
-        ## Sensors connectivity metrics
-        num_online = len(stations_data.loc[stations_data[status_column] == 'Online']['stid'].unique())
-        num_onseismo = len(stations_data.loc[
-            (stations_data['channel'].isin(settings.stations.SEISMOMETER_CHANNELS)) & 
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
-        num_onaccel = len(stations_data.loc[
-            (stations_data['channel'].isin(settings.stations.ACCELEROMETER_CHANNELS)) & 
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
-        num_onstrong = len(stations_data.loc[
-            (stations_data['channel'].isin(settings.stations.STRONG_MOTION_CHANNELS)) & 
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
-        num_onsatellital = len(stations_data.loc[
+    def count_stations_status(cls, stations_data:pd.DataFrame, status:str):
+        return (stations_data['status'] == status).groupby(stations_data['stid']).any().sum()
+
+    @classmethod
+    def sensor_metrics(cls, stations_data:pd.DataFrame):
+
+        ## Filter by instrument types
+        seismo = stations_data.loc[stations_data['channel'].isin(settings.stations.SEISMOMETER_CHANNELS)]
+        accel = stations_data.loc[stations_data['channel'].isin(settings.stations.ACCELEROMETER_CHANNELS)]
+        strong = stations_data.loc[stations_data['channel'].isin(settings.stations.STRONG_MOTION_CHANNELS)]
+
+        ## Filter by transmission types
+        satellital = stations_data.loc[
             (stations_data['type_transmission'] == 'satelital') | 
-            (stations_data['type_transmission'] == 'satelital leo') &
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
-        num_oncellphone = len(stations_data.loc[
-            (stations_data['type_transmission'] == 'celular') &
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
-        num_oninternet = len(stations_data.loc[
-            (stations_data['type_transmission'] == 'internet') &
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
-        num_onradio = len(stations_data.loc[
-            (stations_data['type_transmission'] == 'radio') &
-            (stations_data[status_column] == 'Online')
-            ]['stid'].unique())
+            (stations_data['type_transmission'] == 'satelital leo')
+            ]
+
+        cellphone = stations_data.loc[stations_data['type_transmission'] == 'celular']
+        radio = stations_data.loc[stations_data['type_transmission'] == 'radio']
+        internet = stations_data.loc[stations_data['type_transmission'] == 'internet']
+        
+        ## Obtain connectivity metrics
+        num_online = cls.count_stations_status(stations_data, status='Online')
+        num_onseismo = cls.count_stations_status(seismo, status='Online')
+        num_onaccel = cls.count_stations_status(accel, status='Online')
+        num_onstrong = cls.count_stations_status(strong, status='Online')
+
+        num_offline = (cls.count_stations_status(stations_data, status='Offline')) + (cls.count_stations_status(stations_data, status='N/A'))
+        num_offseismo = (cls.count_stations_status(seismo, status='Offline')) + (cls.count_stations_status(seismo, status='N/A'))
+        num_offaccel = (cls.count_stations_status(accel, status='Offline')) + (cls.count_stations_status(accel, status='N/A'))
+        num_offstrong = (cls.count_stations_status(strong, status='Offline')) + (cls.count_stations_status(strong, status='N/A'))
+
+        num_onsatellital = cls.count_stations_status(satellital, status='Online')
+        num_oncellphone = cls.count_stations_status(cellphone, status='Online')
+        num_oninternet = cls.count_stations_status(internet, status='Online')
+        num_onradio = cls.count_stations_status(radio, status='Online')
+
+        num_offsatellital = (cls.count_stations_status(satellital, status='Offline')) + (cls.count_stations_status(satellital, status='N/A'))
+        num_offcellphone = (cls.count_stations_status(cellphone, status='Offline')) + (cls.count_stations_status(cellphone, status='N/A'))
+        num_offinternet = (cls.count_stations_status(internet, status='Offline')) + (cls.count_stations_status(internet, status='N/A'))
+        num_offradio = (cls.count_stations_status(radio, status='Offline')) + (cls.count_stations_status(radio, status='N/A'))
         
         ## Sensors type metrics
         num_total = len(stations_data['stid'].unique())
@@ -71,7 +79,7 @@ class StationAnalysis:
         num_accel = len(stations_data.loc[stations_data['channel'].isin(settings.stations.ACCELEROMETER_CHANNELS)]['stid'].unique())
         num_strong = len(stations_data.loc[stations_data['channel'].isin(settings.stations.STRONG_MOTION_CHANNELS)]['stid'].unique())
 
-        ## Transmission type metrics
+        ## Total sensor and transmission types
         num_satellital = len(stations_data.loc[
             (stations_data['type_transmission'] == 'satelital') | 
             (stations_data['type_transmission'] == 'satelital leo')
@@ -80,21 +88,29 @@ class StationAnalysis:
         num_internet = len(stations_data.loc[stations_data['type_transmission'] == 'internet']['stid'].unique())
         num_radio = len(stations_data.loc[stations_data['type_transmission'] == 'radio']['stid'].unique())
         
-        results = {"online_stations": int(num_online), 
+        results = {"online_stations": int(num_online),
+                   "offline_stations": int(num_offline), 
                    "total_stations": int(num_total),
-                   "online_seismo": int(num_onseismo),
-                   "total_seismo": int(num_seismo),
-                   "online_accel": int(num_onaccel),
-                   "total_accel": int(num_accel),
-                   "online_strong": int(num_onstrong),
-                   "total_strong": int(num_strong),
+                   "online_seismometers": int(num_onseismo),
+                   "offline_seismometers": int(num_offseismo),
+                   "total_seismometers": int(num_seismo),
+                   "online_accelerometers": int(num_onaccel),
+                   "offline_accelerometers": int(num_offaccel),
+                   "total_accelerometers": int(num_accel),
+                   "online_strongmotion": int(num_onstrong),
+                   "offline_strongmotion": int(num_offstrong),
+                   "total_strongmotion": int(num_strong),
                    "online_satellital": int(num_onsatellital),
+                   "offline_satellital": int(num_offsatellital),
                    "total_satellital": int(num_satellital),
                    "online_cellphone": int(num_oncellphone),
+                   "offline_cellphone": int(num_offcellphone),
                    "total_cellphone": int(num_cellphone),
                    "online_internet": int(num_oninternet),
+                   "offline_internet": int(num_offinternet),
                    "total_internet": int(num_internet),
                    "online_radio": int(num_onradio),
+                   "offline_radio": int(num_offradio),
                    "total_radio": int(num_radio)
             }
         logger.info(Fore.GREEN + "Sensor metrics computed succesfully!!" + Fore.RESET)
@@ -151,7 +167,7 @@ if __name__ == '__main__':
 
     # Second validation of Delay Time
     import time
-    dt = 30
+    dt = 20
     time.sleep(dt)
     output = SlinktoolExecutor.request_info(comm)
     solution = SlinktoolFormatter.extract_info(output)
@@ -178,5 +194,3 @@ if __name__ == '__main__':
     
     res = StationAnalysis.sensor_metrics(final_data2)
     print(res)
-
-    print(final_data2.loc[final_data2['stid'] == 'ACH6'])

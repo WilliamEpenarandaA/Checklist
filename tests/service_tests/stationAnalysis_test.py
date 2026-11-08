@@ -43,17 +43,17 @@ class StationAnalysisTest(unittest.TestCase):
         theorical_status = ['Online', 'Online', 'Online', 'Online', 'N/A', 'N/A', 'Offline']
         theorical_status_dt = ['Online', 'Online', 'Online', 'Online', 'N/A', 'N/A', 'Recovering']
         theorical_diffs = pd.Series([0.0, 0.0, 0.0, 0.0, np.nan, np.nan, -7140.0], name='diff_delays')
-        theorical_metrics = {'online_stations': 2, 'total_stations': 5, 'online_seismo': 2, 'total_seismo': 3, 
-                             'online_accel': 0, 'total_accel': 2, 'online_strong': 0, 'total_strong': 0, 
-                             'online_satellital': 0, 'total_satellital': 0, 'online_cellphone': 0, 
-                             'total_cellphone': 0, 'online_internet': 0, 'total_internet': 0, 
-                             'online_radio': 0, 'total_radio': 0}
+        theorical_metrics = {'online_stations': 2, 'offline_stations': 2, 'total_stations': 5, 'online_seismometers': 2, 'offline_seismometers': 1, 
+                'total_seismometers': 3, 'online_accelerometers': 0, 'offline_accelerometers': 1, 'total_accelerometers': 2, 'online_strongmotion': 0, 
+                'offline_strongmotion': 0, 'total_strongmotion': 0, 'online_satellital': 0, 'offline_satellital': 0, 'total_satellital': 0, 
+                'online_cellphone': 0, 'offline_cellphone': 0, 'total_cellphone': 0, 'online_internet': 0, 'offline_internet': 0, 'total_internet': 0, 
+                'online_radio': 0, 'offline_radio': 0, 'total_radio': 0}
         print('setUp method execution....')
 
     def test_get_station_status(self):
         dt = 10 
-        delay1 = pd.Series([-600, 10, 20, 80, 210, 2000, pd.NaT], dtype=object).fillna(np.nan).to_numpy()
-        delay2 = pd.Series([-610, 10, 9, 92, 200, 2300, pd.NaT], dtype=object).fillna(np.nan).to_numpy()
+        delay1 = pd.to_numeric(pd.Series([-600, 10, 20, 80, 210, 2000, pd.NaT], dtype=object), errors='coerce').fillna(np.nan).to_numpy()
+        delay2 = pd.to_numeric(pd.Series([-610, 10, 9, 92, 200, 2300, pd.NaT], dtype=object), errors='coerce').fillna(np.nan).to_numpy()
         res = StationAnalysis.get_station_status(delay1, delay2, dt)
         res = res.tolist()
         theorical_status = ["Future", "Online", "Online", "Intermittent", "Intermittent", "Offline", "N/A"]

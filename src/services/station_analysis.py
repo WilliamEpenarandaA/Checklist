@@ -31,8 +31,11 @@ class StationAnalysis:
         return status
 
     @classmethod
-    def count_stations_status(cls, stations_data:pd.DataFrame, status:str):
-        return (stations_data['status'] == status).groupby(stations_data['stid']).any().sum()
+    def count_stations_status(cls, stations_data:pd.DataFrame, status:str | list[str], require_all: bool = False):
+        statuses = [status] if isinstance(status, str) else list(status)
+        grouped = stations_data['status'].isin(statuses).groupby(stations_data['stid'])
+        count = grouped.all().sum() if require_all else grouped.any().sum()
+        return int(count)
 
     @classmethod
     def sensor_metrics(cls, stations_data:pd.DataFrame):
@@ -53,25 +56,26 @@ class StationAnalysis:
         internet = stations_data.loc[stations_data['type_transmission'] == 'internet']
         
         ## Obtain connectivity metrics
+        offline_statuses = ['Offline', 'N/A']
         num_online = cls.count_stations_status(stations_data, status='Online')
         num_onseismo = cls.count_stations_status(seismo, status='Online')
         num_onaccel = cls.count_stations_status(accel, status='Online')
         num_onstrong = cls.count_stations_status(strong, status='Online')
 
-        num_offline = (cls.count_stations_status(stations_data, status='Offline')) + (cls.count_stations_status(stations_data, status='N/A'))
-        num_offseismo = (cls.count_stations_status(seismo, status='Offline')) + (cls.count_stations_status(seismo, status='N/A'))
-        num_offaccel = (cls.count_stations_status(accel, status='Offline')) + (cls.count_stations_status(accel, status='N/A'))
-        num_offstrong = (cls.count_stations_status(strong, status='Offline')) + (cls.count_stations_status(strong, status='N/A'))
-
+        num_offline = cls.count_stations_status(stations_data, status=offline_statuses, require_all=True)
+        num_offseismo = cls.count_stations_status(seismo, status=offline_statuses, require_all=True)
+        num_offaccel = cls.count_stations_status(accel, status=offline_statuses, require_all=True)
+        num_offstrong = cls.count_stations_status(strong, status=offline_statuses, require_all=True)
+        
         num_onsatellital = cls.count_stations_status(satellital, status='Online')
         num_oncellphone = cls.count_stations_status(cellphone, status='Online')
         num_oninternet = cls.count_stations_status(internet, status='Online')
         num_onradio = cls.count_stations_status(radio, status='Online')
 
-        num_offsatellital = (cls.count_stations_status(satellital, status='Offline')) + (cls.count_stations_status(satellital, status='N/A'))
-        num_offcellphone = (cls.count_stations_status(cellphone, status='Offline')) + (cls.count_stations_status(cellphone, status='N/A'))
-        num_offinternet = (cls.count_stations_status(internet, status='Offline')) + (cls.count_stations_status(internet, status='N/A'))
-        num_offradio = (cls.count_stations_status(radio, status='Offline')) + (cls.count_stations_status(radio, status='N/A'))
+        num_offsatellital = cls.count_stations_status(satellital, status=offline_statuses, require_all=True)
+        num_offcellphone = cls.count_stations_status(cellphone, status=offline_statuses, require_all=True)
+        num_offinternet = cls.count_stations_status(internet, status=offline_statuses, require_all=True)
+        num_offradio = cls.count_stations_status(radio, status=offline_statuses, require_all=True)
         
         ## Sensors type metrics
         num_total = len(stations_data['stid'].unique())

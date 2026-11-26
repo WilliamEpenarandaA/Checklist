@@ -92,5 +92,17 @@ where:
 > ```
 > The module saves output files to the current working directory.
 
+## Station managment
+Station reference datasets live inside the `data/` directory and are split across three sources that the pipeline combines when running the checklist:
+
+* **`siigeo_stations.xlsx` (SIIGEO stations):** Contain stations of the Colombian Seismological Network (RSNC). Excel file downloaded automatically from `settings.siigeo.URL`  when the file is missing, or when `CACHE_EXPIRATION_DAYS` (30 days by default) has elapsed, or when running the checklist with `+u` / `+update`. 
+* **`shared_stations.json` (Shared stations):** has the stations shared by other national agencies.
+* **`inter_stations.json` (Inter stations):** It storages the stations from international agencies.
+
+To add or remove stations, there are two cases:
+
+* Stations operated by other national and international entities. You can add or remove them by modifying the `shared_stations.json` for national stations or `inter_stations.json` for international ones. 
+* Station operated by Colombian Seismological Network (RSNC). In that case, we cannot directly do any of these functionalities. We need to contact to Siigeo developers to solve that.
+
 ## Authority
 This project was developed by William Eduardo Peñaranda Arévalo, Geophysical Analyst, with the supervision of Angel Agudelo, Seismologist. Both belong to the working group: Evaluation, Monitoring, and Diagnostic of Geological Dynamics at Colombian Geological Survey (SGC, acronym in spanish).

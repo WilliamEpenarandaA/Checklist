@@ -1,5 +1,5 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
-# This python file contains an implementation to analyze status and performance metrics of SGC stations.
+# This python file contains a service module for classifying station status and computing sensor metrics.
 
 from colorama import Fore
 from datetime import datetime, UTC
@@ -10,9 +10,50 @@ from src.config import settings
 logger = settings.get_logger(__name__)
 
 class StationAnalysis:
+    """
+    Analyzer for determining station operational status and sensor metrics.
+    """
     
     @classmethod
     def get_station_status(cls, delay1: np.array, delay2: np.array, dt:float):
+        """
+        Classify station operational status from two sequential delay arrays.
+
+        Evaluates six element-wise conditions comparing ``delay1``, ``delay2``,
+        ``dt``, and ``settings.thresholds.ONLINE_MAX_DELAY`` (``180`` seconds)
+        using ``numpy.select``:
+
+        - ``'N/A'``: ``delay1`` and ``delay2`` are both ``NaN``.
+        - ``'Future'``: ``delay1 < 0`` and ``delay2 < 0``.
+        - ``'Online'``: ``delay1 <= ONLINE_MAX_DELAY`` and
+          ``delay2 - delay1 <= dt``.
+        - ``'Intermittent'``: ``delay1 <= ONLINE_MAX_DELAY`` and
+          ``delay2 - delay1 > dt``, or ``delay1 > ONLINE_MAX_DELAY`` and
+          ``delay2 - delay1 <= dt``.
+        - ``'Offline'``: ``delay1 > ONLINE_MAX_DELAY`` and
+          ``delay2 - delay1 > dt``.
+        - ``'Error'``: default fallback when none of the conditions hold.
+
+        Logs an error message reporting the total count whenever ``'Error'``
+        appears in the resulting array.
+
+        Parameters
+        ----------
+        delay1 : numpy.ndarray
+            First array of station transmission delays in seconds.
+        delay2 : numpy.ndarray
+            Second array of station transmission delays in seconds measured
+            after ``dt``.
+        dt : float
+            Maximum allowed delay increment in seconds between ``delay1`` and
+            ``delay2`` (typically the elapsed time between both queries).
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of status strings (``'N/A'``, ``'Future'``, ``'Online'``,
+            ``'Intermittent'``, ``'Offline'``, or ``'Error'``).
+        """
         conditions = [(np.isnan(delay1)) & (np.isnan(delay2)),
                         (delay1 < 0) & (delay2 < 0),
                         (delay1 <= settings.thresholds.ONLINE_MAX_DELAY) & (delay2 - delay1 <= dt),
@@ -31,12 +72,88 @@ class StationAnalysis:
         return status
 
     @classmethod
-    def count_stations_status(cls, stations_data:pd.DataFrame, status:str):
-        return (stations_data['status'] == status).groupby(stations_data['stid']).any().sum()
+    def count_stations_status(cls, stations_data:pd.DataFrame, status:str | list[str], require_all: bool = False):
+        """
+        Count unique stations matching one or more target status labels.
+
+        Normalizes ``status`` into a list when a single string is passed,
+        checks membership of ``stations_data['status']`` via ``.isin()``, and
+        groups results by ``stations_data['stid']``. Evaluates ``.all()`` per
+        station when ``require_all`` is ``True`` (all channels of the station
+        must match ``status``) or ``.any()`` when ``require_all`` is ``False``
+        (at least one channel of the station must match ``status``).
+
+        Parameters
+        ----------
+        stations_data : pandas.DataFrame
+            Station DataFrame containing ``'stid'`` and ``'status'`` columns.
+        status : str or list of str
+            Single status label (e.g., ``'Online'``) or list of status labels
+            (e.g., ``['Offline', 'N/A']``) to evaluate.
+        require_all : bool, default False
+            If ``True``, counts a station only if every row for its ``'stid'``
+            in ``stations_data`` matches ``status``. If ``False``, counts a
+            station if at least one row for its ``'stid'`` matches ``status``.
+
+        Returns
+        -------
+        int
+            Number of unique ``'stid'`` identifiers satisfying the condition.
+
+        Raises
+        ------
+        KeyError
+            If ``'status'`` or ``'stid'`` is missing from ``stations_data``.
+        """
+        statuses = [status] if isinstance(status, str) else list(status)
+        grouped = stations_data['status'].isin(statuses).groupby(stations_data['stid'])
+        count = grouped.all().sum() if require_all else grouped.any().sum()
+        return int(count)
 
     @classmethod
     def sensor_metrics(cls, stations_data:pd.DataFrame):
+        """
+        Compute connectivity and inventory counts by sensor and transmission type.
 
+        Filters ``stations_data`` by sensor channel lists defined in
+        ``settings.stations`` (``SEISMOMETER_CHANNELS``,
+        ``ACCELEROMETER_CHANNELS``, ``STRONG_MOTION_CHANNELS``) and by
+        ``'type_transmission'`` categories (``'satelital'`` or
+        ``'satelital leo'``, ``'celular'``, ``'radio'``, ``'internet'``).
+        Computes online counts via ``count_stations_status(..., status='Online')``
+        (at least one channel online), offline counts via
+        ``count_stations_status(..., status=['Offline', 'N/A'], require_all=True)``
+        (all channels in the evaluated subset offline or ``'N/A'``), and total
+        counts as the number of unique ``'stid'`` values in each subset.
+
+        Parameters
+        ----------
+        stations_data : pandas.DataFrame
+            Station DataFrame containing ``'stid'``, ``'channel'``,
+            ``'type_transmission'``, and ``'status'`` columns.
+
+        Returns
+        -------
+        dict of {str: int}
+            Dictionary with 24 integer metrics: ``'online_stations'``,
+            ``'offline_stations'``, ``'total_stations'``,
+            ``'online_seismometers'``, ``'offline_seismometers'``,
+            ``'total_seismometers'``, ``'online_accelerometers'``,
+            ``'offline_accelerometers'``, ``'total_accelerometers'``,
+            ``'online_strongmotion'``, ``'offline_strongmotion'``,
+            ``'total_strongmotion'``, ``'online_satellital'``,
+            ``'offline_satellital'``, ``'total_satellital'``,
+            ``'online_cellphone'``, ``'offline_cellphone'``,
+            ``'total_cellphone'``, ``'online_internet'``,
+            ``'offline_internet'``, ``'total_internet'``, ``'online_radio'``,
+            ``'offline_radio'``, and ``'total_radio'``.
+
+        Raises
+        ------
+        KeyError
+            If any of ``'stid'``, ``'channel'``, ``'type_transmission'``, or
+            ``'status'`` is missing from ``stations_data``.
+        """
         ## Filter by instrument types
         seismo = stations_data.loc[stations_data['channel'].isin(settings.stations.SEISMOMETER_CHANNELS)]
         accel = stations_data.loc[stations_data['channel'].isin(settings.stations.ACCELEROMETER_CHANNELS)]
@@ -53,25 +170,26 @@ class StationAnalysis:
         internet = stations_data.loc[stations_data['type_transmission'] == 'internet']
         
         ## Obtain connectivity metrics
+        offline_statuses = ['Offline', 'N/A']
         num_online = cls.count_stations_status(stations_data, status='Online')
         num_onseismo = cls.count_stations_status(seismo, status='Online')
         num_onaccel = cls.count_stations_status(accel, status='Online')
         num_onstrong = cls.count_stations_status(strong, status='Online')
 
-        num_offline = (cls.count_stations_status(stations_data, status='Offline')) + (cls.count_stations_status(stations_data, status='N/A'))
-        num_offseismo = (cls.count_stations_status(seismo, status='Offline')) + (cls.count_stations_status(seismo, status='N/A'))
-        num_offaccel = (cls.count_stations_status(accel, status='Offline')) + (cls.count_stations_status(accel, status='N/A'))
-        num_offstrong = (cls.count_stations_status(strong, status='Offline')) + (cls.count_stations_status(strong, status='N/A'))
-
+        num_offline = cls.count_stations_status(stations_data, status=offline_statuses, require_all=True)
+        num_offseismo = cls.count_stations_status(seismo, status=offline_statuses, require_all=True)
+        num_offaccel = cls.count_stations_status(accel, status=offline_statuses, require_all=True)
+        num_offstrong = cls.count_stations_status(strong, status=offline_statuses, require_all=True)
+        
         num_onsatellital = cls.count_stations_status(satellital, status='Online')
         num_oncellphone = cls.count_stations_status(cellphone, status='Online')
         num_oninternet = cls.count_stations_status(internet, status='Online')
         num_onradio = cls.count_stations_status(radio, status='Online')
 
-        num_offsatellital = (cls.count_stations_status(satellital, status='Offline')) + (cls.count_stations_status(satellital, status='N/A'))
-        num_offcellphone = (cls.count_stations_status(cellphone, status='Offline')) + (cls.count_stations_status(cellphone, status='N/A'))
-        num_offinternet = (cls.count_stations_status(internet, status='Offline')) + (cls.count_stations_status(internet, status='N/A'))
-        num_offradio = (cls.count_stations_status(radio, status='Offline')) + (cls.count_stations_status(radio, status='N/A'))
+        num_offsatellital = cls.count_stations_status(satellital, status=offline_statuses, require_all=True)
+        num_offcellphone = cls.count_stations_status(cellphone, status=offline_statuses, require_all=True)
+        num_offinternet = cls.count_stations_status(internet, status=offline_statuses, require_all=True)
+        num_offradio = cls.count_stations_status(radio, status=offline_statuses, require_all=True)
         
         ## Sensors type metrics
         num_total = len(stations_data['stid'].unique())

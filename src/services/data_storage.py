@@ -1,5 +1,5 @@
 # Author: Peñaranda-Arévalo, William <ORCID:0000-0002-8545-9181>
-# This python file contain unitary tests of ResultRepository class.
+# This python file contain service module for persisting station checklist results and sensor metrics.
 
 from colorama import Fore
 from datetime import datetime, UTC

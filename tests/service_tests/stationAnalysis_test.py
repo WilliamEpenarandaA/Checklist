@@ -10,8 +10,10 @@ from src.services.delay_calculator import DelayCalculator
 from src.services.station_analysis import StationAnalysis
 
 class StationAnalysisTest(unittest.TestCase):
+    """Test suite verifying station status classification and sensor metrics calculation."""
 
     def setUp(self):
+        """Initialize two-epoch station datasets, timestamps, and expected status/metric outputs."""
         global base_data
         global base_data2
         global parsed_datetime
@@ -51,6 +53,7 @@ class StationAnalysisTest(unittest.TestCase):
         print('setUp method execution....')
 
     def test_get_station_status(self):
+        """Verify status classification for ``Future``, ``Online``, ``Intermittent``, ``Offline``, and ``N/A`` cases."""
         dt = 10 
         delay1 = pd.to_numeric(pd.Series([-600, 10, 20, 80, 210, 2000, pd.NaT], dtype=object), errors='coerce').fillna(np.nan).to_numpy()
         delay2 = pd.to_numeric(pd.Series([-610, 10, 9, 92, 200, 2300, pd.NaT], dtype=object), errors='coerce').fillna(np.nan).to_numpy()
@@ -61,6 +64,7 @@ class StationAnalysisTest(unittest.TestCase):
         self.assertListEqual(res, theorical_status)
 
     def test_sensor_metrics(self):
+        """Verify sensor and station metrics computed from two delay evaluation epochs."""
         data = pd.DataFrame(base_data)
         data2 = pd.DataFrame(base_data2)
         res = DelayCalculator.compute_delays(data, datetime_column='last_connection', datetime=parsed_datetime)

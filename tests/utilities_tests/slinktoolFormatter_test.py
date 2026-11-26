@@ -8,8 +8,10 @@ from src.data_access.slinktool_executor import SlinktoolExecutor
 from src.utilities.slinktool_formatter import SlinktoolFormatter
 
 class SlinktoolFormatterTest(unittest.TestCase):
+    """Test suite verifying ``SlinktoolFormatter`` parsing, DataFrame creation, and channel filtering."""
 
     def setUp(self):
+        """Fetch live ``slinktool`` output from server ``'91'`` to share across test cases."""
         global input
         server = '91'
         port = SlinktoolExecutor.get_port(server)
@@ -18,11 +20,13 @@ class SlinktoolFormatterTest(unittest.TestCase):
         print('setUp method execution....')
 
     def test_extract_info(self):
+        """Verify that ``extract_info`` returns a list of tuples."""
         output = SlinktoolFormatter.extract_info(input) 
         self.assertIsInstance(output, list)
         self.assertTrue(all(isinstance(item, tuple) for item in output))
 
     def test_build_dataframe(self):
+        """Verify that ``build_dataframe`` returns a DataFrame with expected column names."""
         output = SlinktoolFormatter.extract_info(input) 
         df = SlinktoolFormatter.build_dataframe(output)
         theorical_cols = ['network', 'stid', 'loc', 'channel', 'last_connection']
@@ -31,6 +35,7 @@ class SlinktoolFormatterTest(unittest.TestCase):
         self.assertListEqual(cols, theorical_cols)
 
     def test_select_interest_channels(self):
+        """Verify that filtered unique channels match ``settings.stations.AVALAIBLE_SLINKTOOL_CHANNELS``."""
         output = SlinktoolFormatter.extract_info(input) 
         df = SlinktoolFormatter.build_dataframe(output)
         df = SlinktoolFormatter.select_interest_channels(df)

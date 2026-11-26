@@ -31,8 +31,8 @@ class SlinktoolExecutor:
     def request_info(cls, command: list):
         try:
             result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', timeout=15)
-        except:
-            subprocess.TimeoutExpired
+        except subprocess.TimeoutExpired:
+            logger.critical(Fore.RED + "Time expired for requesting informationon from slinktool." + Fore.RESET)
             
         output = result.stdout.splitlines()
         logger.info(Fore.GREEN + "Sucessful information request from slinktool." + Fore.RESET)

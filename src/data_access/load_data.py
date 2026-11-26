@@ -57,7 +57,7 @@ class StationRepository:
             raise
 
         except ValueError as err:
-            logger.critical(logger.critical(Fore.RED + str(err) + Fore.RESET))
+            logger.critical(Fore.RED + str(err) + Fore.RESET)
             raise
 
         return shared_data
@@ -78,7 +78,7 @@ class StationRepository:
             raise
 
         except ValueError as err:
-            logger.critical(logger.critical(Fore.RED + str(err) + Fore.RESET))
+            logger.critical(Fore.RED + str(err) + Fore.RESET)
             raise
 
         return inter_data

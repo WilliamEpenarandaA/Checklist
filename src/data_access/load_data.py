@@ -45,13 +45,21 @@ class StationRepository:
         try:
             with open(cls.shared_data_path, 'r') as file:
                 shared_data = json.load(file)
+
+            if not shared_data:
+                raise ValueError("Shared station file is empty.")
             shared_data = pd.DataFrame.from_dict(shared_data).convert_dtypes(dtype_backend="pyarrow")
             shared_data = shared_data.astype(dtype={"CODIGO CANAL":"string[pyarrow]"})
             logger.info(Fore.GREEN + "Shared stations succesfully load." + Fore.RESET)
 
         except FileNotFoundError:
-            logger.critical(Fore.RED + "Shared stations file doesn't exists!!" + Fore.RESET)
-        
+            logger.critical(Fore.RED + f"Shared stations file doesn't exists at {cls.shared_data_path}!!" + Fore.RESET)
+            raise
+
+        except ValueError as err:
+            logger.critical(logger.critical(Fore.RED + str(err) + Fore.RESET))
+            raise
+
         return shared_data
 
     @classmethod
@@ -59,11 +67,19 @@ class StationRepository:
         try:
             with open(cls.inter_data_path, 'r') as file:
                 inter_data = json.load(file)
+
+            if not inter_data:
+                raise ValueError("International station file is empty.")
             inter_data = pd.DataFrame.from_dict(inter_data).convert_dtypes(dtype_backend="pyarrow")
             logger.info(Fore.GREEN + "International stations succesfully load." + Fore.RESET)
             
         except FileNotFoundError:
-            logger.critical(Fore.RED + "International stations file doesn't exists!!" + Fore.RESET)
+            logger.critical(Fore.RED + f"International stations file doesn't exists at {cls.inter_data_path}!!" + Fore.RESET)
+            raise
+
+        except ValueError as err:
+            logger.critical(logger.critical(Fore.RED + str(err) + Fore.RESET))
+            raise
 
         return inter_data
     

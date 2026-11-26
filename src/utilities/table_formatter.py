@@ -12,9 +12,44 @@ from src.config import settings
 logger = settings.get_logger(__name__)
 
 class TableFormatter:
-    
+    """
+    Formatter for ordering, filtering, styling, and exporting checklist tables.
+    """
     @classmethod
     def order_stations_checklist(cls, stations_data: pd.DataFrame, inter_stations:list):
+        """
+        Split and sort station records into seismological, accelerograph, and international tables.
+
+        - **National seismological stations**: excludes ``inter_stations`` and
+          keeps channels ``'HHZ'``, ``'BHZ'``, ``'EHZ'``, and ``'ELZ'``.
+          Stations in ``settings.stations.SHARED_NAT_ORDER`` are sorted by their
+          configured order and appended after remaining stations sorted by
+          ``['stid', 'loc']``.
+        - **National accelerograph stations**: excludes ``inter_stations``,
+          keeps channels ``'HNZ'`` and ``'HLZ'``, and sorts by ``['stid', 'loc']``.
+        - **International stations**: keeps rows whose ``'stid'`` is in
+          ``inter_stations`` and sorts by ``['stid', 'loc']``.
+
+        Parameters
+        ----------
+        stations_data : pandas.DataFrame
+            Evaluated station DataFrame containing at least ``'stid'``,
+            ``'loc'``, and ``'channel'`` columns.
+        inter_stations : list of str
+            Station identifiers belonging to international stations.
+
+        Returns
+        -------
+        tuple of (pandas.DataFrame, pandas.DataFrame, pandas.DataFrame)
+            Tuple ``(seismo_stations, accel_stations, inter_stations)`` of
+            sorted DataFrames with reset integer indices.
+
+        Raises
+        ------
+        KeyError
+            If ``'stid'``, ``'loc'``, or ``'channel'`` is missing from
+            ``stations_data``.
+        """
         # Order National Seismological stations according to checklist xlsx file
         seismo_stations = stations_data.loc[~stations_data['stid'].isin(inter_stations)]
         seismo_stations = seismo_stations.loc[
@@ -44,6 +79,40 @@ class TableFormatter:
     
     @classmethod
     def extract_inter_stations(cls, inter_data_sgc: pd.DataFrame, inter_stations: pd.DataFrame, channel_dict: dict):
+        """
+        Filter international station rows by reference channel patterns and location rules.
+
+        For each row in ``inter_data_sgc``, looks up its ``'channel'`` prefix
+        in ``channel_dict`` (such as ``settings.stations.INTER_PATTERN_CHANNELS``),
+        matches channels in ``inter_stations`` for the same ``'stid'`` using
+        ``re.search``, excludes rows where ``'stid'`` is in
+        ``settings.stations.SPECIAL_INTER_STATIONS`` and ``loc == '10'``, and
+        sorts the result by ``['stid', 'loc']``.
+
+        Parameters
+        ----------
+        inter_data_sgc : pandas.DataFrame
+            Reference international station DataFrame containing ``'stid'`` and
+            ``'channel'`` columns.
+        inter_stations : pandas.DataFrame
+            Candidate international station DataFrame containing ``'stid'``,
+            ``'loc'``, and ``'channel'`` columns.
+        channel_dict : dict of {str: str}
+            Mapping from reference channel names to regex pattern strings.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Filtered and sorted international station DataFrame with a reset
+            integer index.
+
+        Raises
+        ------
+        KeyError
+            If ``'stid'``, ``'loc'``, or ``'channel'`` is missing from the
+            input DataFrames, or if a channel value is absent from
+            ``channel_dict``.
+        """
         data = []
         for _, row in inter_data_sgc.iterrows():
             cha = inter_data_sgc.loc[inter_data_sgc['stid'] == row['stid'], 'channel'].item()
@@ -62,6 +131,23 @@ class TableFormatter:
 
     @staticmethod
     def format_status(status_str: str):
+        """
+        Wrap a status string with ``colorama.Fore`` ANSI color codes.
+
+        Maps ``'Online'`` to green, ``'Intermittent'`` to magenta,
+        ``'Offline'`` to red, ``'Future'`` to yellow, and any other value to
+        reset styling.
+
+        Parameters
+        ----------
+        status_str : str
+            Station status label.
+
+        Returns
+        -------
+        str
+            ANSI-colored status string terminated with ``Fore.RESET``.
+        """
         if status_str == 'Online':
             return Fore.GREEN + status_str + Fore.RESET
         elif status_str == 'Intermittent':
@@ -75,12 +161,62 @@ class TableFormatter:
     
     @classmethod
     def filter_vertical_components(cls, stations_data: pd.DataFrame, channel_col:str = 'channel'):
+        """
+        Filter rows whose channel belongs to ``settings.stations.VERTICAL_SLINKTOOL_CHANNELS``.
+
+        Parameters
+        ----------
+        stations_data : pandas.DataFrame
+            Station DataFrame containing ``channel_col``.
+        channel_col : str, default 'channel'
+            Column name holding channel identifiers.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Filtered DataFrame with a reset integer index.
+
+        Raises
+        ------
+        KeyError
+            If ``channel_col`` is not present in ``stations_data``.
+        """
         stations_data = stations_data[stations_data[channel_col].isin(settings.stations.VERTICAL_SLINKTOOL_CHANNELS)].reset_index(drop=True)
         
         return stations_data
 
     @classmethod
     def get_display_table(cls, stations_data:pd.DataFrame, name:str, mode:bool):
+        """
+        Select display columns and filter to vertical components for terminal output.
+
+        Includes ``'delay_'`` when ``mode`` is ``True`` (``['network', 'stid',
+        'loc', 'channel', '_last_connection', 'last_connection', 'delay_',
+        'status']``) or omits it when ``mode`` is ``False``, then filters to
+        vertical channels via ``filter_vertical_components``.
+
+        Parameters
+        ----------
+        stations_data : pandas.DataFrame
+            Station DataFrame containing display columns.
+        name : str
+            Table label used in the completion log message (e.g.,
+            ``'Seismological'``, ``'Acelerographic'``, or
+            ``'International'``).
+        mode : bool
+            If ``True``, includes the formatted ``'delay_'`` column.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Formatted table filtered to vertical sensor channels.
+
+        Raises
+        ------
+        KeyError
+            If any required display column or ``'channel'`` is missing from
+            ``stations_data``.
+        """
         if mode:
             cols2print = ['network', 'stid', 'loc', 'channel', '_last_connection', 'last_connection', 'delay_', 'status']
         else:
@@ -93,6 +229,41 @@ class TableFormatter:
     
     @classmethod
     def export_csv_tables(cls, formatted_table: pd.DataFrame, output_filename: str, status_column:str = 'status', col_name:str = 'checklist'):
+        """
+        Map status labels to checklist symbols and export vertical channels to CSV.
+
+        Maps ``formatted_table[status_column]`` using
+        ``settings.files.SYMBOL_STATUS_CHECKLIST`` into ``col_name``, filters
+        vertical channels via ``filter_vertical_components``, and writes
+        ``['stid', 'channel', col_name]`` to ``output_filename`` with comma
+        separation and without row index.
+
+        Parameters
+        ----------
+        formatted_table : pandas.DataFrame
+            Station DataFrame containing ``'stid'``, ``'channel'``, and
+            ``status_column``.
+        output_filename : str
+            Destination CSV file path (such as ``settings.files.SEISMO_OUT_FILE``,
+            ``ACCEL_OUT_FILE``, or ``INTER_OUT_FILE``).
+        status_column : str, default 'status'
+            Column name containing station status labels.
+        col_name : str, default 'checklist'
+            Output column name storing mapped checklist symbol strings.
+
+        Returns
+        -------
+        bool
+            ``True`` once the CSV file has been exported.
+
+        Raises
+        ------
+        KeyError
+            If ``'stid'``, ``'channel'``, or ``status_column`` is missing
+            from ``formatted_table``.
+        OSError
+            If ``output_filename`` cannot be created or written to disk.
+        """
         formatted_table[col_name] = formatted_table[status_column].map(settings.files.SYMBOL_STATUS_CHECKLIST)
         cols2export = ['stid', 'channel', 'checklist']
         formatted_table = cls.filter_vertical_components(formatted_table)

@@ -1,6 +1,6 @@
 ## Author: William Eduardo Peñaranda Arévalo, Seismological Analyst at SGC <ORCID:0000-0002-8545-9181> 
 ## <Repo:https://github.com/WilliamEpenarandaA/Checklist>
-## This file contain the new routine to implement checklist of seismological stations monitored by SGC.
+## CLI entry point for running the real-time SGC station availability checklist.
 ####################################################################################################################################
 ####################################################################################################################################
 import argparse
@@ -36,6 +36,24 @@ logger = settings.get_logger(__name__)
 
 ## Define function to parse arguments
 def read_args():
+    """
+    Parse command-line arguments using ``+`` as the option prefix character.
+
+    Defines flags and options for printing formatted delays (``+p``/``+print``),
+    exporting checklist CSVs (``+o``/``+output``), forcing SIIGEO updates
+    (``+u``/``+update``), restricting metrics to national stations (``+nat``),
+    displaying sensor metrics (``+s``/``+stat``) or transmission metrics
+    (``+st``/``+stat_type``), setting the validation interval in seconds
+    (``+t``/``+time``, default ``30``), filtering displayed statuses
+    (``++offline``, ``++intermittent``, ``++online``), selecting the target
+    server (``++server``, default ``'91'``), and saving raw results/metrics
+    (``++save``).
+
+    Returns
+    -------
+    dict of {str: object}
+        Dictionary mapping parsed argument destination names to their values.
+    """
     prefix = '+'
     parser = argparse.ArgumentParser(prog="Checklist", description="Monitor the real-time availability and performance metrics of RSNC seismological stations.", prefix_chars=prefix)
     parser.add_argument(prefix + "p", prefix + "print", help="Display delays in a user-friendly manner (day, hour, minute, seconds).", action='store_true', required=False)

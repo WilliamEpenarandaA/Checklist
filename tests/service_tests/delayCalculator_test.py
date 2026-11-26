@@ -9,8 +9,9 @@ from pandas.testing import assert_frame_equal
 from src.services.delay_calculator import DelayCalculator
 
 class DelayCalculatorTest(unittest.TestCase):
-
+    """Test suite verifying untracked station merging and delay calculation."""
     def setUp(self):
+        """Set up sample station/slinktool fixtures, reference timestamp, and expected results."""
         global base_data
         global base_sgc_data
         global base_slink_data
@@ -52,6 +53,7 @@ class DelayCalculatorTest(unittest.TestCase):
         print('setUp method execution....')
     
     def test_add_stations_untracked(self):
+        """Verify merging untracked SGC stations and casting string fields to ``string[pyarrow]``."""
         cols_sgc = ['network', 'stid', 'loc', 'channel', 'type_transmission']
         station_data = pd.DataFrame(base_sgc_data, columns=cols_sgc)
         cols_ = ['network', 'stid', 'loc', 'channel', 'type_transmission', 'last_connection']
@@ -68,6 +70,7 @@ class DelayCalculatorTest(unittest.TestCase):
         assert_frame_equal(res, theorical_res) #if want to avoid nan differences, select check_dtype option to False
 
     def test_compute_delays(self):
+        """Verify computed microsecond timedelta delays against ``parsed_datetime``."""
         data = pd.DataFrame(base_data)
         res = DelayCalculator.compute_delays(data, datetime=parsed_datetime, datetime_column='last_connection')
         delays = res['delay'].to_numpy()
